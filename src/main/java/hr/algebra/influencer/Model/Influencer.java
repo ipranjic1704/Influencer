@@ -2,7 +2,7 @@ package hr.algebra.influencer.Model;
 
 import java.util.ArrayList;
 import java.util.List;
-
+//test
 // Glavni entitet aplikacije. Drži svoje osnovne atribute te liste povezanih entiteta
 // (platforme, niše, tipovi sadržaja su M:N šifrarnici; brand suradnje su njegove vlastite, 1:N).
 public class Influencer extends Entitet implements Comparable<Influencer> {
