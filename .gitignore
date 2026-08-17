@@ -3,6 +3,8 @@ target/
 !**/src/main/**/target/
 !**/src/test/**/target/
 .kotlin
+*.mv.db
+*.trace.db
 
 ### IntelliJ IDEA ###
 .idea/modules.xml
