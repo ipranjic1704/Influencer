@@ -2,6 +2,7 @@ package hr.algebra.influencer.Controller;
 
 import hr.algebra.influencer.App;
 import hr.algebra.influencer.DataAccessLayer.Implementation.KorisnikRepozitorij;
+import hr.algebra.influencer.Exception.AppException;
 import hr.algebra.influencer.Model.Korisnik;
 import hr.algebra.influencer.Utilization.AlertUtil;
 import hr.algebra.influencer.Utilization.SceneUtil;
@@ -10,8 +11,6 @@ import javafx.fxml.FXML;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
-
-import java.util.Optional;
 
 public class LoginController {
 
@@ -27,14 +26,25 @@ public class LoginController {
         String korisnickoIme = korisnickoImeField.getText().trim();
         String lozinka = lozinkaField.getText();
 
-        Optional<Korisnik> korisnik = korisnikRepozitorij.getByKorisnickoIme(korisnickoIme);
-
-        if (korisnik.isPresent() && korisnik.get().getLozinka().equals(lozinka)) {
-            Session.login(korisnik.get());
+        try {
+            Korisnik korisnik = provjeriPrijavu(korisnickoIme, lozinka);
+            Session.login(korisnik);
             Stage stage = (Stage) korisnickoImeField.getScene().getWindow();
             SceneUtil.loadScene(App.class.getResource("fxml/main.fxml"), stage, "Influencer");
-        } else {
-            AlertUtil.showError("Pogreska pri prijavi", "Pogresno korisnicko ime ili lozinka.");
+        } catch (AppException e) {
+            AlertUtil.showError("Pogreska pri prijavi", e.getMessage());
         }
+    }
+
+    // Provjerava korisnicko ime i lozinku te baca AppException ako prijava nije ispravna -
+    // pozivatelj (handleLogin) tu poslovnu gresku hvata i prikazuje korisniku.
+    private Korisnik provjeriPrijavu(String korisnickoIme, String lozinka) throws AppException {
+        Korisnik korisnik = korisnikRepozitorij.getByKorisnickoIme(korisnickoIme)
+                .orElseThrow(() -> new AppException("Pogresno korisnicko ime ili lozinka."));
+
+        if (!korisnik.getLozinka().equals(lozinka)) {
+            throw new AppException("Pogresno korisnicko ime ili lozinka.");
+        }
+        return korisnik;
     }
 }

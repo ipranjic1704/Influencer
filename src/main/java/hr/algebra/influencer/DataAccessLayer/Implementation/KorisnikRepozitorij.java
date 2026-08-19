@@ -2,6 +2,7 @@ package hr.algebra.influencer.DataAccessLayer.Implementation;
 
 import hr.algebra.influencer.BazaPodataka;
 import hr.algebra.influencer.DataAccessLayer.Interface.Repozitorij;
+import hr.algebra.influencer.Exception.RepoException;
 import hr.algebra.influencer.Model.Enum.Uloga;
 import hr.algebra.influencer.Model.Korisnik;
 
@@ -52,7 +53,7 @@ public class KorisnikRepozitorij implements Repozitorij<Korisnik> {
                 korisnici.add(mapRow(rs));
             }
         } catch (SQLException e) {
-            throw new RuntimeException("Greska pri dohvatu korisnika.", e);
+            throw new RepoException("Greska pri dohvatu korisnika.", e);
         }
         return korisnici;
     }
@@ -67,7 +68,7 @@ public class KorisnikRepozitorij implements Repozitorij<Korisnik> {
                 }
             }
         } catch (SQLException e) {
-            throw new RuntimeException("Greska pri dohvatu korisnika id=" + id, e);
+            throw new RepoException("Greska pri dohvatu korisnika id=" + id, e);
         }
         return Optional.empty();
     }
@@ -81,7 +82,7 @@ public class KorisnikRepozitorij implements Repozitorij<Korisnik> {
                 }
             }
         } catch (SQLException e) {
-            throw new RuntimeException("Greska pri dohvatu korisnika po korisnickom imenu.", e);
+            throw new RepoException("Greska pri dohvatu korisnika po korisnickom imenu.", e);
         }
         return Optional.empty();
     }
@@ -102,7 +103,7 @@ public class KorisnikRepozitorij implements Repozitorij<Korisnik> {
                 }
             }
         } catch (SQLException e) {
-            throw new RuntimeException("Greska pri spremanju korisnika.", e);
+            throw new RepoException("Greska pri spremanju korisnika.", e);
         }
     }
 
@@ -116,7 +117,7 @@ public class KorisnikRepozitorij implements Repozitorij<Korisnik> {
             ps.setInt(5, korisnik.getId());
             ps.executeUpdate();
         } catch (SQLException e) {
-            throw new RuntimeException("Greska pri azuriranju korisnika.", e);
+            throw new RepoException("Greska pri azuriranju korisnika.", e);
         }
     }
 
@@ -126,7 +127,7 @@ public class KorisnikRepozitorij implements Repozitorij<Korisnik> {
             ps.setInt(1, id);
             ps.executeUpdate();
         } catch (SQLException e) {
-            throw new RuntimeException("Greska pri brisanju korisnika id=" + id, e);
+            throw new RepoException("Greska pri brisanju korisnika id=" + id, e);
         }
     }
 

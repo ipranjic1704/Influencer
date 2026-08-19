@@ -12,4 +12,7 @@ module hr.algebra.influencer {
 
     opens hr.algebra.influencer.Controller to javafx.fxml;
     exports hr.algebra.influencer.Controller;
+
+    opens hr.algebra.influencer.Controller.Influencer to javafx.fxml;
+    exports hr.algebra.influencer.Controller.Influencer;
 }

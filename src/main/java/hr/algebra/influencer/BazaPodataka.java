@@ -1,5 +1,7 @@
 package hr.algebra.influencer;
 
+import hr.algebra.influencer.Exception.RepoException;
+
 import java.nio.charset.StandardCharsets;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -22,9 +24,9 @@ public class BazaPodataka {
         try {
             veza = DriverManager.getConnection(URL, USER, PASS);
             initSchema(veza);
-            System.out.println("[db] Konekcija otvorena");
+            System.out.println("[db] veza stvorena");
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            throw new RepoException(e);
         }
     }
 
@@ -34,7 +36,7 @@ public class BazaPodataka {
     public static void zatvori() {
         try {
             veza.close();
-            System.out.println("[db] Konekcija zatvorena");
+            System.out.println("[db] veza zatvorena");
         } catch (SQLException e) {
             System.err.println("[db] Greska pri zatvaranju konekcije: " + e.getMessage());
         }
