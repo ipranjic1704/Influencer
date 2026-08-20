@@ -79,9 +79,10 @@ public class BrandSuradnja extends Entitet implements Comparable<BrandSuradnja> 
         return nazivKampanje + " x " + nazivBrenda + " (" + godina + ", " + status + ", tim: " + tim.size() + ")";
     }
 
+    // Prirodni poredak je padajuci (Z-A) po nazivu kampanje - vidi Influencer.compareTo() za isti obrazac.
     @Override
     public int compareTo(BrandSuradnja other) {
-        return nazivKampanje.compareToIgnoreCase(other.nazivKampanje);
+        return other.nazivKampanje.compareToIgnoreCase(nazivKampanje);
     }
 
     @Override

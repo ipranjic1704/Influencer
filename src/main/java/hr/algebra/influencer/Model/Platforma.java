@@ -31,9 +31,10 @@ public class Platforma extends Entitet implements Comparable<Platforma> {
         return "Platforma: " + naziv;
     }
 
+    // Prirodni poredak je padajuci (Z-A) po nazivu - vidi Influencer.compareTo() za isti obrazac.
     @Override
     public int compareTo(Platforma other) {
-        return naziv.compareToIgnoreCase(other.naziv);
+        return other.naziv.compareToIgnoreCase(naziv);
     }
 
     @Override

@@ -76,8 +76,11 @@ public class InfluencerController implements Initializable {
         osvjezi();
     }
 
+    // Sortiranje (padajuce po imenu) je odgovornost Influencer.compareTo() - kontroler ga samo koristi.
     private void osvjezi() {
-        sviInfluenceri.setAll(influencerRepozitorij.getAll());
+        sviInfluenceri.setAll(influencerRepozitorij.getAll().stream()
+                .sorted()
+                .collect(Collectors.toList()));
         filtriraj(pretragaField.getText());
     }
 

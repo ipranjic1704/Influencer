@@ -27,6 +27,7 @@
             <padding><Insets bottom="20.0" left="20.0" right="20.0" top="20.0"/></padding>
             <Label style="-fx-font-size: 14px;" text="Odaberite entitet:"/>
             <Button fx:id="influenceriButton" onAction="#handleOtvoriInfluencere" prefWidth="200.0" text="Influenceri"/>
+            <Button fx:id="platformeButton" onAction="#handleOtvoriPlatforme" prefWidth="200.0" text="Platforme"/>
         </VBox>
     </center>
 

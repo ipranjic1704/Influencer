@@ -30,9 +30,10 @@ public class Nisa extends Entitet implements Comparable<Nisa> {
         return "Niša: " + naziv;
     }
 
+    // Prirodni poredak je padajuci (Z-A) po nazivu - vidi Influencer.compareTo() za isti obrazac.
     @Override
     public int compareTo(Nisa other) {
-        return naziv.compareToIgnoreCase(other.naziv);
+        return other.naziv.compareToIgnoreCase(naziv);
     }
 
     @Override

@@ -2,6 +2,7 @@ package hr.algebra.influencer.Controller;
 
 import hr.algebra.influencer.App;
 import hr.algebra.influencer.DataAccessLayer.Implementation.InfluencerRepozitorij;
+import hr.algebra.influencer.DataAccessLayer.Implementation.PlatformaRepozitorij;
 import hr.algebra.influencer.Utilization.SceneUtil;
 import hr.algebra.influencer.Utilization.Session;
 import javafx.fxml.FXML;
@@ -15,13 +16,17 @@ public class MainController {
     private Label korisnikLabel;
     @FXML
     private Button influenceriButton;
+    @FXML
+    private Button platformeButton;
 
     private final InfluencerRepozitorij influencerRepozitorij = InfluencerRepozitorij.getInstance();
+    private final PlatformaRepozitorij platformaRepozitorij = PlatformaRepozitorij.getInstance();
 
     @FXML
     private void initialize() {
         korisnikLabel.setText(Session.getTrenutniKorisnik().getKorisnickoIme());
         influenceriButton.setText("Influenceri (" + influencerRepozitorij.count() + ")");
+        platformeButton.setText("Platforme (" + platformaRepozitorij.count() + ")");
     }
 
     @FXML
@@ -29,6 +34,14 @@ public class MainController {
         Stage stage = new Stage();
         stage.initOwner(korisnikLabel.getScene().getWindow());
         SceneUtil.loadScene(App.class.getResource("fxml/Influencer/influencer.fxml"), stage, "Influenceri");
+        stage.show();
+    }
+
+    @FXML
+    private void handleOtvoriPlatforme() {
+        Stage stage = new Stage();
+        stage.initOwner(korisnikLabel.getScene().getWindow());
+        SceneUtil.loadScene(App.class.getResource("fxml/Platforma/platforma.fxml"), stage, "Platforme");
         stage.show();
     }
 

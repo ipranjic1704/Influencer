@@ -125,9 +125,11 @@ public class Influencer extends Entitet implements Comparable<Influencer> {
         return imeNadimak + " (" + zemlja + ", " + brojPratitelja + " pratitelja, " + engagementRate + "% engagement)";
     }
 
+    // Prirodni poredak je padajuci (Z-A) po imenu/nadimku - tako se influenceri
+    // prikazuju svugdje u aplikaciji, pa je logika ovdje, a ne u kontrolerima.
     @Override
     public int compareTo(Influencer other) {
-        return imeNadimak.compareToIgnoreCase(other.imeNadimak);
+        return other.imeNadimak.compareToIgnoreCase(imeNadimak);
     }
 
     @Override
