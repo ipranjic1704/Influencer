@@ -2,18 +2,23 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.FlowPane?>
+<?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane prefWidth="760.0" prefHeight="480.0"
+<BorderPane prefWidth="860.0" prefHeight="700.0"
             xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="hr.algebra.influencer.Controller.Influencer.InfluencerController">
+            fx:controller="hr.algebra.influencer.Controller.InfluencerController">
     <padding><Insets top="15.0" right="15.0" bottom="15.0" left="15.0"/></padding>
 
     <top>
@@ -25,34 +30,71 @@
     </top>
 
     <center>
-        <VBox spacing="10.0">
+        <VBox spacing="12.0">
             <BorderPane.margin><Insets top="10.0" bottom="10.0"/></BorderPane.margin>
 
             <TextField fx:id="pretragaField" promptText="Pretraži influencere po imenu/nadimku..."/>
 
-            <TableView fx:id="tablica" VBox.vgrow="ALWAYS">
+            <TableView fx:id="tablica" VBox.vgrow="ALWAYS" prefHeight="200.0">
                 <columnResizePolicy>
                     <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
                 </columnResizePolicy>
                 <columns>
-                    <TableColumn fx:id="idColumn" text="ID" prefWidth="50.0"/>
-                    <TableColumn fx:id="imeNadimakColumn" text="Ime/Nadimak" prefWidth="180.0"/>
-                    <TableColumn fx:id="zemljaColumn" text="Zemlja" prefWidth="120.0"/>
-                    <TableColumn fx:id="brojPratiteljaColumn" text="Broj pratitelja" prefWidth="130.0"/>
-                    <TableColumn fx:id="engagementRateColumn" text="Engagement (%)" prefWidth="130.0"/>
+                    <TableColumn fx:id="idColumn" text="ID" prefWidth="40.0"/>
+                    <TableColumn fx:id="imeNadimakColumn" text="Ime/Nadimak" prefWidth="160.0"/>
+                    <TableColumn fx:id="zemljaColumn" text="Zemlja" prefWidth="100.0"/>
+                    <TableColumn fx:id="gradColumn" text="Grad" prefWidth="100.0"/>
+                    <TableColumn fx:id="brojPratiteljaColumn" text="Broj pratitelja" prefWidth="110.0"/>
+                    <TableColumn fx:id="engagementRateColumn" text="Engagement (%)" prefWidth="110.0"/>
+                    <TableColumn fx:id="platformeColumn" text="Platforme" prefWidth="160.0"/>
                 </columns>
             </TableView>
+
+            <Separator/>
+
+            <Label text="Podaci o influenceru" style="-fx-font-weight: bold;"/>
+            <GridPane hgap="8.0" vgap="8.0">
+                <columnConstraints>
+                    <ColumnConstraints halignment="RIGHT" minWidth="110.0"/>
+                    <ColumnConstraints hgrow="ALWAYS"/>
+                    <ColumnConstraints halignment="RIGHT" minWidth="110.0"/>
+                    <ColumnConstraints hgrow="ALWAYS"/>
+                </columnConstraints>
+
+                <Label text="Ime/Nadimak:" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+                <TextField fx:id="imeNadimakField" promptText="npr. TravelWithMia" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+                <Label text="Zemlja:" GridPane.rowIndex="0" GridPane.columnIndex="2"/>
+                <TextField fx:id="zemljaField" promptText="npr. Hrvatska" GridPane.rowIndex="0" GridPane.columnIndex="3"/>
+
+                <Label text="Broj pratitelja:" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+                <TextField fx:id="brojPratiteljaField" promptText="npr. 15000" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+                <Label text="Engagement (%):" GridPane.rowIndex="1" GridPane.columnIndex="2"/>
+                <TextField fx:id="engagementRateField" promptText="npr. 3.5" GridPane.rowIndex="1" GridPane.columnIndex="3"/>
+
+                <Label text="Grad:" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+                <ComboBox fx:id="gradComboBox" promptText="odaberi grad" GridPane.rowIndex="2" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" maxWidth="Infinity"/>
+                <Label text="Jezik sadržaja:" GridPane.rowIndex="2" GridPane.columnIndex="2"/>
+                <TextField fx:id="jezikSadrzajaField" promptText="npr. Hrvatski" GridPane.rowIndex="2" GridPane.columnIndex="3"/>
+
+                <Label text="Profilna slika:" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
+                <TextField fx:id="profilnaSlikaField" promptText="URL slike" GridPane.rowIndex="3" GridPane.columnIndex="1"/>
+            </GridPane>
+
+            <Separator/>
+
+            <Label text="Platforme" style="-fx-font-weight: bold;"/>
+            <FlowPane fx:id="platformeFlowPane" hgap="12.0" vgap="8.0"/>
         </VBox>
     </center>
 
     <bottom>
         <HBox alignment="CENTER_LEFT" spacing="8.0">
-            <Button fx:id="dodajButton" text="Dodaj..." prefWidth="90.0" onAction="#handleDodaj"/>
-            <Button fx:id="urediButton" text="Uredi..." prefWidth="90.0" onAction="#handleUredi"/>
-            <Button fx:id="dodajPlatformuButton" text="Dodaj platformu..." prefWidth="150.0" onAction="#handleDodajPlatformu"/>
-            <Button fx:id="obrisiPlatformuButton" text="Obriši platformu..." prefWidth="150.0" onAction="#handleObrisiPlatformu"/>
-            <Region HBox.hgrow="ALWAYS"/>
+            <BorderPane.margin><Insets top="10.0"/></BorderPane.margin>
+            <Button fx:id="novaButton" text="Novo" prefWidth="90.0" onAction="#handleNova"/>
             <Button fx:id="brisiButton" text="Obriši" prefWidth="90.0" onAction="#handleBrisi"/>
+            <Button fx:id="detaljiButton" text="Detalji..." prefWidth="90.0" onAction="#handleDetalji"/>
+            <Region HBox.hgrow="ALWAYS"/>
+            <Button fx:id="spremiButton" text="Dodaj" prefWidth="100.0" onAction="#handleSpremi" defaultButton="true"/>
         </HBox>
     </bottom>
 </BorderPane>

@@ -73,10 +73,10 @@ public class Korisnik extends Entitet implements Comparable<Korisnik> {
         return korisnickoIme + " (" + uloga + ")";
     }
 
-    // Prirodni poredak je padajuci (Z-A) po korisnickom imenu - vidi Influencer.compareTo() za isti obrazac.
+    // Prirodni poredak je uzlazni (A-Z) po korisnickom imenu - vidi Influencer.compareTo() za isti obrazac.
     @Override
     public int compareTo(Korisnik other) {
-        return other.korisnickoIme.compareToIgnoreCase(korisnickoIme);
+        return korisnickoIme.compareToIgnoreCase(other.korisnickoIme);
     }
 
     @Override

@@ -30,10 +30,10 @@ public class TipSadrzaja extends Entitet implements Comparable<TipSadrzaja> {
         return "Tip sadržaja: " + naziv;
     }
 
-    // Prirodni poredak je padajuci (Z-A) po nazivu - vidi Influencer.compareTo() za isti obrazac.
+    // Prirodni poredak je uzlazni (A-Z) po nazivu - vidi Influencer.compareTo() za isti obrazac.
     @Override
     public int compareTo(TipSadrzaja other) {
-        return other.naziv.compareToIgnoreCase(naziv);
+        return naziv.compareToIgnoreCase(other.naziv);
     }
 
     @Override

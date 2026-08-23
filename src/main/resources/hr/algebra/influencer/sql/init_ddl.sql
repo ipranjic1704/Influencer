@@ -1,9 +1,16 @@
+-- Grad mora postojati prije Influencer tablice jer Influencer.GradID na njega referencira.
+CREATE TABLE IF NOT EXISTS Grad (
+    IDGrad INT AUTO_INCREMENT PRIMARY KEY,
+    Naziv  VARCHAR(255) NOT NULL
+);
+
 CREATE TABLE IF NOT EXISTS Influencer (
     IDInfluencer   INT AUTO_INCREMENT PRIMARY KEY,
     ImeNadimak     VARCHAR(255) NOT NULL,
     BrojPratitelja INT NOT NULL DEFAULT 0,
     EngagementRate DOUBLE NOT NULL DEFAULT 0.0,
     Zemlja         VARCHAR(100),
+    GradID         INT REFERENCES Grad(IDGrad) ON DELETE SET NULL,
     JezikSadrzaja  VARCHAR(100),
     ProfilnaSlika  VARCHAR(500)
 );

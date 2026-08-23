@@ -13,12 +13,12 @@
 
 <BorderPane prefWidth="480.0" prefHeight="460.0"
             xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="hr.algebra.influencer.Controller.PlatformaController">
+            fx:controller="hr.algebra.influencer.Controller.TipSadrzajaController">
     <padding><Insets top="15.0" right="15.0" bottom="15.0" left="15.0"/></padding>
 
     <top>
         <HBox alignment="CENTER_LEFT" spacing="8.0">
-            <Label text="Platforme" style="-fx-font-size: 16px; -fx-font-weight: bold;"/>
+            <Label text="Tipovi sadržaja" style="-fx-font-size: 16px; -fx-font-weight: bold;"/>
             <Region HBox.hgrow="ALWAYS"/>
             <Button text="Osvježi" prefWidth="90.0" onAction="#handleOsvjezi"/>
         </HBox>
@@ -28,7 +28,7 @@
         <VBox spacing="10.0">
             <BorderPane.margin><Insets top="10.0" bottom="10.0"/></BorderPane.margin>
 
-            <TextField fx:id="pretragaField" promptText="Pretraži platforme po nazivu..."/>
+            <TextField fx:id="pretragaField" promptText="Pretraži tipove sadržaja po nazivu..."/>
 
             <TableView fx:id="tablica" VBox.vgrow="ALWAYS">
                 <columnResizePolicy>
@@ -42,7 +42,7 @@
 
             <HBox alignment="CENTER_LEFT" spacing="8.0">
                 <Label text="Naziv:"/>
-                <TextField fx:id="nazivField" HBox.hgrow="ALWAYS" promptText="npr. Instagram"/>
+                <TextField fx:id="nazivField" HBox.hgrow="ALWAYS" promptText="npr. Reels"/>
                 <Button fx:id="spremiButton" text="Dodaj" prefWidth="90.0" onAction="#handleSpremi" defaultButton="true"/>
             </HBox>
         </VBox>

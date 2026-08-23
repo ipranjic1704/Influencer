@@ -10,6 +10,7 @@ public class Influencer extends Entitet implements Comparable<Influencer> {
     private int brojPratitelja;
     private double engagementRate;
     private String zemlja;
+    private Grad grad;
     private String jezikSadrzaja;
     private String profilnaSlika;
 
@@ -21,21 +22,23 @@ public class Influencer extends Entitet implements Comparable<Influencer> {
     public Influencer() {
     }
 
-    public Influencer(String imeNadimak, int brojPratitelja, double engagementRate, String zemlja, String jezikSadrzaja, String profilnaSlika) {
+    public Influencer(String imeNadimak, int brojPratitelja, double engagementRate, String zemlja, Grad grad, String jezikSadrzaja, String profilnaSlika) {
         this.imeNadimak = imeNadimak;
         this.brojPratitelja = brojPratitelja;
         this.engagementRate = engagementRate;
         this.zemlja = zemlja;
+        this.grad = grad;
         this.jezikSadrzaja = jezikSadrzaja;
         this.profilnaSlika = profilnaSlika;
     }
 
-    public Influencer(int id, String imeNadimak, int brojPratitelja, double engagementRate, String zemlja, String jezikSadrzaja, String profilnaSlika) {
+    public Influencer(int id, String imeNadimak, int brojPratitelja, double engagementRate, String zemlja, Grad grad, String jezikSadrzaja, String profilnaSlika) {
         super(id);
         this.imeNadimak = imeNadimak;
         this.brojPratitelja = brojPratitelja;
         this.engagementRate = engagementRate;
         this.zemlja = zemlja;
+        this.grad = grad;
         this.jezikSadrzaja = jezikSadrzaja;
         this.profilnaSlika = profilnaSlika;
     }
@@ -70,6 +73,14 @@ public class Influencer extends Entitet implements Comparable<Influencer> {
 
     public void setZemlja(String zemlja) {
         this.zemlja = zemlja;
+    }
+
+    public Grad getGrad() {
+        return grad;
+    }
+
+    public void setGrad(Grad grad) {
+        this.grad = grad;
     }
 
     public String getJezikSadrzaja() {
@@ -125,11 +136,11 @@ public class Influencer extends Entitet implements Comparable<Influencer> {
         return imeNadimak + " (" + zemlja + ", " + brojPratitelja + " pratitelja, " + engagementRate + "% engagement)";
     }
 
-    // Prirodni poredak je padajuci (Z-A) po imenu/nadimku - tako se influenceri
+    // Prirodni poredak je uzlazni (A-Z) po imenu/nadimku - tako se influenceri
     // prikazuju svugdje u aplikaciji, pa je logika ovdje, a ne u kontrolerima.
     @Override
     public int compareTo(Influencer other) {
-        return other.imeNadimak.compareToIgnoreCase(imeNadimak);
+        return imeNadimak.compareToIgnoreCase(other.imeNadimak);
     }
 
     @Override

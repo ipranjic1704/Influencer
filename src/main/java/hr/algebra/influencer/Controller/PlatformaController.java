@@ -1,30 +1,26 @@
-package hr.algebra.influencer.Controller.Platforma;
+package hr.algebra.influencer.Controller;
 
-import hr.algebra.influencer.App;
 import hr.algebra.influencer.DataAccessLayer.Implementation.PlatformaRepozitorij;
 import hr.algebra.influencer.Model.Platforma;
 import hr.algebra.influencer.Utilization.AlertUtil;
-import hr.algebra.influencer.Utilization.SceneUtil;
 import hr.algebra.influencer.Utilization.Session;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.stage.Modality;
-import javafx.stage.Stage;
 
 import java.net.URL;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 
-// Controller za sifrarnik platformi (platforma.fxml). Dodaj/Uredi/Obrisi smiju samo ADMIN -
-// vidljivo je svima (i BREND i INFLUENCER vide popis platformi), ali gumbi za izmjenu su onemoguceni.
+// Controller za sifrarnik platformi (platforma.fxml). Lista, dodavanje i uredjivanje su u
+// jednom kontroleru i jednom ekranu - odabir retka u tablici puni formu (uredjivanje), a
+// prazna forma znaci dodavanje novog retka. Dodaj/Uredi/Obrisi smiju samo ADMIN.
 public class PlatformaController implements Initializable {
 
     @FXML
@@ -36,15 +32,18 @@ public class PlatformaController implements Initializable {
     @FXML
     private TextField pretragaField;
     @FXML
-    private Button dodajButton;
+    private TextField nazivField;
     @FXML
-    private Button urediButton;
+    private Button spremiButton;
+    @FXML
+    private Button novaButton;
     @FXML
     private Button brisiButton;
 
     private final PlatformaRepozitorij platformaRepozitorij = PlatformaRepozitorij.getInstance();
 
     private final ObservableList<Platforma> svePlatforme = FXCollections.observableArrayList();
+    private Platforma odabrana;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -52,10 +51,12 @@ public class PlatformaController implements Initializable {
         nazivColumn.setCellValueFactory(new PropertyValueFactory<>("naziv"));
 
         pretragaField.textProperty().addListener((obs, staro, novo) -> filtriraj(novo));
+        tablica.getSelectionModel().selectedItemProperty().addListener((obs, staro, novo) -> odaberi(novo));
 
         if (!Session.isAdmin()) {
-            dodajButton.setDisable(true);
-            urediButton.setDisable(true);
+            nazivField.setDisable(true);
+            spremiButton.setDisable(true);
+            novaButton.setDisable(true);
             brisiButton.setDisable(true);
         }
 
@@ -82,52 +83,55 @@ public class PlatformaController implements Initializable {
         tablica.setItems(rezultat);
     }
 
+    // Puni formu odabranim retkom (uredjivanje) ili je prazni (novi unos) ako je odabir ponisten.
+    private void odaberi(Platforma platforma) {
+        odabrana = platforma;
+        nazivField.setText(platforma == null ? "" : platforma.getNaziv());
+        spremiButton.setText(platforma == null ? "Dodaj" : "Spremi");
+    }
+
     @FXML
-    private void handleDodaj() {
-        Stage stage = noviModal("Nova platforma");
-        SceneUtil.loadScene(App.class.getResource("fxml/Platforma/platforma-dodaj.fxml"), stage, "Nova platforma");
-        stage.showAndWait();
+    private void handleSpremi() {
+        String naziv = nazivField.getText().trim();
+        if (naziv.isEmpty()) {
+            AlertUtil.showWarning("Provjera", "Naziv platforme je obavezan.");
+            return;
+        }
+
+        if (odabrana == null) {
+            Platforma novaPlatforma = new Platforma(naziv);
+            if (platformaRepozitorij.isDuplicate(Platforma::getNaziv, novaPlatforma)) {
+                AlertUtil.showWarning("Provjera", "Platforma '" + naziv + "' vec postoji.");
+                return;
+            }
+            platformaRepozitorij.create(novaPlatforma);
+        } else {
+            odabrana.setNaziv(naziv);
+            platformaRepozitorij.update(odabrana);
+        }
+
+        tablica.getSelectionModel().clearSelection();
         osvjezi();
     }
 
     @FXML
-    private void handleUredi() {
-        Platforma odabrana = tablica.getSelectionModel().getSelectedItem();
-        if (odabrana == null) {
-            AlertUtil.showWarning("Uredjivanje", "Prvo odaberite platformu iz tablice.");
-            return;
-        }
-
-        Stage stage = noviModal("Uredi platformu");
-        FXMLLoader loader = SceneUtil.loadSceneWithLoader(
-                App.class.getResource("fxml/Platforma/platforma-uredi.fxml"), stage, "Uredi platformu");
-        PlatformaUrediController kontroler = loader.getController();
-        kontroler.setPlatforma(odabrana);
-        stage.showAndWait();
-        osvjezi();
+    private void handleNova() {
+        tablica.getSelectionModel().clearSelection();
     }
 
     @FXML
     private void handleBrisi() {
-        Platforma odabrana = tablica.getSelectionModel().getSelectedItem();
         if (odabrana == null) {
             AlertUtil.showWarning("Brisanje", "Prvo odaberite platformu iz tablice.");
             return;
         }
         platformaRepozitorij.delete(odabrana.getId());
+        tablica.getSelectionModel().clearSelection();
         osvjezi();
     }
 
     @FXML
     private void handleOsvjezi() {
         osvjezi();
-    }
-
-    private Stage noviModal(String naslov) {
-        Stage stage = new Stage();
-        stage.initModality(Modality.WINDOW_MODAL);
-        stage.initOwner(tablica.getScene().getWindow());
-        stage.setTitle(naslov);
-        return stage;
     }
 }

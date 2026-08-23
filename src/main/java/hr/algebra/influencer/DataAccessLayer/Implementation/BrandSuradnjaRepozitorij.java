@@ -5,6 +5,7 @@ import hr.algebra.influencer.DataAccessLayer.Interface.Repozitorij;
 import hr.algebra.influencer.Exception.RepoException;
 import hr.algebra.influencer.Model.BrandSuradnja;
 import hr.algebra.influencer.Model.Enum.StatusSuradnje;
+import hr.algebra.influencer.Model.Grad;
 import hr.algebra.influencer.Model.Influencer;
 
 import java.sql.PreparedStatement;
@@ -44,9 +45,11 @@ public class BrandSuradnjaRepozitorij implements Repozitorij<BrandSuradnja> {
             "DELETE FROM BrandSuradnja WHERE IDBrandSuradnja = ?";
 
     private static final String SELECT_TIM =
-            "SELECT i.IDInfluencer, i.ImeNadimak, i.BrojPratitelja, i.EngagementRate, i.Zemlja, i.JezikSadrzaja, i.ProfilnaSlika " +
+            "SELECT i.IDInfluencer, i.ImeNadimak, i.BrojPratitelja, i.EngagementRate, i.Zemlja, " +
+            "i.GradID, g.Naziv AS NazivGrad, i.JezikSadrzaja, i.ProfilnaSlika " +
             "FROM Influencer i " +
             "JOIN BrandSuradnjaInfluencer bi ON i.IDInfluencer = bi.IDInfluencer " +
+            "LEFT JOIN Grad g ON i.GradID = g.IDGrad " +
             "WHERE bi.IDBrandSuradnja = ?";
 
     private static final String INSERT_TIM_VEZA =
@@ -162,12 +165,16 @@ public class BrandSuradnjaRepozitorij implements Repozitorij<BrandSuradnja> {
             ps.setInt(1, idBrandSuradnja);
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
+                    int idGrad = rs.getInt("GradID");
+                    Grad grad = rs.wasNull() ? null : new Grad(idGrad, rs.getString("NazivGrad"));
+
                     tim.add(new Influencer(
                             rs.getInt("IDInfluencer"),
                             rs.getString("ImeNadimak"),
                             rs.getInt("BrojPratitelja"),
                             rs.getDouble("EngagementRate"),
                             rs.getString("Zemlja"),
+                            grad,
                             rs.getString("JezikSadrzaja"),
                             rs.getString("ProfilnaSlika")
                     ));

@@ -3,6 +3,7 @@ package hr.algebra.influencer.DataAccessLayer.Implementation;
 import hr.algebra.influencer.BazaPodataka;
 import hr.algebra.influencer.DataAccessLayer.Interface.Repozitorij;
 import hr.algebra.influencer.Exception.RepoException;
+import hr.algebra.influencer.Model.Grad;
 import hr.algebra.influencer.Model.Influencer;
 import hr.algebra.influencer.Model.Nisa;
 import hr.algebra.influencer.Model.Platforma;
@@ -12,6 +13,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -32,18 +34,20 @@ public class InfluencerRepozitorij implements Repozitorij<Influencer> {
         return INSTANCA;
     }
 
+    // JOIN na Grad - aliasi rjesavaju dvosmisleni stupac "Naziv" (i Grad i Influencer bi inace imali istoimeni stupac).
     private static final String SELECT_ALL =
-            "SELECT IDInfluencer, ImeNadimak, BrojPratitelja, EngagementRate, Zemlja, JezikSadrzaja, ProfilnaSlika " +
-            "FROM Influencer";
+            "SELECT i.IDInfluencer, i.ImeNadimak, i.BrojPratitelja, i.EngagementRate, i.Zemlja, " +
+            "i.GradID, g.Naziv AS NazivGrad, i.JezikSadrzaja, i.ProfilnaSlika " +
+            "FROM Influencer i LEFT JOIN Grad g ON i.GradID = g.IDGrad";
 
-    private static final String SELECT_BY_ID = SELECT_ALL + " WHERE IDInfluencer = ?";
+    private static final String SELECT_BY_ID = SELECT_ALL + " WHERE i.IDInfluencer = ?";
 
     private static final String INSERT =
-            "INSERT INTO Influencer (ImeNadimak, BrojPratitelja, EngagementRate, Zemlja, JezikSadrzaja, ProfilnaSlika) " +
-            "VALUES (?, ?, ?, ?, ?, ?)";
+            "INSERT INTO Influencer (ImeNadimak, BrojPratitelja, EngagementRate, Zemlja, GradID, JezikSadrzaja, ProfilnaSlika) " +
+            "VALUES (?, ?, ?, ?, ?, ?, ?)";
 
     private static final String UPDATE =
-            "UPDATE Influencer SET ImeNadimak = ?, BrojPratitelja = ?, EngagementRate = ?, Zemlja = ?, " +
+            "UPDATE Influencer SET ImeNadimak = ?, BrojPratitelja = ?, EngagementRate = ?, Zemlja = ?, GradID = ?, " +
             "JezikSadrzaja = ?, ProfilnaSlika = ? WHERE IDInfluencer = ?";
 
     private static final String DELETE =
@@ -152,8 +156,8 @@ public class InfluencerRepozitorij implements Repozitorij<Influencer> {
     @Override
     public void update(Influencer influencer) {
         try (PreparedStatement ps = BazaPodataka.getConnection().prepareStatement(UPDATE)) {
-            postaviParametre(ps, influencer); // popunjava 1-6
-            ps.setInt(7, influencer.getId()); // 7 -> IDInfluencer (WHERE uvjet)
+            postaviParametre(ps, influencer); // popunjava 1-7
+            ps.setInt(8, influencer.getId()); // 8 -> IDInfluencer (WHERE uvjet)
             ps.executeUpdate();
         } catch (SQLException e) {
             throw new RepoException("Greska pri azuriranju influencera.", e);
@@ -180,23 +184,34 @@ public class InfluencerRepozitorij implements Repozitorij<Influencer> {
         }
     }
 
-    // Postavlja zajednicke parametre za INSERT (1-6) i UPDATE (1-6, a 7 se postavlja u update()).
+    // Postavlja zajednicke parametre za INSERT (1-7) i UPDATE (1-7, a 8 se postavlja u update()).
+    // GradID je nullable FK - setNull ako influencer nema odabran grad.
     private void postaviParametre(PreparedStatement ps, Influencer influencer) throws SQLException {
         ps.setString(1, influencer.getImeNadimak());
         ps.setInt(2, influencer.getBrojPratitelja());
         ps.setDouble(3, influencer.getEngagementRate());
         ps.setString(4, influencer.getZemlja());
-        ps.setString(5, influencer.getJezikSadrzaja());
-        ps.setString(6, influencer.getProfilnaSlika());
+        if (influencer.getGrad() != null) {
+            ps.setInt(5, influencer.getGrad().getId());
+        } else {
+            ps.setNull(5, Types.INTEGER);
+        }
+        ps.setString(6, influencer.getJezikSadrzaja());
+        ps.setString(7, influencer.getProfilnaSlika());
     }
 
+    // Gradi ugnijezdeni Grad objekt iz JOIN-anih stupaca (GradID, NazivGrad) - null ako influencer nema odabran grad.
     private Influencer mapRow(ResultSet rs) throws SQLException {
+        int idGrad = rs.getInt("GradID");
+        Grad grad = rs.wasNull() ? null : new Grad(idGrad, rs.getString("NazivGrad"));
+
         return new Influencer(
                 rs.getInt("IDInfluencer"),
                 rs.getString("ImeNadimak"),
                 rs.getInt("BrojPratitelja"),
                 rs.getDouble("EngagementRate"),
                 rs.getString("Zemlja"),
+                grad,
                 rs.getString("JezikSadrzaja"),
                 rs.getString("ProfilnaSlika")
         );

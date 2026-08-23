@@ -1,19 +1,18 @@
 package hr.algebra.influencer.Model;
 
-// Platforma na kojoj je influencer aktivan (Instagram, TikTok, YouTube, Twitch...).
-// Jednostavan šifrarnik - influencer se s njim povezuje M:N vezom.
-public class Platforma extends Entitet implements Comparable<Platforma> {
+// Grad iz kojeg influencer dolazi - sifrarnik uvezen s vanjskog API-ja (uz mogucnost i rucnog dodavanja).
+public class Grad extends Entitet implements Comparable<Grad> {
 
     private String naziv;
 
-    public Platforma() {
+    public Grad() {
     }
 
-    public Platforma(String naziv) {
+    public Grad(String naziv) {
         this.naziv = naziv;
     }
 
-    public Platforma(int id, String naziv) {
+    public Grad(int id, String naziv) {
         super(id);
         this.naziv = naziv;
     }
@@ -28,12 +27,12 @@ public class Platforma extends Entitet implements Comparable<Platforma> {
 
     @Override
     public String opisi() {
-        return "Platforma: " + naziv;
+        return "Grad: " + naziv;
     }
 
     // Prirodni poredak je uzlazni (A-Z) po nazivu - vidi Influencer.compareTo() za isti obrazac.
     @Override
-    public int compareTo(Platforma other) {
+    public int compareTo(Grad other) {
         return naziv.compareToIgnoreCase(other.naziv);
     }
 
