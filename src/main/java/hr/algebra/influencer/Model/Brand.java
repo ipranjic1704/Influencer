@@ -1,17 +1,17 @@
 package hr.algebra.influencer.Model;
 
-public class TipSadrzaja extends Entitet implements Comparable<TipSadrzaja> {
+public class Brand extends Entitet implements Comparable<Brand> {
 
     private String naziv;
 
-    public TipSadrzaja() {
+    public Brand() {
     }
 
-    public TipSadrzaja(String naziv) {
+    public Brand(String naziv) {
         this.naziv = naziv;
     }
 
-    public TipSadrzaja(int id, String naziv) {
+    public Brand(int id, String naziv) {
         super(id);
         this.naziv = naziv;
     }
@@ -26,11 +26,11 @@ public class TipSadrzaja extends Entitet implements Comparable<TipSadrzaja> {
 
     @Override
     public String opisi() {
-        return "Tip sadržaja: " + naziv;
+        return "Brand: " + naziv;
     }
 
     @Override
-    public int compareTo(TipSadrzaja other) {
+    public int compareTo(Brand other) {
         return naziv.compareToIgnoreCase(other.naziv);
     }
 

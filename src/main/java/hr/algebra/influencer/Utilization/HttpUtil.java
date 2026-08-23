@@ -6,7 +6,6 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.time.Duration;
 
-// Pomocna klasa za HTTP komunikaciju s vanjskim API-jevima.
 public final class HttpUtil {
 
     private static final HttpClient KLIJENT = HttpClient.newBuilder()

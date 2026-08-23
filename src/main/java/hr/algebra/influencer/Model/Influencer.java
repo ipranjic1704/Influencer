@@ -2,8 +2,6 @@ package hr.algebra.influencer.Model;
 
 import java.util.ArrayList;
 import java.util.List;
-// Glavni entitet aplikacije. Drži svoje osnovne atribute te liste povezanih entiteta
-// (platforme, niše, tipovi sadržaja su M:N šifrarnici; brand suradnje su njegove vlastite, 1:N).
 public class Influencer extends Entitet implements Comparable<Influencer> {
 
     private String imeNadimak;
@@ -136,8 +134,6 @@ public class Influencer extends Entitet implements Comparable<Influencer> {
         return imeNadimak + " (" + zemlja + ", " + brojPratitelja + " pratitelja, " + engagementRate + "% engagement)";
     }
 
-    // Prirodni poredak je uzlazni (A-Z) po imenu/nadimku - tako se influenceri
-    // prikazuju svugdje u aplikaciji, pa je logika ovdje, a ne u kontrolerima.
     @Override
     public int compareTo(Influencer other) {
         return imeNadimak.compareToIgnoreCase(other.imeNadimak);

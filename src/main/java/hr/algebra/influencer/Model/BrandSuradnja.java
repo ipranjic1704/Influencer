@@ -5,13 +5,10 @@ import hr.algebra.influencer.Model.Enum.StatusSuradnje;
 import java.util.ArrayList;
 import java.util.List;
 
-// Brand suradnja - konkretna marketinška kampanja s konkretnim brendom.
-// Za razliku od Platforme/Niše/TipaSadržaja ovo nije čisti šifrarnik nego "spremnik" za tim
-// influencera (M:N), isto kao što Akvarij drži svoje organizme - influenceri se u tim dodaju drag & dropom.
 public class BrandSuradnja extends Entitet implements Comparable<BrandSuradnja> {
 
     private String nazivKampanje;
-    private String nazivBrenda;
+    private Brand brand;
     private int godina;
     private StatusSuradnje status;
     private List<Influencer> tim = new ArrayList<>();
@@ -19,17 +16,17 @@ public class BrandSuradnja extends Entitet implements Comparable<BrandSuradnja> 
     public BrandSuradnja() {
     }
 
-    public BrandSuradnja(String nazivKampanje, String nazivBrenda, int godina, StatusSuradnje status) {
+    public BrandSuradnja(String nazivKampanje, Brand brand, int godina, StatusSuradnje status) {
         this.nazivKampanje = nazivKampanje;
-        this.nazivBrenda = nazivBrenda;
+        this.brand = brand;
         this.godina = godina;
         this.status = status;
     }
 
-    public BrandSuradnja(int id, String nazivKampanje, String nazivBrenda, int godina, StatusSuradnje status) {
+    public BrandSuradnja(int id, String nazivKampanje, Brand brand, int godina, StatusSuradnje status) {
         super(id);
         this.nazivKampanje = nazivKampanje;
-        this.nazivBrenda = nazivBrenda;
+        this.brand = brand;
         this.godina = godina;
         this.status = status;
     }
@@ -42,12 +39,12 @@ public class BrandSuradnja extends Entitet implements Comparable<BrandSuradnja> 
         this.nazivKampanje = nazivKampanje;
     }
 
-    public String getNazivBrenda() {
-        return nazivBrenda;
+    public Brand getBrand() {
+        return brand;
     }
 
-    public void setNazivBrenda(String nazivBrenda) {
-        this.nazivBrenda = nazivBrenda;
+    public void setBrand(Brand brand) {
+        this.brand = brand;
     }
 
     public int getGodina() {
@@ -76,10 +73,9 @@ public class BrandSuradnja extends Entitet implements Comparable<BrandSuradnja> 
 
     @Override
     public String opisi() {
-        return nazivKampanje + " x " + nazivBrenda + " (" + godina + ", " + status + ", tim: " + tim.size() + ")";
+        return nazivKampanje + " x " + brand.getNaziv() + " (" + godina + ", " + status + ", tim: " + tim.size() + ")";
     }
 
-    // Prirodni poredak je uzlazni (A-Z) po nazivu kampanje - vidi Influencer.compareTo() za isti obrazac.
     @Override
     public int compareTo(BrandSuradnja other) {
         return nazivKampanje.compareToIgnoreCase(other.nazivKampanje);

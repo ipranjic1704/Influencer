@@ -7,8 +7,6 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-// Generičko sučelje za sve repozitorije u aplikaciji.
-// <T> je tip entiteta (Influencer, Platforma, Korisnik...).
 public interface Repozitorij<T> {
 
     List<T> getAll();

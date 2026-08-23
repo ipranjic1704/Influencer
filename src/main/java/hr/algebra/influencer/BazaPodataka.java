@@ -8,7 +8,6 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-// Klasa koja upravlja jedinom SQL konekcijom u aplikaciji (eager Singleton).
 public class BazaPodataka {
 
     private static final String URL = "jdbc:h2:./InfluencerDB";

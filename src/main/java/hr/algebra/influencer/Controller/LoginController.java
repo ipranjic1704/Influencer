@@ -36,8 +36,6 @@ public class LoginController {
         }
     }
 
-    // Provjerava korisnicko ime i lozinku te baca AppException ako prijava nije ispravna -
-    // pozivatelj (handleLogin) tu poslovnu gresku hvata i prikazuje korisniku.
     private Korisnik provjeriPrijavu(String korisnickoIme, String lozinka) throws AppException {
         Korisnik korisnik = korisnikRepozitorij.getByKorisnickoIme(korisnickoIme)
                 .orElseThrow(() -> new AppException("Pogresno korisnicko ime ili lozinka."));
@@ -46,5 +44,11 @@ public class LoginController {
             throw new AppException("Pogresno korisnicko ime ili lozinka.");
         }
         return korisnik;
+    }
+
+    @FXML
+    private void handleOtvoriRegistraciju() {
+        Stage stage = (Stage) korisnickoImeField.getScene().getWindow();
+        SceneUtil.loadScene(App.class.getResource("fxml/registracija.fxml"), stage, "Influencer - Registracija");
     }
 }

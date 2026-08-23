@@ -1,9 +1,5 @@
 package hr.algebra.influencer.Model.Enum;
 
-// Uloga korisnika aplikacije.
-// ADMIN   - puni pristup, administracija šifrarnika i korisnika.
-// BREND   - predstavlja brend; smije kreirati brand suradnje i dodavati influencere u tim kampanje.
-// INFLUENCER - predstavlja influencera; vidi svoj profil i suradnje, ali ih ne smije sam kreirati.
 public enum Uloga {
     ADMIN("Administrator"),
     BREND("Brend"),

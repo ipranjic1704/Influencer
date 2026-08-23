@@ -1,7 +1,7 @@
 package hr.algebra.influencer.Controller;
 
-import hr.algebra.influencer.DataAccessLayer.Implementation.GradRepozitorij;
-import hr.algebra.influencer.Model.Grad;
+import hr.algebra.influencer.DataAccessLayer.Implementation.BrandRepozitorij;
+import hr.algebra.influencer.Model.Brand;
 import hr.algebra.influencer.Utilization.AlertUtil;
 import hr.algebra.influencer.Utilization.Session;
 import javafx.collections.FXCollections;
@@ -18,14 +18,14 @@ import java.net.URL;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 
-public class GradController implements Initializable {
+public class BrandController implements Initializable {
 
     @FXML
-    private TableView<Grad> tablica;
+    private TableView<Brand> tablica;
     @FXML
-    private TableColumn<Grad, Integer> idColumn;
+    private TableColumn<Brand, Integer> idColumn;
     @FXML
-    private TableColumn<Grad, String> nazivColumn;
+    private TableColumn<Brand, String> nazivColumn;
     @FXML
     private TextField pretragaField;
     @FXML
@@ -37,10 +37,10 @@ public class GradController implements Initializable {
     @FXML
     private Button brisiButton;
 
-    private final GradRepozitorij gradRepozitorij = GradRepozitorij.getInstance();
+    private final BrandRepozitorij brandRepozitorij = BrandRepozitorij.getInstance();
 
-    private final ObservableList<Grad> sviGradovi = FXCollections.observableArrayList();
-    private Grad odabrani;
+    private final ObservableList<Brand> sviBrendovi = FXCollections.observableArrayList();
+    private Brand odabrani;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -61,7 +61,7 @@ public class GradController implements Initializable {
     }
 
     private void osvjezi() {
-        sviGradovi.setAll(gradRepozitorij.getAll().stream()
+        sviBrendovi.setAll(brandRepozitorij.getAll().stream()
                 .sorted()
                 .collect(Collectors.toList()));
         filtriraj(pretragaField.getText());
@@ -69,40 +69,40 @@ public class GradController implements Initializable {
 
     private void filtriraj(String tekst) {
         if (tekst == null || tekst.isBlank()) {
-            tablica.setItems(sviGradovi);
+            tablica.setItems(sviBrendovi);
             return;
         }
         String trazeno = tekst.toLowerCase();
-        ObservableList<Grad> rezultat = sviGradovi.stream()
-                .filter(g -> g.getNaziv().toLowerCase().contains(trazeno))
+        ObservableList<Brand> rezultat = sviBrendovi.stream()
+                .filter(b -> b.getNaziv().toLowerCase().contains(trazeno))
                 .collect(Collectors.toCollection(FXCollections::observableArrayList));
         tablica.setItems(rezultat);
     }
 
-    private void odaberi(Grad grad) {
-        odabrani = grad;
-        nazivField.setText(grad == null ? "" : grad.getNaziv());
-        spremiButton.setText(grad == null ? "Dodaj" : "Spremi");
+    private void odaberi(Brand brand) {
+        odabrani = brand;
+        nazivField.setText(brand == null ? "" : brand.getNaziv());
+        spremiButton.setText(brand == null ? "Dodaj" : "Spremi");
     }
 
     @FXML
     private void handleSpremi() {
         String naziv = nazivField.getText().trim();
         if (naziv.isEmpty()) {
-            AlertUtil.showWarning("Provjera", "Naziv grada je obavezan.");
+            AlertUtil.showWarning("Provjera", "Naziv brenda je obavezan.");
             return;
         }
 
         if (odabrani == null) {
-            Grad noviGrad = new Grad(naziv);
-            if (gradRepozitorij.isDuplicate(Grad::getNaziv, noviGrad)) {
-                AlertUtil.showWarning("Provjera", "Grad '" + naziv + "' vec postoji.");
+            Brand noviBrand = new Brand(naziv);
+            if (brandRepozitorij.isDuplicate(Brand::getNaziv, noviBrand)) {
+                AlertUtil.showWarning("Provjera", "Brand '" + naziv + "' vec postoji.");
                 return;
             }
-            gradRepozitorij.create(noviGrad);
+            brandRepozitorij.create(noviBrand);
         } else {
             odabrani.setNaziv(naziv);
-            gradRepozitorij.update(odabrani);
+            brandRepozitorij.update(odabrani);
         }
 
         tablica.getSelectionModel().clearSelection();
@@ -117,10 +117,10 @@ public class GradController implements Initializable {
     @FXML
     private void handleBrisi() {
         if (odabrani == null) {
-            AlertUtil.showWarning("Brisanje", "Prvo odaberite grad iz tablice.");
+            AlertUtil.showWarning("Brisanje", "Prvo odaberite brand iz tablice.");
             return;
         }
-        gradRepozitorij.delete(odabrani.getId());
+        brandRepozitorij.delete(odabrani.getId());
         tablica.getSelectionModel().clearSelection();
         osvjezi();
     }

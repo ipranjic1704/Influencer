@@ -11,14 +11,9 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-// JavaFX Task koji dohvaca gradove s API-ja i sprema nove u bazu.
-// Izvrsava se na pozadinskom threadu - ne smije direkt azurirati UI, samo kroz updateMessage/updateProgress.
-// Vraca broj novih gradova koji su uvezeni (Integer).
 public class UvozGradovaTask extends Task<Integer> {
 
-    // URL vanjskog API-ja koji vraca popis zemalja i gradova u JSON formatu.
     private static final String API_URL = "https://countriesnow.space/api/v0.1/countries";
-    // Naziv drzave cije gradove uvozimo.
     private static final String DRZAVA = "Croatia";
 
     private final GradRepozitorij gradRepozitorij = GradRepozitorij.getInstance();

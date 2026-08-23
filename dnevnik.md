@@ -205,6 +205,28 @@ Ucitavanje slike je asinkrono (`new Image(url, true)` - drugi parametar `true` z
 
 Detalji su namjerno read-only i dostupni svim ulogama (ne samo adminu, za razliku od uredjivanja) - to je samo pregled podataka, nema poslovnog razloga to ograniciti.
 
+### Brand kao sifrarnik + BrandSuradnja ekran s drag & dropom
+
+Otkrio sam (dok sam gledao BrandSuradnja model) da "brand" u kampanji nikad nije bio svoj entitet - `nazivBrenda` je bio obicno String polje, slobodan upis bez ikakve zastite od nedosljednog unosa (npr. "Nike"/"nike" kao dva razlicita zapisa). Napravio sam `Brand` sifrarnik (isti obrazac kao Platforma/Grad - tablica, repozitorij, `BrandController`+`brand.fxml`), a `BrandSuradnja.brand` sad je prava referenca (FK `BrandID`, NOT NULL - suradnja bez brenda nema smisla) umjesto stringa.
+
+Napokon sam napravio i sam `BrandSuradnja` ekran, koji je od 20.8. cekao (repo je postojao, UI nije). Forma ima uobicajena polja (naziv kampanje, brand, godina, status), a tim kampanje se sastavlja **drag & dropom**: influencer se povuce iz liste "Dostupni influenceri" u listu "Tim kampanje" (Dragboard nosi samo ID influencera kao String, stvarni objekt se pronadje natrag u dostupnoj listi preko `stream().filter().findFirst()`). Uklanjanje iz tima ide preko obicnog gumba (drag natrag nije trazen). Usput sam dotjerao `StatusSuradnje` enum da ima konstruktor+naziv+`toString()` kao `Uloga` - to je bila stara stavka koju sam sebi zapisao jos 17.8. i nikad nisam vratio.
+
+Dodao sam i gumbe "Brendovi" i "Brand suradnje" na glavni ekran.
+
+### Nedostajala Nisa i TipSadrzaja veza na influenceru
+
+Primijetio sam (zapravo, upozoren) da influencer ekran nikad nije dobio nacin biranja Nise/TipaSadrzaja - kad sam u sesiji 21.8. spajao pet starih Influencer kontrolera u jedan, prenio sam samo Platforme (jer je to bila jedina veza koja je vec imala UI u starom obrascu), a Nisa/TipSadrzaja veze (iako ih `InfluencerRepozitorij` vec cita/sprema od 20.8.) nikad nisu dobile svoj dio forme. Popravio sam - dodao sam `FlowPane`+`CheckBox` sekcije za Nisu i TipSadrzaja, identicno kako Platforme vec rade, plus dva nova stupca u tablici.
+
+### Registracija - Brend ili Influencer
+
+Primijetio sam da INFLUENCER uloga zapravo nema nikakvu kontrolu ni nad cim - `Korisnik.influencerId` (koji povezuje INFLUENCER korisnika s njegovim profilom) nikad nije bio postavljen, cak ni na seed podacima. Dok sam istrazivao, otkrio sam i da tablice (Brandovi, Brand suradnje...) zapravo VEC bile vidljive svim ulogama - samo je uredjivanje bilo zakljucano - pa "citanje" nije trebalo popravljati.
+
+Ono sto je stvarno nedostajalo je registracija - aplikacija je do sad imala samo prijavu, admin racun i dva demo racuna (brend/influencer) su sjedili u DDL seedu, bez naceina da se itko novi sam registrira. Dodao sam ekran za registraciju: korisnik bira zeli li se registrirati kao Brend ili Influencer (Administrator se ne moze samoregistrirati - postoji od pocetka preko inicijalizacijske skripte). Ako odabere Influencer, mora upisati i ime/nadimak - odmah mu se stvara Influencer profil, a `Korisnik.influencerId` ga povezuje s tim profilom. Nakon uspjesne registracije korisnik se odmah prijavljuje (bez potrebe da ponovno upisuje podatke na login ekranu).
+
+### Uklonjeni svi komentari iz koda
+
+Odlucio sam ukloniti sve komentare iz Java koda - kod neka govori sam za sebe kroz imena klasa/metoda/varijabli. Ovo se odnosi na sve datoteke (Model, Controller, DataAccessLayer, Utilization, Task, Service) i vrijedi i za sav buduci kod koji cu pisati. FXML ostaje nepromijenjen.
+
 ### Maknuti brojaci s glavnog ekrana
 
 Gumbi na glavnom ekranu ("Influenceri", "Platforme"...) su do sad pokazivali broj zapisa u zagradi (npr. "Influenceri (5)"). Maknuo sam to - gumbi sad prikazuju samo naziv entiteta, bez brojanja. Time su i repozitoriji koji su sluzili samo za brojanje (Platforma/Nisa/TipSadrzaja/Grad) postali nepotrebni u `MainController` - ostao je samo `InfluencerRepozitorij` (koristi ga "Obrisi sve" alat).

@@ -6,7 +6,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.ArrayList;
 import java.util.List;
 
-// Pomocna klasa za parsiranje JSON odgovora s API-ja.
 public final class JsonParserUtil {
 
     private static final ObjectMapper MAPPER = new ObjectMapper();
@@ -14,10 +13,6 @@ public final class JsonParserUtil {
     private JsonParserUtil() {
     }
 
-    // Parsira JSON odgovor s countriesnow /countries API-ja i izvlaci listu gradova za zadanu drzavu.
-    // json - sirovi JSON string iz HTTP odgovora (oblik {"data": [{"country": "...", "cities": [...]}, ...]})
-    // drzava - naziv drzave cije gradove trazimo (npr. "Croatia")
-    // Vraca listu naziva gradova ili praznu listu ako drzava nije pronadjena.
     public static List<String> parseGradove(String json, String drzava) {
         try {
             JsonNode korijen = MAPPER.readTree(json);

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.RadioButton?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox alignment="CENTER" spacing="12.0" prefWidth="340.0" prefHeight="400.0"
+      xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="hr.algebra.influencer.Controller.RegistracijaController">
+    <padding><Insets top="24.0" right="24.0" bottom="24.0" left="24.0"/></padding>
+
+    <Label text="Influencer - Registracija" style="-fx-font-size: 18px; -fx-font-weight: bold;"/>
+
+    <TextField fx:id="korisnickoImeField" promptText="Korisničko ime" alignment="CENTER"/>
+    <PasswordField fx:id="lozinkaField" promptText="Lozinka" alignment="CENTER"/>
+    <PasswordField fx:id="potvrdaLozinkeField" promptText="Potvrda lozinke" alignment="CENTER"/>
+
+    <Label text="Registriram se kao:"/>
+    <HBox alignment="CENTER" spacing="20.0">
+        <fx:define>
+            <javafx.scene.control.ToggleGroup fx:id="ulogaGrupa"/>
+        </fx:define>
+        <RadioButton fx:id="brendRadio" text="Brend" toggleGroup="$ulogaGrupa" selected="true"/>
+        <RadioButton fx:id="influencerRadio" text="Influencer" toggleGroup="$ulogaGrupa"/>
+    </HBox>
+
+    <TextField fx:id="imeNadimakField" promptText="Ime/Nadimak influencera" alignment="CENTER"/>
+
+    <Button text="Registracija" defaultButton="true" onAction="#handleRegistracija"/>
+    <Button text="Natrag na prijavu" onAction="#handleNatragNaPrijavu" cancelButton="true"/>
+</VBox>

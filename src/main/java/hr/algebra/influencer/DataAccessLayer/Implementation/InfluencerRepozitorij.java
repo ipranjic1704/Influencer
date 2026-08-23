@@ -18,11 +18,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-// Repozitorij za CRUD operacije nad tablicom Influencer.
-// Influencer ima Many-to-Many vezu s Platforma, Nisa i TipSadrzaja (kroz InfluencerPlatforma,
-// InfluencerNisa, InfluencerTipSadrzaja) - svaka se dohvaca odvojenim upitom, a sprema
-// "delete and re-insert" strategijom. BrandSuradnja nije ovdje jer je influencer u tom vezu
-// vlasnik BrandSuradnjaRepozitorij (suradnja drzi svoj tim, ne obrnuto).
 public class InfluencerRepozitorij implements Repozitorij<Influencer> {
 
     private static final InfluencerRepozitorij INSTANCA = new InfluencerRepozitorij();
@@ -34,7 +29,6 @@ public class InfluencerRepozitorij implements Repozitorij<Influencer> {
         return INSTANCA;
     }
 
-    // JOIN na Grad - aliasi rjesavaju dvosmisleni stupac "Naziv" (i Grad i Influencer bi inace imali istoimeni stupac).
     private static final String SELECT_ALL =
             "SELECT i.IDInfluencer, i.ImeNadimak, i.BrojPratitelja, i.EngagementRate, i.Zemlja, " +
             "i.GradID, g.Naziv AS NazivGrad, i.JezikSadrzaja, i.ProfilnaSlika " +
@@ -53,7 +47,6 @@ public class InfluencerRepozitorij implements Repozitorij<Influencer> {
     private static final String DELETE =
             "DELETE FROM Influencer WHERE IDInfluencer = ?";
 
-    // Dohvaca platforme jednog influencera kroz spojnu tablicu InfluencerPlatforma.
     private static final String SELECT_PLATFORME =
             "SELECT p.IDPlatforma, p.Naziv FROM Platforma p " +
             "JOIN InfluencerPlatforma ip ON p.IDPlatforma = ip.IDPlatforma " +
@@ -65,7 +58,6 @@ public class InfluencerRepozitorij implements Repozitorij<Influencer> {
     private static final String DELETE_PLATFORMA_VEZE =
             "DELETE FROM InfluencerPlatforma WHERE IDInfluencer = ?";
 
-    // Dohvaca nise jednog influencera kroz spojnu tablicu InfluencerNisa.
     private static final String SELECT_NISE =
             "SELECT n.IDNisa, n.Naziv FROM Nisa n " +
             "JOIN InfluencerNisa ini ON n.IDNisa = ini.IDNisa " +
@@ -77,7 +69,6 @@ public class InfluencerRepozitorij implements Repozitorij<Influencer> {
     private static final String DELETE_NISA_VEZE =
             "DELETE FROM InfluencerNisa WHERE IDInfluencer = ?";
 
-    // Dohvaca tipove sadrzaja jednog influencera kroz spojnu tablicu InfluencerTipSadrzaja.
     private static final String SELECT_TIPOVI_SADRZAJA =
             "SELECT t.IDTipSadrzaja, t.Naziv FROM TipSadrzaja t " +
             "JOIN InfluencerTipSadrzaja iti ON t.IDTipSadrzaja = iti.IDTipSadrzaja " +
@@ -89,7 +80,6 @@ public class InfluencerRepozitorij implements Repozitorij<Influencer> {
     private static final String DELETE_TIPOVI_SADRZAJA_VEZE =
             "DELETE FROM InfluencerTipSadrzaja WHERE IDInfluencer = ?";
 
-    // Dohvaca sve influencere, a zatim za svakog posebno dohvaca njegove platforme (N+1 pristup).
     @Override
     public List<Influencer> getAll() {
         List<Influencer> influenceri = new ArrayList<>();
@@ -156,14 +146,13 @@ public class InfluencerRepozitorij implements Repozitorij<Influencer> {
     @Override
     public void update(Influencer influencer) {
         try (PreparedStatement ps = BazaPodataka.getConnection().prepareStatement(UPDATE)) {
-            postaviParametre(ps, influencer); // popunjava 1-7
-            ps.setInt(8, influencer.getId()); // 8 -> IDInfluencer (WHERE uvjet)
+            postaviParametre(ps, influencer);
+            ps.setInt(8, influencer.getId());
             ps.executeUpdate();
         } catch (SQLException e) {
             throw new RepoException("Greska pri azuriranju influencera.", e);
         }
 
-        // "Delete and re-insert" strategija za Many-to-Many veze s platformama, nisama i tipovima sadrzaja.
         obrisiPlatformeVeze(influencer.getId());
         spremiPlatforme(influencer);
         obrisiNiseVeze(influencer.getId());
@@ -172,8 +161,6 @@ public class InfluencerRepozitorij implements Repozitorij<Influencer> {
         spremiTipoveSadrzaja(influencer);
     }
 
-    // Brise influencera. Veze u InfluencerPlatforma nestaju automatski (ON DELETE CASCADE u DDL),
-    // a Korisnik.InfluencerID koji je referencirao ovaj profil postaje NULL (ON DELETE SET NULL).
     @Override
     public void delete(int id) {
         try (PreparedStatement ps = BazaPodataka.getConnection().prepareStatement(DELETE)) {
@@ -184,8 +171,6 @@ public class InfluencerRepozitorij implements Repozitorij<Influencer> {
         }
     }
 
-    // Postavlja zajednicke parametre za INSERT (1-7) i UPDATE (1-7, a 8 se postavlja u update()).
-    // GradID je nullable FK - setNull ako influencer nema odabran grad.
     private void postaviParametre(PreparedStatement ps, Influencer influencer) throws SQLException {
         ps.setString(1, influencer.getImeNadimak());
         ps.setInt(2, influencer.getBrojPratitelja());
@@ -200,7 +185,6 @@ public class InfluencerRepozitorij implements Repozitorij<Influencer> {
         ps.setString(7, influencer.getProfilnaSlika());
     }
 
-    // Gradi ugnijezdeni Grad objekt iz JOIN-anih stupaca (GradID, NazivGrad) - null ako influencer nema odabran grad.
     private Influencer mapRow(ResultSet rs) throws SQLException {
         int idGrad = rs.getInt("GradID");
         Grad grad = rs.wasNull() ? null : new Grad(idGrad, rs.getString("NazivGrad"));
@@ -217,7 +201,6 @@ public class InfluencerRepozitorij implements Repozitorij<Influencer> {
         );
     }
 
-    // Dohvaca sve platforme povezane s danim influencerom kroz InfluencerPlatforma.
     private List<Platforma> dohvatiPlatforme(int idInfluencer) {
         List<Platforma> platforme = new ArrayList<>();
         try (PreparedStatement ps = BazaPodataka.getConnection().prepareStatement(SELECT_PLATFORME)) {
@@ -233,7 +216,6 @@ public class InfluencerRepozitorij implements Repozitorij<Influencer> {
         return platforme;
     }
 
-    // Sprema sve trenutne platforme influencera u spojnu tablicu InfluencerPlatforma.
     private void spremiPlatforme(Influencer influencer) {
         if (influencer.getPlatforme() == null || influencer.getPlatforme().isEmpty()) {
             return;
@@ -249,7 +231,6 @@ public class InfluencerRepozitorij implements Repozitorij<Influencer> {
         }
     }
 
-    // Brise sve veze influencer-platforma za zadanog influencera - prvi korak "delete and re-insert" strategije.
     private void obrisiPlatformeVeze(int idInfluencer) {
         try (PreparedStatement ps = BazaPodataka.getConnection().prepareStatement(DELETE_PLATFORMA_VEZE)) {
             ps.setInt(1, idInfluencer);
@@ -259,7 +240,6 @@ public class InfluencerRepozitorij implements Repozitorij<Influencer> {
         }
     }
 
-    // Dohvaca sve nise povezane s danim influencerom kroz InfluencerNisa.
     private List<Nisa> dohvatiNise(int idInfluencer) {
         List<Nisa> nise = new ArrayList<>();
         try (PreparedStatement ps = BazaPodataka.getConnection().prepareStatement(SELECT_NISE)) {
@@ -275,7 +255,6 @@ public class InfluencerRepozitorij implements Repozitorij<Influencer> {
         return nise;
     }
 
-    // Sprema sve trenutne nise influencera u spojnu tablicu InfluencerNisa.
     private void spremiNise(Influencer influencer) {
         if (influencer.getNise() == null || influencer.getNise().isEmpty()) {
             return;
@@ -291,7 +270,6 @@ public class InfluencerRepozitorij implements Repozitorij<Influencer> {
         }
     }
 
-    // Brise sve veze influencer-nisa za zadanog influencera - prvi korak "delete and re-insert" strategije.
     private void obrisiNiseVeze(int idInfluencer) {
         try (PreparedStatement ps = BazaPodataka.getConnection().prepareStatement(DELETE_NISA_VEZE)) {
             ps.setInt(1, idInfluencer);
@@ -301,7 +279,6 @@ public class InfluencerRepozitorij implements Repozitorij<Influencer> {
         }
     }
 
-    // Dohvaca sve tipove sadrzaja povezane s danim influencerom kroz InfluencerTipSadrzaja.
     private List<TipSadrzaja> dohvatiTipoveSadrzaja(int idInfluencer) {
         List<TipSadrzaja> tipovi = new ArrayList<>();
         try (PreparedStatement ps = BazaPodataka.getConnection().prepareStatement(SELECT_TIPOVI_SADRZAJA)) {
@@ -317,7 +294,6 @@ public class InfluencerRepozitorij implements Repozitorij<Influencer> {
         return tipovi;
     }
 
-    // Sprema sve trenutne tipove sadrzaja influencera u spojnu tablicu InfluencerTipSadrzaja.
     private void spremiTipoveSadrzaja(Influencer influencer) {
         if (influencer.getTipoviSadrzaja() == null || influencer.getTipoviSadrzaja().isEmpty()) {
             return;
@@ -333,7 +309,6 @@ public class InfluencerRepozitorij implements Repozitorij<Influencer> {
         }
     }
 
-    // Brise sve veze influencer-tip sadrzaja za zadanog influencera - prvi korak "delete and re-insert" strategije.
     private void obrisiTipoveSadrzajaVeze(int idInfluencer) {
         try (PreparedStatement ps = BazaPodataka.getConnection().prepareStatement(DELETE_TIPOVI_SADRZAJA_VEZE)) {
             ps.setInt(1, idInfluencer);

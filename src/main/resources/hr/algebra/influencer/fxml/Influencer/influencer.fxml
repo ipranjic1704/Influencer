@@ -16,7 +16,7 @@
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane prefWidth="860.0" prefHeight="700.0"
+<BorderPane prefWidth="880.0" prefHeight="820.0"
             xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="hr.algebra.influencer.Controller.InfluencerController">
     <padding><Insets top="15.0" right="15.0" bottom="15.0" left="15.0"/></padding>
@@ -46,7 +46,9 @@
                     <TableColumn fx:id="gradColumn" text="Grad" prefWidth="100.0"/>
                     <TableColumn fx:id="brojPratiteljaColumn" text="Broj pratitelja" prefWidth="110.0"/>
                     <TableColumn fx:id="engagementRateColumn" text="Engagement (%)" prefWidth="110.0"/>
-                    <TableColumn fx:id="platformeColumn" text="Platforme" prefWidth="160.0"/>
+                    <TableColumn fx:id="platformeColumn" text="Platforme" prefWidth="140.0"/>
+                    <TableColumn fx:id="niseColumn" text="Niše" prefWidth="120.0"/>
+                    <TableColumn fx:id="tipoviSadrzajaColumn" text="Tipovi sadržaja" prefWidth="140.0"/>
                 </columns>
             </TableView>
 
@@ -84,6 +86,12 @@
 
             <Label text="Platforme" style="-fx-font-weight: bold;"/>
             <FlowPane fx:id="platformeFlowPane" hgap="12.0" vgap="8.0"/>
+
+            <Label text="Niše" style="-fx-font-weight: bold;"/>
+            <FlowPane fx:id="niseFlowPane" hgap="12.0" vgap="8.0"/>
+
+            <Label text="Tipovi sadržaja" style="-fx-font-weight: bold;"/>
+            <FlowPane fx:id="tipoviSadrzajaFlowPane" hgap="12.0" vgap="8.0"/>
         </VBox>
     </center>
 

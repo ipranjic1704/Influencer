@@ -143,8 +143,6 @@ public class KorisnikRepozitorij implements Repozitorij<Korisnik> {
         );
     }
 
-    // InfluencerID je nullable (ADMIN/BREND ga nemaju) - setInt bi null pretvorio u 0,
-    // zato ovdje eksplicitno biramo setNull kad reference nema.
     private void postaviInfluencerId(PreparedStatement ps, int index, Integer influencerId) throws SQLException {
         if (influencerId == null) {
             ps.setNull(index, Types.INTEGER);

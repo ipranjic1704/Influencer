@@ -46,6 +46,8 @@
             <Button fx:id="niseButton" onAction="#handleOtvoriNise" prefWidth="200.0" text="Niše"/>
             <Button fx:id="tipoviSadrzajaButton" onAction="#handleOtvoriTipoveSadrzaja" prefWidth="200.0" text="Tipovi sadržaja"/>
             <Button fx:id="gradoviButton" onAction="#handleOtvoriGradove" prefWidth="200.0" text="Gradovi"/>
+            <Button fx:id="brendoviButton" onAction="#handleOtvoriBrendove" prefWidth="200.0" text="Brendovi"/>
+            <Button fx:id="brandSuradnjeButton" onAction="#handleOtvoriBrandSuradnje" prefWidth="200.0" text="Brand suradnje"/>
         </VBox>
     </center>
 

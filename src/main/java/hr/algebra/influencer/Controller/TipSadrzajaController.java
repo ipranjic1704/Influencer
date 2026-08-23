@@ -18,9 +18,6 @@ import java.net.URL;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 
-// Controller za sifrarnik tipova sadrzaja (tipsadrzaja.fxml). Lista, dodavanje i uredjivanje
-// su u jednom kontroleru i jednom ekranu - odabir retka u tablici puni formu (uredjivanje), a
-// prazna forma znaci dodavanje novog retka. Dodaj/Uredi/Obrisi smiju samo ADMIN.
 public class TipSadrzajaController implements Initializable {
 
     @FXML
@@ -63,7 +60,6 @@ public class TipSadrzajaController implements Initializable {
         osvjezi();
     }
 
-    // Sortiranje (padajuce po nazivu) je odgovornost TipSadrzaja.compareTo() - kontroler ga samo koristi.
     private void osvjezi() {
         sviTipovi.setAll(tipSadrzajaRepozitorij.getAll().stream()
                 .sorted()
@@ -83,7 +79,6 @@ public class TipSadrzajaController implements Initializable {
         tablica.setItems(rezultat);
     }
 
-    // Puni formu odabranim retkom (uredjivanje) ili je prazni (novi unos) ako je odabir ponisten.
     private void odaberi(TipSadrzaja tipSadrzaja) {
         odabrani = tipSadrzaja;
         nazivField.setText(tipSadrzaja == null ? "" : tipSadrzaja.getNaziv());

@@ -1,6 +1,5 @@
 package hr.algebra.influencer.Model;
 
-// Grad iz kojeg influencer dolazi - sifrarnik uvezen s vanjskog API-ja (uz mogucnost i rucnog dodavanja).
 public class Grad extends Entitet implements Comparable<Grad> {
 
     private String naziv;
@@ -30,7 +29,6 @@ public class Grad extends Entitet implements Comparable<Grad> {
         return "Grad: " + naziv;
     }
 
-    // Prirodni poredak je uzlazni (A-Z) po nazivu - vidi Influencer.compareTo() za isti obrazac.
     @Override
     public int compareTo(Grad other) {
         return naziv.compareToIgnoreCase(other.naziv);

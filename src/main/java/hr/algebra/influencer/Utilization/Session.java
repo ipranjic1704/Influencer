@@ -30,8 +30,6 @@ public final class Session {
         return trenutniKorisnik != null && trenutniKorisnik.getUloga() == Uloga.INFLUENCER;
     }
 
-    // Koristi se za gating akcija poput "dodaj influencera u tim kampanje" -
-    // to smiju samo ADMIN i BREND (vidi Uloga.smijeDodatiSuradnju()).
     public static boolean smijeDodatiSuradnju() {
         return trenutniKorisnik != null && trenutniKorisnik.getUloga().smijeDodatiSuradnju();
     }

@@ -1,7 +1,5 @@
 package hr.algebra.influencer.Model;
 
-// Platforma na kojoj je influencer aktivan (Instagram, TikTok, YouTube, Twitch...).
-// Jednostavan šifrarnik - influencer se s njim povezuje M:N vezom.
 public class Platforma extends Entitet implements Comparable<Platforma> {
 
     private String naziv;
@@ -31,7 +29,6 @@ public class Platforma extends Entitet implements Comparable<Platforma> {
         return "Platforma: " + naziv;
     }
 
-    // Prirodni poredak je uzlazni (A-Z) po nazivu - vidi Influencer.compareTo() za isti obrazac.
     @Override
     public int compareTo(Platforma other) {
         return naziv.compareToIgnoreCase(other.naziv);

@@ -39,6 +39,10 @@ public class MainController {
     private Button tipoviSadrzajaButton;
     @FXML
     private Button gradoviButton;
+    @FXML
+    private Button brendoviButton;
+    @FXML
+    private Button brandSuradnjeButton;
 
     private final InfluencerRepozitorij influencerRepozitorij = InfluencerRepozitorij.getInstance();
 
@@ -93,8 +97,22 @@ public class MainController {
         stage.show();
     }
 
-    // Admin alat: jednokratni uvoz hrvatskih gradova s CountriesNow API-ja u Grad sifrarnik
-    // (UvozGradovaService/UvozGradovaTask - pozadinska dretva, progress Alert vezan na messageProperty).
+    @FXML
+    private void handleOtvoriBrendove() {
+        Stage stage = new Stage();
+        stage.initOwner(korisnikLabel.getScene().getWindow());
+        SceneUtil.loadScene(App.class.getResource("fxml/Brand/brand.fxml"), stage, "Brendovi");
+        stage.show();
+    }
+
+    @FXML
+    private void handleOtvoriBrandSuradnje() {
+        Stage stage = new Stage();
+        stage.initOwner(korisnikLabel.getScene().getWindow());
+        SceneUtil.loadScene(App.class.getResource("fxml/BrandSuradnja/brandsuradnja.fxml"), stage, "Brand suradnje");
+        stage.show();
+    }
+
     @FXML
     private void handleUveziGradove() {
         if (uvozGradovaService.isRunning()) {
@@ -126,9 +144,6 @@ public class MainController {
         uvozGradovaService.restart();
     }
 
-    // Admin alat: trajno brise SVE influencere (i njihove veze s platformama/nisama/tipovima
-    // sadrzaja/brand suradnjama - te veze nestaju automatski preko ON DELETE CASCADE u DDL-u).
-    // Sifrarnici (Platforma/Nisa/TipSadrzaja/Grad) i korisnicki racuni ostaju netaknuti.
     @FXML
     private void handleObrisiSve() {
         List<Influencer> sviInfluenceri = influencerRepozitorij.getAll();

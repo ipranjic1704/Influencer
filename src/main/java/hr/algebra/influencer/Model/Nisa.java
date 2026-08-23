@@ -1,6 +1,5 @@
 package hr.algebra.influencer.Model;
 
-// Niša sadržaja kojim se influencer bavi (beauty, fitness, tech, lifestyle, gaming...).
 public class Nisa extends Entitet implements Comparable<Nisa> {
 
     private String naziv;
@@ -30,7 +29,6 @@ public class Nisa extends Entitet implements Comparable<Nisa> {
         return "Niša: " + naziv;
     }
 
-    // Prirodni poredak je uzlazni (A-Z) po nazivu - vidi Influencer.compareTo() za isti obrazac.
     @Override
     public int compareTo(Nisa other) {
         return naziv.compareToIgnoreCase(other.naziv);

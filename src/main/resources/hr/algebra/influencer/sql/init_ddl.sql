@@ -56,10 +56,16 @@ CREATE TABLE IF NOT EXISTS InfluencerTipSadrzaja (
     PRIMARY KEY (IDInfluencer, IDTipSadrzaja)
 );
 
+-- Brand mora postojati prije BrandSuradnja tablice jer BrandSuradnja.BrandID na njega referencira.
+CREATE TABLE IF NOT EXISTS Brand (
+    IDBrand INT AUTO_INCREMENT PRIMARY KEY,
+    Naziv   VARCHAR(255) NOT NULL
+);
+
 CREATE TABLE IF NOT EXISTS BrandSuradnja (
     IDBrandSuradnja INT AUTO_INCREMENT PRIMARY KEY,
     NazivKampanje   VARCHAR(255) NOT NULL,
-    NazivBrenda     VARCHAR(255) NOT NULL,
+    BrandID         INT NOT NULL REFERENCES Brand(IDBrand),
     Godina          INT NOT NULL,
     Status          VARCHAR(20) NOT NULL
 );
@@ -90,3 +96,77 @@ INSERT INTO TipSadrzaja (Naziv) SELECT 'Reels'      WHERE NOT EXISTS (SELECT 1 F
 INSERT INTO TipSadrzaja (Naziv) SELECT 'Shorts'     WHERE NOT EXISTS (SELECT 1 FROM TipSadrzaja WHERE Naziv = 'Shorts');
 INSERT INTO TipSadrzaja (Naziv) SELECT 'Recenzije'  WHERE NOT EXISTS (SELECT 1 FROM TipSadrzaja WHERE Naziv = 'Recenzije');
 INSERT INTO TipSadrzaja (Naziv) SELECT 'Tutoriali'  WHERE NOT EXISTS (SELECT 1 FROM TipSadrzaja WHERE Naziv = 'Tutoriali');
+
+INSERT INTO Brand (Naziv) SELECT 'Nike'    WHERE NOT EXISTS (SELECT 1 FROM Brand WHERE Naziv = 'Nike');
+INSERT INTO Brand (Naziv) SELECT 'Adidas'  WHERE NOT EXISTS (SELECT 1 FROM Brand WHERE Naziv = 'Adidas');
+INSERT INTO Brand (Naziv) SELECT 'Coca-Cola' WHERE NOT EXISTS (SELECT 1 FROM Brand WHERE Naziv = 'Coca-Cola');
+
+-- Gradovi seedani izravno (ne cekamo admin uvoz s API-ja) da default influenceri odmah imaju grad.
+INSERT INTO Grad (Naziv) SELECT 'Zagreb' WHERE NOT EXISTS (SELECT 1 FROM Grad WHERE Naziv = 'Zagreb');
+INSERT INTO Grad (Naziv) SELECT 'Split'  WHERE NOT EXISTS (SELECT 1 FROM Grad WHERE Naziv = 'Split');
+INSERT INTO Grad (Naziv) SELECT 'Rijeka' WHERE NOT EXISTS (SELECT 1 FROM Grad WHERE Naziv = 'Rijeka');
+
+-- Tri stvarna hrvatska influencera kao default podaci. Broj pratitelja/engagement su
+-- priblizne, ilustrativne vrijednosti za demo bazu - nisu uzivo ocitani sa stvarnih profila.
+INSERT INTO Influencer (ImeNadimak, BrojPratitelja, EngagementRate, Zemlja, GradID, JezikSadrzaja, ProfilnaSlika)
+SELECT 'Igor Belan', 3500000, 4.2, 'Hrvatska', (SELECT IDGrad FROM Grad WHERE Naziv = 'Zagreb'), 'Hrvatski', ''
+WHERE NOT EXISTS (SELECT 1 FROM Influencer WHERE ImeNadimak = 'Igor Belan');
+
+INSERT INTO Influencer (ImeNadimak, BrojPratitelja, EngagementRate, Zemlja, GradID, JezikSadrzaja, ProfilnaSlika)
+SELECT 'Marijana Batinić', 250000, 5.8, 'Hrvatska', (SELECT IDGrad FROM Grad WHERE Naziv = 'Split'), 'Hrvatski', ''
+WHERE NOT EXISTS (SELECT 1 FROM Influencer WHERE ImeNadimak = 'Marijana Batinić');
+
+INSERT INTO Influencer (ImeNadimak, BrojPratitelja, EngagementRate, Zemlja, GradID, JezikSadrzaja, ProfilnaSlika)
+SELECT 'Antonija Blaće', 180000, 3.9, 'Hrvatska', (SELECT IDGrad FROM Grad WHERE Naziv = 'Rijeka'), 'Hrvatski', ''
+WHERE NOT EXISTS (SELECT 1 FROM Influencer WHERE ImeNadimak = 'Antonija Blaće');
+
+-- Platforme/nise/tipovi sadrzaja za default influencere (M:N veze).
+INSERT INTO InfluencerPlatforma (IDInfluencer, IDPlatforma)
+SELECT i.IDInfluencer, p.IDPlatforma FROM Influencer i, Platforma p
+WHERE i.ImeNadimak = 'Igor Belan' AND p.Naziv = 'Instagram'
+AND NOT EXISTS (SELECT 1 FROM InfluencerPlatforma ip WHERE ip.IDInfluencer = i.IDInfluencer AND ip.IDPlatforma = p.IDPlatforma);
+
+INSERT INTO InfluencerPlatforma (IDInfluencer, IDPlatforma)
+SELECT i.IDInfluencer, p.IDPlatforma FROM Influencer i, Platforma p
+WHERE i.ImeNadimak = 'Marijana Batinić' AND p.Naziv = 'Instagram'
+AND NOT EXISTS (SELECT 1 FROM InfluencerPlatforma ip WHERE ip.IDInfluencer = i.IDInfluencer AND ip.IDPlatforma = p.IDPlatforma);
+
+INSERT INTO InfluencerPlatforma (IDInfluencer, IDPlatforma)
+SELECT i.IDInfluencer, p.IDPlatforma FROM Influencer i, Platforma p
+WHERE i.ImeNadimak = 'Marijana Batinić' AND p.Naziv = 'YouTube'
+AND NOT EXISTS (SELECT 1 FROM InfluencerPlatforma ip WHERE ip.IDInfluencer = i.IDInfluencer AND ip.IDPlatforma = p.IDPlatforma);
+
+INSERT INTO InfluencerPlatforma (IDInfluencer, IDPlatforma)
+SELECT i.IDInfluencer, p.IDPlatforma FROM Influencer i, Platforma p
+WHERE i.ImeNadimak = 'Antonija Blaće' AND p.Naziv = 'YouTube'
+AND NOT EXISTS (SELECT 1 FROM InfluencerPlatforma ip WHERE ip.IDInfluencer = i.IDInfluencer AND ip.IDPlatforma = p.IDPlatforma);
+
+INSERT INTO InfluencerNisa (IDInfluencer, IDNisa)
+SELECT i.IDInfluencer, n.IDNisa FROM Influencer i, Nisa n
+WHERE i.ImeNadimak = 'Igor Belan' AND n.Naziv = 'Lifestyle'
+AND NOT EXISTS (SELECT 1 FROM InfluencerNisa ini WHERE ini.IDInfluencer = i.IDInfluencer AND ini.IDNisa = n.IDNisa);
+
+INSERT INTO InfluencerNisa (IDInfluencer, IDNisa)
+SELECT i.IDInfluencer, n.IDNisa FROM Influencer i, Nisa n
+WHERE i.ImeNadimak = 'Marijana Batinić' AND n.Naziv = 'Fitness'
+AND NOT EXISTS (SELECT 1 FROM InfluencerNisa ini WHERE ini.IDInfluencer = i.IDInfluencer AND ini.IDNisa = n.IDNisa);
+
+INSERT INTO InfluencerNisa (IDInfluencer, IDNisa)
+SELECT i.IDInfluencer, n.IDNisa FROM Influencer i, Nisa n
+WHERE i.ImeNadimak = 'Antonija Blaće' AND n.Naziv = 'Lifestyle'
+AND NOT EXISTS (SELECT 1 FROM InfluencerNisa ini WHERE ini.IDInfluencer = i.IDInfluencer AND ini.IDNisa = n.IDNisa);
+
+INSERT INTO InfluencerTipSadrzaja (IDInfluencer, IDTipSadrzaja)
+SELECT i.IDInfluencer, t.IDTipSadrzaja FROM Influencer i, TipSadrzaja t
+WHERE i.ImeNadimak = 'Igor Belan' AND t.Naziv = 'Reels'
+AND NOT EXISTS (SELECT 1 FROM InfluencerTipSadrzaja iti WHERE iti.IDInfluencer = i.IDInfluencer AND iti.IDTipSadrzaja = t.IDTipSadrzaja);
+
+INSERT INTO InfluencerTipSadrzaja (IDInfluencer, IDTipSadrzaja)
+SELECT i.IDInfluencer, t.IDTipSadrzaja FROM Influencer i, TipSadrzaja t
+WHERE i.ImeNadimak = 'Marijana Batinić' AND t.Naziv = 'Tutoriali'
+AND NOT EXISTS (SELECT 1 FROM InfluencerTipSadrzaja iti WHERE iti.IDInfluencer = i.IDInfluencer AND iti.IDTipSadrzaja = t.IDTipSadrzaja);
+
+INSERT INTO InfluencerTipSadrzaja (IDInfluencer, IDTipSadrzaja)
+SELECT i.IDInfluencer, t.IDTipSadrzaja FROM Influencer i, TipSadrzaja t
+WHERE i.ImeNadimak = 'Antonija Blaće' AND t.Naziv = 'Recenzije'
+AND NOT EXISTS (SELECT 1 FROM InfluencerTipSadrzaja iti WHERE iti.IDInfluencer = i.IDInfluencer AND iti.IDTipSadrzaja = t.IDTipSadrzaja);

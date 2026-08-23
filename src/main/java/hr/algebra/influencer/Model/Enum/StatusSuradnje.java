@@ -1,12 +1,22 @@
 package hr.algebra.influencer.Model.Enum;
 
-// Status brand suradnje kroz njen životni ciklus.
 public enum StatusSuradnje {
-    PLANIRANA,
-    AKTIVNA,
-    ZAVRSENA;
+    PLANIRANA("Planirana"),
+    AKTIVNA("Aktivna"),
+    ZAVRSENA("Završena");
+
+    private final String naziv;
+
+    StatusSuradnje(String naziv) {
+        this.naziv = naziv;
+    }
 
     public boolean jeZavrsena() {
         return this == ZAVRSENA;
+    }
+
+    @Override
+    public String toString() {
+        return naziv;
     }
 }

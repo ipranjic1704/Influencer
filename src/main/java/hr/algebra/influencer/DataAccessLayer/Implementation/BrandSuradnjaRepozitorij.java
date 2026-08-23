@@ -3,6 +3,7 @@ package hr.algebra.influencer.DataAccessLayer.Implementation;
 import hr.algebra.influencer.BazaPodataka;
 import hr.algebra.influencer.DataAccessLayer.Interface.Repozitorij;
 import hr.algebra.influencer.Exception.RepoException;
+import hr.algebra.influencer.Model.Brand;
 import hr.algebra.influencer.Model.BrandSuradnja;
 import hr.algebra.influencer.Model.Enum.StatusSuradnje;
 import hr.algebra.influencer.Model.Grad;
@@ -16,9 +17,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-// Repozitorij za CRUD operacije nad tablicom BrandSuradnja.
-// Tim (influenceri dodani u kampanju drag & dropom) je M:N veza kroz BrandSuradnjaInfluencer -
-// isti "delete and re-insert" pristup kao InfluencerRepozitorij koristi za platforme.
 public class BrandSuradnjaRepozitorij implements Repozitorij<BrandSuradnja> {
 
     private static final BrandSuradnjaRepozitorij INSTANCA = new BrandSuradnjaRepozitorij();
@@ -31,15 +29,16 @@ public class BrandSuradnjaRepozitorij implements Repozitorij<BrandSuradnja> {
     }
 
     private static final String SELECT_ALL =
-            "SELECT IDBrandSuradnja, NazivKampanje, NazivBrenda, Godina, Status FROM BrandSuradnja";
+            "SELECT bs.IDBrandSuradnja, bs.NazivKampanje, bs.BrandID, b.Naziv AS NazivBrand, bs.Godina, bs.Status " +
+            "FROM BrandSuradnja bs JOIN Brand b ON bs.BrandID = b.IDBrand";
 
-    private static final String SELECT_BY_ID = SELECT_ALL + " WHERE IDBrandSuradnja = ?";
+    private static final String SELECT_BY_ID = SELECT_ALL + " WHERE bs.IDBrandSuradnja = ?";
 
     private static final String INSERT =
-            "INSERT INTO BrandSuradnja (NazivKampanje, NazivBrenda, Godina, Status) VALUES (?, ?, ?, ?)";
+            "INSERT INTO BrandSuradnja (NazivKampanje, BrandID, Godina, Status) VALUES (?, ?, ?, ?)";
 
     private static final String UPDATE =
-            "UPDATE BrandSuradnja SET NazivKampanje = ?, NazivBrenda = ?, Godina = ?, Status = ? WHERE IDBrandSuradnja = ?";
+            "UPDATE BrandSuradnja SET NazivKampanje = ?, BrandID = ?, Godina = ?, Status = ? WHERE IDBrandSuradnja = ?";
 
     private static final String DELETE =
             "DELETE FROM BrandSuradnja WHERE IDBrandSuradnja = ?";
@@ -118,19 +117,17 @@ public class BrandSuradnjaRepozitorij implements Repozitorij<BrandSuradnja> {
     @Override
     public void update(BrandSuradnja suradnja) {
         try (PreparedStatement ps = BazaPodataka.getConnection().prepareStatement(UPDATE)) {
-            postaviParametre(ps, suradnja); // popunjava 1-4
-            ps.setInt(5, suradnja.getId()); // 5 -> IDBrandSuradnja (WHERE uvjet)
+            postaviParametre(ps, suradnja);
+            ps.setInt(5, suradnja.getId());
             ps.executeUpdate();
         } catch (SQLException e) {
             throw new RepoException("Greska pri azuriranju brand suradnje.", e);
         }
 
-        // "Delete and re-insert" strategija za tim - isto kao platforme u InfluencerRepozitoriju.
         obrisiTimVeze(suradnja.getId());
         spremiTim(suradnja);
     }
 
-    // Brise brand suradnju. Veze u BrandSuradnjaInfluencer nestaju automatski (ON DELETE CASCADE u DDL).
     @Override
     public void delete(int id) {
         try (PreparedStatement ps = BazaPodataka.getConnection().prepareStatement(DELETE)) {
@@ -143,22 +140,22 @@ public class BrandSuradnjaRepozitorij implements Repozitorij<BrandSuradnja> {
 
     private void postaviParametre(PreparedStatement ps, BrandSuradnja suradnja) throws SQLException {
         ps.setString(1, suradnja.getNazivKampanje());
-        ps.setString(2, suradnja.getNazivBrenda());
+        ps.setInt(2, suradnja.getBrand().getId());
         ps.setInt(3, suradnja.getGodina());
         ps.setString(4, suradnja.getStatus().name());
     }
 
     private BrandSuradnja mapRow(ResultSet rs) throws SQLException {
+        Brand brand = new Brand(rs.getInt("BrandID"), rs.getString("NazivBrand"));
         return new BrandSuradnja(
                 rs.getInt("IDBrandSuradnja"),
                 rs.getString("NazivKampanje"),
-                rs.getString("NazivBrenda"),
+                brand,
                 rs.getInt("Godina"),
                 StatusSuradnje.valueOf(rs.getString("Status"))
         );
     }
 
-    // Dohvaca sve influencere u timu dane brand suradnje kroz BrandSuradnjaInfluencer.
     private List<Influencer> dohvatiTim(int idBrandSuradnja) {
         List<Influencer> tim = new ArrayList<>();
         try (PreparedStatement ps = BazaPodataka.getConnection().prepareStatement(SELECT_TIM)) {
@@ -186,7 +183,6 @@ public class BrandSuradnjaRepozitorij implements Repozitorij<BrandSuradnja> {
         return tim;
     }
 
-    // Sprema sve trenutne clanove tima brand suradnje u spojnu tablicu BrandSuradnjaInfluencer.
     private void spremiTim(BrandSuradnja suradnja) {
         if (suradnja.getTim() == null || suradnja.getTim().isEmpty()) {
             return;
@@ -202,7 +198,6 @@ public class BrandSuradnjaRepozitorij implements Repozitorij<BrandSuradnja> {
         }
     }
 
-    // Brise sve veze suradnja-influencer za zadanu suradnju - prvi korak "delete and re-insert" strategije.
     private void obrisiTimVeze(int idBrandSuradnja) {
         try (PreparedStatement ps = BazaPodataka.getConnection().prepareStatement(DELETE_TIM_VEZE)) {
             ps.setInt(1, idBrandSuradnja);

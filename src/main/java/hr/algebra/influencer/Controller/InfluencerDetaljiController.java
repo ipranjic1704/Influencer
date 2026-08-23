@@ -10,9 +10,6 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
 
-// Read-only prikaz detalja jednog influencera, ukljucujuci profilnu sliku. Otvara ga
-// InfluencerController.handleDetalji() kad je redak u tablici odabran - dostupno svim ulogama
-// (ne samo adminu), jer je ovo samo pregled, bez uredjivanja.
 public class InfluencerDetaljiController {
 
     @FXML
@@ -53,9 +50,6 @@ public class InfluencerDetaljiController {
         return (tekst == null || tekst.isBlank()) ? "-" : tekst;
     }
 
-    // Ucitava profilnu sliku asinkrono (Image(url, backgroundLoading=true)) da HTTP dohvat slike
-    // ne blokira UI thread. Ako URL nije upisan ili se ucitavanje ne uspije (nevaljan URL, slika
-    // ne postoji na tom linku...), prikazuje se tekstualna zamjena umjesto slomljene slike.
     private void ucitajSliku(String url) {
         if (url == null || url.isBlank()) {
             slikaImageView.setVisible(false);

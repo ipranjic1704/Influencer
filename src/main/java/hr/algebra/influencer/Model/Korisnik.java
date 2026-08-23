@@ -2,9 +2,6 @@ package hr.algebra.influencer.Model;
 
 import hr.algebra.influencer.Model.Enum.Uloga;
 
-// Korisnik aplikacije - prijava i razlikovanje ADMIN/BREND/INFLUENCER prava.
-// influencerId povezuje korisnika s njegovim Influencer profilom - postavljen je samo
-// kad je uloga INFLUENCER, inače ostaje null (ADMIN i BREND nemaju profil).
 public class Korisnik extends Entitet implements Comparable<Korisnik> {
 
     private String korisnickoIme;
@@ -73,7 +70,6 @@ public class Korisnik extends Entitet implements Comparable<Korisnik> {
         return korisnickoIme + " (" + uloga + ")";
     }
 
-    // Prirodni poredak je uzlazni (A-Z) po korisnickom imenu - vidi Influencer.compareTo() za isti obrazac.
     @Override
     public int compareTo(Korisnik other) {
         return korisnickoIme.compareToIgnoreCase(other.korisnickoIme);
