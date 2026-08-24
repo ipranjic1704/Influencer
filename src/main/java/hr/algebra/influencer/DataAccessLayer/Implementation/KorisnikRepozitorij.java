@@ -15,14 +15,17 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class KorisnikRepozitorij implements Repozitorij<Korisnik> {
+public class KorisnikRepozitorij implements Repozitorij<Korisnik>
+{
 
     private static final KorisnikRepozitorij INSTANCA = new KorisnikRepozitorij();
 
-    private KorisnikRepozitorij() {
+    private KorisnikRepozitorij()
+    {
     }
 
-    public static KorisnikRepozitorij getInstance() {
+    public static KorisnikRepozitorij getInstance()
+    {
         return INSTANCA;
     }
 
@@ -45,93 +48,125 @@ public class KorisnikRepozitorij implements Repozitorij<Korisnik> {
             "DELETE FROM Korisnik WHERE IDKorisnik = ?";
 
     @Override
-    public List<Korisnik> getAll() {
+    public List<Korisnik> getAll()
+    {
         List<Korisnik> korisnici = new ArrayList<>();
         try (PreparedStatement ps = BazaPodataka.getConnection().prepareStatement(SELECT_ALL);
-             ResultSet rs = ps.executeQuery()) {
-            while (rs.next()) {
+             ResultSet rs = ps.executeQuery())
+        {
+            while (rs.next())
+            {
                 korisnici.add(mapRow(rs));
             }
-        } catch (SQLException e) {
+        }
+        catch (SQLException e)
+        {
             throw new RepoException("Greska pri dohvatu korisnika.", e);
         }
         return korisnici;
     }
 
     @Override
-    public Optional<Korisnik> getById(int id) {
-        try (PreparedStatement ps = BazaPodataka.getConnection().prepareStatement(SELECT_BY_ID)) {
+    public Optional<Korisnik> getById(int id)
+    {
+        try (PreparedStatement ps = BazaPodataka.getConnection().prepareStatement(SELECT_BY_ID))
+        {
             ps.setInt(1, id);
-            try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) {
+            try (ResultSet rs = ps.executeQuery())
+            {
+                if (rs.next())
+                {
                     return Optional.of(mapRow(rs));
                 }
             }
-        } catch (SQLException e) {
+        }
+        catch (SQLException e)
+        {
             throw new RepoException("Greska pri dohvatu korisnika id=" + id, e);
         }
         return Optional.empty();
     }
 
-    public Optional<Korisnik> getByKorisnickoIme(String korisnickoIme) {
-        try (PreparedStatement ps = BazaPodataka.getConnection().prepareStatement(SELECT_BY_USERNAME)) {
+    public Optional<Korisnik> getByKorisnickoIme(String korisnickoIme)
+    {
+        try (PreparedStatement ps = BazaPodataka.getConnection().prepareStatement(SELECT_BY_USERNAME))
+        {
             ps.setString(1, korisnickoIme);
-            try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) {
+            try (ResultSet rs = ps.executeQuery())
+            {
+                if (rs.next())
+                {
                     return Optional.of(mapRow(rs));
                 }
             }
-        } catch (SQLException e) {
+        }
+        catch (SQLException e)
+        {
             throw new RepoException("Greska pri dohvatu korisnika po korisnickom imenu.", e);
         }
         return Optional.empty();
     }
 
     @Override
-    public void create(Korisnik korisnik) {
+    public void create(Korisnik korisnik)
+    {
         try (PreparedStatement ps = BazaPodataka.getConnection()
-                .prepareStatement(INSERT, Statement.RETURN_GENERATED_KEYS)) {
+                .prepareStatement(INSERT, Statement.RETURN_GENERATED_KEYS))
+        {
             ps.setString(1, korisnik.getKorisnickoIme());
             ps.setString(2, korisnik.getLozinka());
             ps.setString(3, korisnik.getUloga().name());
             postaviInfluencerId(ps, 4, korisnik.getInfluencerId());
             ps.executeUpdate();
 
-            try (ResultSet kljucevi = ps.getGeneratedKeys()) {
-                if (kljucevi.next()) {
+            try (ResultSet kljucevi = ps.getGeneratedKeys())
+            {
+                if (kljucevi.next())
+                {
                     korisnik.setId(kljucevi.getInt(1));
                 }
             }
-        } catch (SQLException e) {
+        }
+        catch (SQLException e)
+        {
             throw new RepoException("Greska pri spremanju korisnika.", e);
         }
     }
 
     @Override
-    public void update(Korisnik korisnik) {
-        try (PreparedStatement ps = BazaPodataka.getConnection().prepareStatement(UPDATE)) {
+    public void update(Korisnik korisnik)
+    {
+        try (PreparedStatement ps = BazaPodataka.getConnection().prepareStatement(UPDATE))
+        {
             ps.setString(1, korisnik.getKorisnickoIme());
             ps.setString(2, korisnik.getLozinka());
             ps.setString(3, korisnik.getUloga().name());
             postaviInfluencerId(ps, 4, korisnik.getInfluencerId());
             ps.setInt(5, korisnik.getId());
             ps.executeUpdate();
-        } catch (SQLException e) {
+        }
+        catch (SQLException e)
+        {
             throw new RepoException("Greska pri azuriranju korisnika.", e);
         }
     }
 
     @Override
-    public void delete(int id) {
-        try (PreparedStatement ps = BazaPodataka.getConnection().prepareStatement(DELETE)) {
+    public void delete(int id)
+    {
+        try (PreparedStatement ps = BazaPodataka.getConnection().prepareStatement(DELETE))
+        {
             ps.setInt(1, id);
             ps.executeUpdate();
-        } catch (SQLException e) {
+        }
+        catch (SQLException e)
+        {
             throw new RepoException("Greska pri brisanju korisnika id=" + id, e);
         }
     }
 
-    private Korisnik mapRow(ResultSet rs) throws SQLException {
+    private Korisnik mapRow(ResultSet rs) throws SQLException
+    {
         Uloga uloga = Uloga.valueOf(rs.getString("Uloga"));
         int influencerId = rs.getInt("InfluencerID");
         return new Korisnik(
@@ -143,10 +178,14 @@ public class KorisnikRepozitorij implements Repozitorij<Korisnik> {
         );
     }
 
-    private void postaviInfluencerId(PreparedStatement ps, int index, Integer influencerId) throws SQLException {
-        if (influencerId == null) {
+    private void postaviInfluencerId(PreparedStatement ps, int index, Integer influencerId) throws SQLException
+    {
+        if (influencerId == null)
+        {
             ps.setNull(index, Types.INTEGER);
-        } else {
+        }
+        else
+        {
             ps.setInt(index, influencerId);
         }
     }

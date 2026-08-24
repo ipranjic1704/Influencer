@@ -17,14 +17,17 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class BrandSuradnjaRepozitorij implements Repozitorij<BrandSuradnja> {
+public class BrandSuradnjaRepozitorij implements Repozitorij<BrandSuradnja>
+{
 
     private static final BrandSuradnjaRepozitorij INSTANCA = new BrandSuradnjaRepozitorij();
 
-    private BrandSuradnjaRepozitorij() {
+    private BrandSuradnjaRepozitorij()
+    {
     }
 
-    public static BrandSuradnjaRepozitorij getInstance() {
+    public static BrandSuradnjaRepozitorij getInstance()
+    {
         return INSTANCA;
     }
 
@@ -58,56 +61,75 @@ public class BrandSuradnjaRepozitorij implements Repozitorij<BrandSuradnja> {
             "DELETE FROM BrandSuradnjaInfluencer WHERE IDBrandSuradnja = ?";
 
     @Override
-    public List<BrandSuradnja> getAll() {
+    public List<BrandSuradnja> getAll()
+    {
         List<BrandSuradnja> suradnje = new ArrayList<>();
         try (PreparedStatement ps = BazaPodataka.getConnection().prepareStatement(SELECT_ALL);
-             ResultSet rs = ps.executeQuery()) {
-            while (rs.next()) {
+             ResultSet rs = ps.executeQuery())
+        {
+            while (rs.next())
+            {
                 suradnje.add(mapRow(rs));
             }
-        } catch (SQLException e) {
+        }
+        catch (SQLException e)
+        {
             throw new RepoException("Greska pri dohvatu brand suradnji.", e);
         }
 
-        for (BrandSuradnja suradnja : suradnje) {
+        for (BrandSuradnja suradnja : suradnje)
+        {
             suradnja.setTim(dohvatiTim(suradnja.getId()));
         }
         return suradnje;
     }
 
     @Override
-    public Optional<BrandSuradnja> getById(int id) {
+    public Optional<BrandSuradnja> getById(int id)
+    {
         BrandSuradnja suradnja = null;
-        try (PreparedStatement ps = BazaPodataka.getConnection().prepareStatement(SELECT_BY_ID)) {
+        try (PreparedStatement ps = BazaPodataka.getConnection().prepareStatement(SELECT_BY_ID))
+        {
             ps.setInt(1, id);
-            try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) {
+            try (ResultSet rs = ps.executeQuery())
+            {
+                if (rs.next())
+                {
                     suradnja = mapRow(rs);
                 }
             }
-        } catch (SQLException e) {
+        }
+        catch (SQLException e)
+        {
             throw new RepoException("Greska pri dohvatu brand suradnje id=" + id, e);
         }
 
-        if (suradnja != null) {
+        if (suradnja != null)
+        {
             suradnja.setTim(dohvatiTim(suradnja.getId()));
         }
         return Optional.ofNullable(suradnja);
     }
 
     @Override
-    public void create(BrandSuradnja suradnja) {
+    public void create(BrandSuradnja suradnja)
+    {
         try (PreparedStatement ps = BazaPodataka.getConnection()
-                .prepareStatement(INSERT, Statement.RETURN_GENERATED_KEYS)) {
+                .prepareStatement(INSERT, Statement.RETURN_GENERATED_KEYS))
+        {
             postaviParametre(ps, suradnja);
             ps.executeUpdate();
 
-            try (ResultSet kljucevi = ps.getGeneratedKeys()) {
-                if (kljucevi.next()) {
+            try (ResultSet kljucevi = ps.getGeneratedKeys())
+            {
+                if (kljucevi.next())
+                {
                     suradnja.setId(kljucevi.getInt(1));
                 }
             }
-        } catch (SQLException e) {
+        }
+        catch (SQLException e)
+        {
             throw new RepoException("Greska pri spremanju brand suradnje.", e);
         }
 
@@ -115,12 +137,16 @@ public class BrandSuradnjaRepozitorij implements Repozitorij<BrandSuradnja> {
     }
 
     @Override
-    public void update(BrandSuradnja suradnja) {
-        try (PreparedStatement ps = BazaPodataka.getConnection().prepareStatement(UPDATE)) {
+    public void update(BrandSuradnja suradnja)
+    {
+        try (PreparedStatement ps = BazaPodataka.getConnection().prepareStatement(UPDATE))
+        {
             postaviParametre(ps, suradnja);
             ps.setInt(5, suradnja.getId());
             ps.executeUpdate();
-        } catch (SQLException e) {
+        }
+        catch (SQLException e)
+        {
             throw new RepoException("Greska pri azuriranju brand suradnje.", e);
         }
 
@@ -129,23 +155,29 @@ public class BrandSuradnjaRepozitorij implements Repozitorij<BrandSuradnja> {
     }
 
     @Override
-    public void delete(int id) {
-        try (PreparedStatement ps = BazaPodataka.getConnection().prepareStatement(DELETE)) {
+    public void delete(int id)
+    {
+        try (PreparedStatement ps = BazaPodataka.getConnection().prepareStatement(DELETE))
+        {
             ps.setInt(1, id);
             ps.executeUpdate();
-        } catch (SQLException e) {
+        }
+        catch (SQLException e)
+        {
             throw new RepoException("Greska pri brisanju brand suradnje id=" + id, e);
         }
     }
 
-    private void postaviParametre(PreparedStatement ps, BrandSuradnja suradnja) throws SQLException {
+    private void postaviParametre(PreparedStatement ps, BrandSuradnja suradnja) throws SQLException
+    {
         ps.setString(1, suradnja.getNazivKampanje());
         ps.setInt(2, suradnja.getBrand().getId());
         ps.setInt(3, suradnja.getGodina());
         ps.setString(4, suradnja.getStatus().name());
     }
 
-    private BrandSuradnja mapRow(ResultSet rs) throws SQLException {
+    private BrandSuradnja mapRow(ResultSet rs) throws SQLException
+    {
         Brand brand = new Brand(rs.getInt("BrandID"), rs.getString("NazivBrand"));
         return new BrandSuradnja(
                 rs.getInt("IDBrandSuradnja"),
@@ -156,12 +188,16 @@ public class BrandSuradnjaRepozitorij implements Repozitorij<BrandSuradnja> {
         );
     }
 
-    private List<Influencer> dohvatiTim(int idBrandSuradnja) {
+    private List<Influencer> dohvatiTim(int idBrandSuradnja)
+    {
         List<Influencer> tim = new ArrayList<>();
-        try (PreparedStatement ps = BazaPodataka.getConnection().prepareStatement(SELECT_TIM)) {
+        try (PreparedStatement ps = BazaPodataka.getConnection().prepareStatement(SELECT_TIM))
+        {
             ps.setInt(1, idBrandSuradnja);
-            try (ResultSet rs = ps.executeQuery()) {
-                while (rs.next()) {
+            try (ResultSet rs = ps.executeQuery())
+            {
+                while (rs.next())
+                {
                     int idGrad = rs.getInt("GradID");
                     Grad grad = rs.wasNull() ? null : new Grad(idGrad, rs.getString("NazivGrad"));
 
@@ -177,32 +213,44 @@ public class BrandSuradnjaRepozitorij implements Repozitorij<BrandSuradnja> {
                     ));
                 }
             }
-        } catch (SQLException e) {
+        }
+        catch (SQLException e)
+        {
             throw new RepoException("Greska pri dohvatu tima brand suradnje.", e);
         }
         return tim;
     }
 
-    private void spremiTim(BrandSuradnja suradnja) {
-        if (suradnja.getTim() == null || suradnja.getTim().isEmpty()) {
+    private void spremiTim(BrandSuradnja suradnja)
+    {
+        if (suradnja.getTim() == null || suradnja.getTim().isEmpty())
+        {
             return;
         }
-        try (PreparedStatement ps = BazaPodataka.getConnection().prepareStatement(INSERT_TIM_VEZA)) {
-            for (Influencer influencer : suradnja.getTim()) {
+        try (PreparedStatement ps = BazaPodataka.getConnection().prepareStatement(INSERT_TIM_VEZA))
+        {
+            for (Influencer influencer : suradnja.getTim())
+            {
                 ps.setInt(1, suradnja.getId());
                 ps.setInt(2, influencer.getId());
                 ps.executeUpdate();
             }
-        } catch (SQLException e) {
+        }
+        catch (SQLException e)
+        {
             throw new RepoException("Greska pri spremanju tima brand suradnje.", e);
         }
     }
 
-    private void obrisiTimVeze(int idBrandSuradnja) {
-        try (PreparedStatement ps = BazaPodataka.getConnection().prepareStatement(DELETE_TIM_VEZE)) {
+    private void obrisiTimVeze(int idBrandSuradnja)
+    {
+        try (PreparedStatement ps = BazaPodataka.getConnection().prepareStatement(DELETE_TIM_VEZE))
+        {
             ps.setInt(1, idBrandSuradnja);
             ps.executeUpdate();
-        } catch (SQLException e) {
+        }
+        catch (SQLException e)
+        {
             throw new RepoException("Greska pri brisanju veza brand suradnje.", e);
         }
     }

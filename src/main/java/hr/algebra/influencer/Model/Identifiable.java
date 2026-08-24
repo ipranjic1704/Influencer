@@ -1,6 +1,7 @@
 package hr.algebra.influencer.Model;
 
-public interface Identifiable {
+public interface Identifiable
+{
     int getId();
     void setId(int id);
 }

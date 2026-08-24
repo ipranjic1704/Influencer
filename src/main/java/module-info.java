@@ -1,4 +1,5 @@
-module hr.algebra.influencer {
+module hr.algebra.influencer
+{
     requires javafx.controls;
     requires javafx.fxml;
     requires java.sql;

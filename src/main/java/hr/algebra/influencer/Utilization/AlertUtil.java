@@ -2,24 +2,30 @@ package hr.algebra.influencer.Utilization;
 
 import javafx.scene.control.Alert;
 
-public final class AlertUtil {
+public final class AlertUtil
+{
 
-    private AlertUtil() {
+    private AlertUtil()
+    {
     }
 
-    public static void showInfo(String naslov, String poruka) {
+    public static void showInfo(String naslov, String poruka)
+    {
         show(Alert.AlertType.INFORMATION, naslov, poruka);
     }
 
-    public static void showError(String naslov, String poruka) {
+    public static void showError(String naslov, String poruka)
+    {
         show(Alert.AlertType.ERROR, naslov, poruka);
     }
 
-    public static void showWarning(String naslov, String poruka) {
+    public static void showWarning(String naslov, String poruka)
+    {
         show(Alert.AlertType.WARNING, naslov, poruka);
     }
 
-    private static void show(Alert.AlertType tip, String naslov, String poruka) {
+    private static void show(Alert.AlertType tip, String naslov, String poruka)
+    {
         Alert alert = new Alert(tip);
         alert.setTitle(naslov);
         alert.setHeaderText(null);

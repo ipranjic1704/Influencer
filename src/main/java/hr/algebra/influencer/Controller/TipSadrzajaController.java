@@ -1,8 +1,10 @@
 package hr.algebra.influencer.Controller;
 
 import hr.algebra.influencer.DataAccessLayer.Implementation.TipSadrzajaRepozitorij;
+import hr.algebra.influencer.Exception.RepoException;
 import hr.algebra.influencer.Model.TipSadrzaja;
 import hr.algebra.influencer.Utilization.AlertUtil;
+import hr.algebra.influencer.Utilization.AppLogger;
 import hr.algebra.influencer.Utilization.Session;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -18,7 +20,8 @@ import java.net.URL;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 
-public class TipSadrzajaController implements Initializable {
+public class TipSadrzajaController implements Initializable
+{
 
     @FXML
     private TableView<TipSadrzaja> tablica;
@@ -43,14 +46,16 @@ public class TipSadrzajaController implements Initializable {
     private TipSadrzaja odabrani;
 
     @Override
-    public void initialize(URL location, ResourceBundle resources) {
+    public void initialize(URL location, ResourceBundle resources)
+    {
         idColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
         nazivColumn.setCellValueFactory(new PropertyValueFactory<>("naziv"));
 
         pretragaField.textProperty().addListener((obs, staro, novo) -> filtriraj(novo));
         tablica.getSelectionModel().selectedItemProperty().addListener((obs, staro, novo) -> odaberi(novo));
 
-        if (!Session.isAdmin()) {
+        if (!Session.isAdmin())
+        {
             nazivField.setDisable(true);
             spremiButton.setDisable(true);
             novaButton.setDisable(true);
@@ -60,15 +65,18 @@ public class TipSadrzajaController implements Initializable {
         osvjezi();
     }
 
-    private void osvjezi() {
+    private void osvjezi()
+    {
         sviTipovi.setAll(tipSadrzajaRepozitorij.getAll().stream()
                 .sorted()
                 .collect(Collectors.toList()));
         filtriraj(pretragaField.getText());
     }
 
-    private void filtriraj(String tekst) {
-        if (tekst == null || tekst.isBlank()) {
+    private void filtriraj(String tekst)
+    {
+        if (tekst == null || tekst.isBlank())
+        {
             tablica.setItems(sviTipovi);
             return;
         }
@@ -79,30 +87,48 @@ public class TipSadrzajaController implements Initializable {
         tablica.setItems(rezultat);
     }
 
-    private void odaberi(TipSadrzaja tipSadrzaja) {
+    private void odaberi(TipSadrzaja tipSadrzaja)
+    {
         odabrani = tipSadrzaja;
         nazivField.setText(tipSadrzaja == null ? "" : tipSadrzaja.getNaziv());
         spremiButton.setText(tipSadrzaja == null ? "Dodaj" : "Spremi");
     }
 
     @FXML
-    private void handleSpremi() {
+    private void handleSpremi()
+    {
         String naziv = nazivField.getText().trim();
-        if (naziv.isEmpty()) {
+        if (naziv.isEmpty())
+        {
             AlertUtil.showWarning("Provjera", "Naziv tipa sadržaja je obavezan.");
             return;
         }
 
-        if (odabrani == null) {
-            TipSadrzaja noviTip = new TipSadrzaja(naziv);
-            if (tipSadrzajaRepozitorij.isDuplicate(TipSadrzaja::getNaziv, noviTip)) {
-                AlertUtil.showWarning("Provjera", "Tip sadržaja '" + naziv + "' vec postoji.");
-                return;
+        try
+        {
+            if (odabrani == null)
+            {
+                TipSadrzaja noviTip = new TipSadrzaja(naziv);
+                if (tipSadrzajaRepozitorij.isDuplicate(TipSadrzaja::getNaziv, noviTip))
+                {
+                    AlertUtil.showWarning("Provjera", "Tip sadržaja '" + naziv + "' vec postoji.");
+                    return;
+                }
+                tipSadrzajaRepozitorij.create(noviTip);
+                AppLogger.info("Kreiran tip sadrzaja: " + naziv);
             }
-            tipSadrzajaRepozitorij.create(noviTip);
-        } else {
-            odabrani.setNaziv(naziv);
-            tipSadrzajaRepozitorij.update(odabrani);
+            else
+            {
+                odabrani.setNaziv(naziv);
+                tipSadrzajaRepozitorij.update(odabrani);
+                AppLogger.info("Azuriran tip sadrzaja: " + naziv);
+            }
+        }
+        catch (RepoException e)
+        {
+            AppLogger.greska("Greska pri spremanju tipa sadrzaja: " + naziv, e);
+            AlertUtil.showError("Greska", "Tip sadrzaja nije moguce spremiti.");
+            return;
         }
 
         tablica.getSelectionModel().clearSelection();
@@ -110,23 +136,37 @@ public class TipSadrzajaController implements Initializable {
     }
 
     @FXML
-    private void handleNova() {
+    private void handleNova()
+    {
         tablica.getSelectionModel().clearSelection();
     }
 
     @FXML
-    private void handleBrisi() {
-        if (odabrani == null) {
+    private void handleBrisi()
+    {
+        if (odabrani == null)
+        {
             AlertUtil.showWarning("Brisanje", "Prvo odaberite tip sadržaja iz tablice.");
             return;
         }
-        tipSadrzajaRepozitorij.delete(odabrani.getId());
+        try
+        {
+            tipSadrzajaRepozitorij.delete(odabrani.getId());
+            AppLogger.info("Obrisan tip sadrzaja: " + odabrani.getNaziv());
+        }
+        catch (RepoException e)
+        {
+            AppLogger.greska("Greska pri brisanju tipa sadrzaja: " + odabrani.getNaziv(), e);
+            AlertUtil.showError("Greska", "Tip sadrzaja nije moguce obrisati.");
+            return;
+        }
         tablica.getSelectionModel().clearSelection();
         osvjezi();
     }
 
     @FXML
-    private void handleOsvjezi() {
+    private void handleOsvjezi()
+    {
         osvjezi();
     }
 }

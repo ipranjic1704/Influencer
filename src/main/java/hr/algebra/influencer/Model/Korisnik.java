@@ -2,30 +2,35 @@ package hr.algebra.influencer.Model;
 
 import hr.algebra.influencer.Model.Enum.Uloga;
 
-public class Korisnik extends Entitet implements Comparable<Korisnik> {
+public class Korisnik extends Entitet implements Comparable<Korisnik>
+{
 
     private String korisnickoIme;
     private String lozinka;
     private Uloga uloga;
     private Integer influencerId;
 
-    public Korisnik() {
+    public Korisnik()
+    {
     }
 
-    public Korisnik(String korisnickoIme, String lozinka, Uloga uloga) {
+    public Korisnik(String korisnickoIme, String lozinka, Uloga uloga)
+    {
         this.korisnickoIme = korisnickoIme;
         this.lozinka = lozinka;
         this.uloga = uloga;
     }
 
-    public Korisnik(int id, String korisnickoIme, String lozinka, Uloga uloga) {
+    public Korisnik(int id, String korisnickoIme, String lozinka, Uloga uloga)
+    {
         super(id);
         this.korisnickoIme = korisnickoIme;
         this.lozinka = lozinka;
         this.uloga = uloga;
     }
 
-    public Korisnik(int id, String korisnickoIme, String lozinka, Uloga uloga, Integer influencerId) {
+    public Korisnik(int id, String korisnickoIme, String lozinka, Uloga uloga, Integer influencerId)
+    {
         super(id);
         this.korisnickoIme = korisnickoIme;
         this.lozinka = lozinka;
@@ -33,50 +38,61 @@ public class Korisnik extends Entitet implements Comparable<Korisnik> {
         this.influencerId = influencerId;
     }
 
-    public String getKorisnickoIme() {
+    public String getKorisnickoIme()
+    {
         return korisnickoIme;
     }
 
-    public void setKorisnickoIme(String korisnickoIme) {
+    public void setKorisnickoIme(String korisnickoIme)
+    {
         this.korisnickoIme = korisnickoIme;
     }
 
-    public String getLozinka() {
+    public String getLozinka()
+    {
         return lozinka;
     }
 
-    public void setLozinka(String lozinka) {
+    public void setLozinka(String lozinka)
+    {
         this.lozinka = lozinka;
     }
 
-    public Uloga getUloga() {
+    public Uloga getUloga()
+    {
         return uloga;
     }
 
-    public void setUloga(Uloga uloga) {
+    public void setUloga(Uloga uloga)
+    {
         this.uloga = uloga;
     }
 
-    public Integer getInfluencerId() {
+    public Integer getInfluencerId()
+    {
         return influencerId;
     }
 
-    public void setInfluencerId(Integer influencerId) {
+    public void setInfluencerId(Integer influencerId)
+    {
         this.influencerId = influencerId;
     }
 
     @Override
-    public String opisi() {
+    public String opisi()
+    {
         return korisnickoIme + " (" + uloga + ")";
     }
 
     @Override
-    public int compareTo(Korisnik other) {
+    public int compareTo(Korisnik other)
+    {
         return korisnickoIme.compareToIgnoreCase(other.korisnickoIme);
     }
 
     @Override
-    public String toString() {
+    public String toString()
+    {
         return korisnickoIme;
     }
 }

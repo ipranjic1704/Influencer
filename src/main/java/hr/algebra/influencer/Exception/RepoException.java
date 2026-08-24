@@ -1,19 +1,24 @@
 package hr.algebra.influencer.Exception;
 
-public class RepoException extends RuntimeException {
+public class RepoException extends RuntimeException
+{
 
-    public RepoException() {
+    public RepoException()
+    {
     }
 
-    public RepoException(String message) {
+    public RepoException(String message)
+    {
         super(message);
     }
 
-    public RepoException(String message, Throwable cause) {
+    public RepoException(String message, Throwable cause)
+    {
         super(message, cause);
     }
 
-    public RepoException(Throwable cause) {
+    public RepoException(Throwable cause)
+    {
         super(cause);
     }
 }

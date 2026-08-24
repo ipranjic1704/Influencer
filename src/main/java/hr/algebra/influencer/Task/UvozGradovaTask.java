@@ -11,7 +11,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public class UvozGradovaTask extends Task<Integer> {
+public class UvozGradovaTask extends Task<Integer>
+{
 
     private static final String API_URL = "https://countriesnow.space/api/v0.1/countries";
     private static final String DRZAVA = "Croatia";
@@ -19,12 +20,14 @@ public class UvozGradovaTask extends Task<Integer> {
     private final GradRepozitorij gradRepozitorij = GradRepozitorij.getInstance();
 
     @Override
-    protected Integer call() throws Exception {
+    protected Integer call() throws Exception
+    {
         updateMessage("Dohvacam gradove s API-a...");
         String odgovor = HttpUtil.fetchJson(API_URL);
 
         List<String> naziviGradova = JsonParserUtil.parseGradove(odgovor, DRZAVA);
-        if (naziviGradova.isEmpty()) {
+        if (naziviGradova.isEmpty())
+        {
             throw new RuntimeException("API nije vratio nijedan grad.");
         }
 
@@ -34,14 +37,17 @@ public class UvozGradovaTask extends Task<Integer> {
 
         int uvezeno = 0;
         int ukupno = naziviGradova.size();
-        for (int i = 0; i < ukupno; i++) {
-            if (isCancelled()) {
+        for (int i = 0; i < ukupno; i++)
+        {
+            if (isCancelled())
+            {
                 break;
             }
             String naziv = naziviGradova.get(i).trim();
             String kljuc = naziv.toLowerCase();
 
-            if (!naziv.isEmpty() && postojeci.add(kljuc)) {
+            if (!naziv.isEmpty() && postojeci.add(kljuc))
+            {
                 gradRepozitorij.create(new Grad(naziv));
                 uvezeno++;
             }

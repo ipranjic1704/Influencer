@@ -1,19 +1,24 @@
 package hr.algebra.influencer.Exception;
 
-public class AppException extends Exception {
+public class AppException extends Exception
+{
 
-    public AppException() {
+    public AppException()
+    {
     }
 
-    public AppException(String message) {
+    public AppException(String message)
+    {
         super(message);
     }
 
-    public AppException(String message, Throwable cause) {
+    public AppException(String message, Throwable cause)
+    {
         super(message, cause);
     }
 
-    public AppException(Throwable cause) {
+    public AppException(Throwable cause)
+    {
         super(cause);
     }
 }

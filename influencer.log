@@ -1,0 +1,40 @@
+kol 25, 2026 12:03:43 AM hr.algebra.influencer.Utilization.AppLogger info
+INFO: [admin] Prijava uspjesna.
+kol 25, 2026 12:04:05 AM hr.algebra.influencer.Utilization.AppLogger info
+INFO: [admin] Uvoz gradova zavrsen, uvezeno: 0
+kol 25, 2026 12:04:10 AM hr.algebra.influencer.Utilization.AppLogger info
+INFO: [admin] Obrisan grad: Baska Voda
+kol 25, 2026 12:04:10 AM hr.algebra.influencer.Utilization.AppLogger info
+INFO: [admin] Obrisan grad: Bibinje
+kol 25, 2026 12:04:11 AM hr.algebra.influencer.Utilization.AppLogger info
+INFO: [admin] Obrisan grad: Bracevci
+kol 25, 2026 12:04:12 AM hr.algebra.influencer.Utilization.AppLogger info
+INFO: [admin] Obrisan grad: Brdovec
+kol 25, 2026 12:04:13 AM hr.algebra.influencer.Utilization.AppLogger info
+INFO: [admin] Obrisan grad: Bjelovar
+kol 25, 2026 12:04:13 AM hr.algebra.influencer.Utilization.AppLogger info
+INFO: [admin] Obrisan grad: Bizovac
+kol 25, 2026 12:04:16 AM hr.algebra.influencer.Utilization.AppLogger info
+INFO: [admin] Obrisan grad: Buje
+kol 25, 2026 12:04:17 AM hr.algebra.influencer.Utilization.AppLogger info
+INFO: [admin] Obrisan grad: Cavtat
+kol 25, 2026 12:04:17 AM hr.algebra.influencer.Utilization.AppLogger info
+INFO: [admin] Obrisan grad: Cabuna
+kol 25, 2026 12:04:18 AM hr.algebra.influencer.Utilization.AppLogger info
+INFO: [admin] Obrisan grad: Cestica
+kol 25, 2026 12:04:18 AM hr.algebra.influencer.Utilization.AppLogger info
+INFO: [admin] Azuriran grad: Cepin
+kol 25, 2026 12:04:20 AM hr.algebra.influencer.Utilization.AppLogger info
+INFO: [admin] Obrisan grad: Brsadin
+kol 25, 2026 12:04:20 AM hr.algebra.influencer.Utilization.AppLogger info
+INFO: [admin] Obrisan grad: Cepin
+kol 25, 2026 12:04:21 AM hr.algebra.influencer.Utilization.AppLogger info
+INFO: [admin] Obrisan grad: Brela
+kol 25, 2026 12:04:25 AM hr.algebra.influencer.Utilization.AppLogger info
+INFO: [admin] Uvoz gradova zavrsen, uvezeno: 13
+kol 25, 2026 12:04:38 AM hr.algebra.influencer.Utilization.AppLogger info
+INFO: [admin] Kreiran grad: Kutina
+kol 25, 2026 12:05:27 AM hr.algebra.influencer.Utilization.AppLogger upozorenje
+WARNING: [nepoznat] Neuspjela prijava, korisnicko ime: admin
+kol 25, 2026 12:05:31 AM hr.algebra.influencer.Utilization.AppLogger upozorenje
+WARNING: [nepoznat] Neuspjela prijava, korisnicko ime: admin

@@ -1,41 +1,50 @@
 package hr.algebra.influencer.Model;
 
-public class TipSadrzaja extends Entitet implements Comparable<TipSadrzaja> {
+public class TipSadrzaja extends Entitet implements Comparable<TipSadrzaja>
+{
 
     private String naziv;
 
-    public TipSadrzaja() {
+    public TipSadrzaja()
+    {
     }
 
-    public TipSadrzaja(String naziv) {
+    public TipSadrzaja(String naziv)
+    {
         this.naziv = naziv;
     }
 
-    public TipSadrzaja(int id, String naziv) {
+    public TipSadrzaja(int id, String naziv)
+    {
         super(id);
         this.naziv = naziv;
     }
 
-    public String getNaziv() {
+    public String getNaziv()
+    {
         return naziv;
     }
 
-    public void setNaziv(String naziv) {
+    public void setNaziv(String naziv)
+    {
         this.naziv = naziv;
     }
 
     @Override
-    public String opisi() {
+    public String opisi()
+    {
         return "Tip sadržaja: " + naziv;
     }
 
     @Override
-    public int compareTo(TipSadrzaja other) {
+    public int compareTo(TipSadrzaja other)
+    {
         return naziv.compareToIgnoreCase(other.naziv);
     }
 
     @Override
-    public String toString() {
+    public String toString()
+    {
         return naziv;
     }
 }

@@ -6,12 +6,14 @@ import hr.algebra.influencer.DataAccessLayer.Implementation.InfluencerRepozitori
 import hr.algebra.influencer.DataAccessLayer.Implementation.NisaRepozitorij;
 import hr.algebra.influencer.DataAccessLayer.Implementation.PlatformaRepozitorij;
 import hr.algebra.influencer.DataAccessLayer.Implementation.TipSadrzajaRepozitorij;
+import hr.algebra.influencer.Exception.RepoException;
 import hr.algebra.influencer.Model.Grad;
 import hr.algebra.influencer.Model.Influencer;
 import hr.algebra.influencer.Model.Nisa;
 import hr.algebra.influencer.Model.Platforma;
 import hr.algebra.influencer.Model.TipSadrzaja;
 import hr.algebra.influencer.Utilization.AlertUtil;
+import hr.algebra.influencer.Utilization.AppLogger;
 import hr.algebra.influencer.Utilization.SceneUtil;
 import hr.algebra.influencer.Utilization.Session;
 import javafx.beans.property.SimpleStringProperty;
@@ -39,7 +41,8 @@ import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 
-public class InfluencerController implements Initializable {
+public class InfluencerController implements Initializable
+{
 
     @FXML
     private TableView<Influencer> tablica;
@@ -63,6 +66,12 @@ public class InfluencerController implements Initializable {
     private TableColumn<Influencer, String> tipoviSadrzajaColumn;
     @FXML
     private TextField pretragaField;
+    @FXML
+    private ComboBox<Nisa> nisaFilterComboBox;
+    @FXML
+    private ComboBox<Platforma> platformaFilterComboBox;
+    @FXML
+    private TextField minPratiteljaFilterField;
     @FXML
     private TextField imeNadimakField;
     @FXML
@@ -109,7 +118,8 @@ public class InfluencerController implements Initializable {
     private final Map<Integer, CheckBox> tipSadrzajaCheckboxovi = new LinkedHashMap<>();
 
     @Override
-    public void initialize(URL location, ResourceBundle resources) {
+    public void initialize(URL location, ResourceBundle resources)
+    {
         idColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
         imeNadimakColumn.setCellValueFactory(new PropertyValueFactory<>("imeNadimak"));
         zemljaColumn.setCellValueFactory(new PropertyValueFactory<>("zemlja"));
@@ -130,21 +140,24 @@ public class InfluencerController implements Initializable {
                         .collect(Collectors.joining(", "))));
 
         svePlatforme = platformaRepozitorij.getAll();
-        for (Platforma platforma : svePlatforme) {
+        for (Platforma platforma : svePlatforme)
+        {
             CheckBox checkBox = new CheckBox(platforma.getNaziv());
             platformaCheckboxovi.put(platforma.getId(), checkBox);
             platformeFlowPane.getChildren().add(checkBox);
         }
 
         sveNise = nisaRepozitorij.getAll();
-        for (Nisa nisa : sveNise) {
+        for (Nisa nisa : sveNise)
+        {
             CheckBox checkBox = new CheckBox(nisa.getNaziv());
             nisaCheckboxovi.put(nisa.getId(), checkBox);
             niseFlowPane.getChildren().add(checkBox);
         }
 
         sviTipovi = tipSadrzajaRepozitorij.getAll();
-        for (TipSadrzaja tip : sviTipovi) {
+        for (TipSadrzaja tip : sviTipovi)
+        {
             CheckBox checkBox = new CheckBox(tip.getNaziv());
             tipSadrzajaCheckboxovi.put(tip.getId(), checkBox);
             tipoviSadrzajaFlowPane.getChildren().add(checkBox);
@@ -152,12 +165,19 @@ public class InfluencerController implements Initializable {
 
         gradComboBox.setItems(FXCollections.observableArrayList(gradRepozitorij.getAll()));
 
-        pretragaField.textProperty().addListener((obs, staro, novo) -> filtriraj(novo));
+        nisaFilterComboBox.setItems(FXCollections.observableArrayList(sveNise));
+        platformaFilterComboBox.setItems(FXCollections.observableArrayList(svePlatforme));
+
+        pretragaField.textProperty().addListener((obs, staro, novo) -> filtriraj());
+        nisaFilterComboBox.valueProperty().addListener((obs, staro, novo) -> filtriraj());
+        platformaFilterComboBox.valueProperty().addListener((obs, staro, novo) -> filtriraj());
+        minPratiteljaFilterField.textProperty().addListener((obs, staro, novo) -> filtriraj());
         tablica.getSelectionModel().selectedItemProperty().addListener((obs, staro, novo) -> odaberi(novo));
 
         detaljiButton.setDisable(true);
 
-        if (!Session.isAdmin()) {
+        if (!Session.isAdmin())
+        {
             imeNadimakField.setDisable(true);
             brojPratiteljaField.setDisable(true);
             engagementRateField.setDisable(true);
@@ -176,26 +196,58 @@ public class InfluencerController implements Initializable {
         osvjezi();
     }
 
-    private void osvjezi() {
+    private void osvjezi()
+    {
         sviInfluenceri.setAll(influencerRepozitorij.getAll().stream()
                 .sorted()
                 .collect(Collectors.toList()));
-        filtriraj(pretragaField.getText());
+        filtriraj();
     }
 
-    private void filtriraj(String tekst) {
-        if (tekst == null || tekst.isBlank()) {
-            tablica.setItems(sviInfluenceri);
-            return;
-        }
-        String trazeno = tekst.toLowerCase();
+    private void filtriraj()
+    {
+        String tekst = pretragaField.getText();
+        Nisa nisaFilter = nisaFilterComboBox.getValue();
+        Platforma platformaFilter = platformaFilterComboBox.getValue();
+        Integer minPratitelja = parsirajMinPratitelja();
+
         ObservableList<Influencer> rezultat = sviInfluenceri.stream()
-                .filter(i -> i.getImeNadimak().toLowerCase().contains(trazeno))
+                .filter(i -> tekst == null || tekst.isBlank() || i.getImeNadimak().toLowerCase().contains(tekst.toLowerCase()))
+                .filter(i -> nisaFilter == null || i.getNise().contains(nisaFilter))
+                .filter(i -> platformaFilter == null || i.getPlatforme().contains(platformaFilter))
+                .filter(i -> minPratitelja == null || i.getBrojPratitelja() >= minPratitelja)
                 .collect(Collectors.toCollection(FXCollections::observableArrayList));
         tablica.setItems(rezultat);
     }
 
-    private void odaberi(Influencer influencer) {
+    private Integer parsirajMinPratitelja()
+    {
+        String tekst = minPratiteljaFilterField.getText();
+        if (tekst == null || tekst.isBlank())
+        {
+            return null;
+        }
+        try
+        {
+            return Integer.parseInt(tekst.trim());
+        }
+        catch (NumberFormatException e)
+        {
+            return null;
+        }
+    }
+
+    @FXML
+    private void handleOcistiFiltere()
+    {
+        pretragaField.clear();
+        nisaFilterComboBox.getSelectionModel().clearSelection();
+        platformaFilterComboBox.getSelectionModel().clearSelection();
+        minPratiteljaFilterField.clear();
+    }
+
+    private void odaberi(Influencer influencer)
+    {
         odabrani = influencer;
 
         imeNadimakField.setText(influencer == null ? "" : influencer.getImeNadimak());
@@ -209,22 +261,29 @@ public class InfluencerController implements Initializable {
         platformaCheckboxovi.values().forEach(checkBox -> checkBox.setSelected(false));
         nisaCheckboxovi.values().forEach(checkBox -> checkBox.setSelected(false));
         tipSadrzajaCheckboxovi.values().forEach(checkBox -> checkBox.setSelected(false));
-        if (influencer != null) {
-            for (Platforma platforma : influencer.getPlatforme()) {
+        if (influencer != null)
+        {
+            for (Platforma platforma : influencer.getPlatforme())
+            {
                 CheckBox checkBox = platformaCheckboxovi.get(platforma.getId());
-                if (checkBox != null) {
+                if (checkBox != null)
+                {
                     checkBox.setSelected(true);
                 }
             }
-            for (Nisa nisa : influencer.getNise()) {
+            for (Nisa nisa : influencer.getNise())
+            {
                 CheckBox checkBox = nisaCheckboxovi.get(nisa.getId());
-                if (checkBox != null) {
+                if (checkBox != null)
+                {
                     checkBox.setSelected(true);
                 }
             }
-            for (TipSadrzaja tip : influencer.getTipoviSadrzaja()) {
+            for (TipSadrzaja tip : influencer.getTipoviSadrzaja())
+            {
                 CheckBox checkBox = tipSadrzajaCheckboxovi.get(tip.getId());
-                if (checkBox != null) {
+                if (checkBox != null)
+                {
                     checkBox.setSelected(true);
                 }
             }
@@ -235,25 +294,33 @@ public class InfluencerController implements Initializable {
     }
 
     @FXML
-    private void handleSpremi() {
+    private void handleSpremi()
+    {
         String imeNadimak = imeNadimakField.getText().trim();
-        if (imeNadimak.isEmpty()) {
+        if (imeNadimak.isEmpty())
+        {
             AlertUtil.showWarning("Provjera", "Ime/nadimak influencera je obavezan.");
             return;
         }
 
         int brojPratitelja;
-        try {
+        try
+        {
             brojPratitelja = Integer.parseInt(brojPratiteljaField.getText().trim());
-        } catch (NumberFormatException e) {
+        }
+        catch (NumberFormatException e)
+        {
             AlertUtil.showWarning("Provjera", "Broj pratitelja mora biti cijeli broj (npr. 15000).");
             return;
         }
 
         double engagementRate;
-        try {
+        try
+        {
             engagementRate = Double.parseDouble(engagementRateField.getText().trim().replace(',', '.'));
-        } catch (NumberFormatException e) {
+        }
+        catch (NumberFormatException e)
+        {
             AlertUtil.showWarning("Provjera", "Engagement rate mora biti broj (npr. 3.5).");
             return;
         }
@@ -272,28 +339,43 @@ public class InfluencerController implements Initializable {
                 .filter(tip -> tipSadrzajaCheckboxovi.get(tip.getId()).isSelected())
                 .collect(Collectors.toList());
 
-        if (odabrani == null) {
-            Influencer noviInfluencer = new Influencer(imeNadimak, brojPratitelja, engagementRate, zemlja, grad, jezikSadrzaja, profilnaSlika);
-            if (influencerRepozitorij.isDuplicate(Influencer::getImeNadimak, noviInfluencer)) {
-                AlertUtil.showWarning("Provjera", "Influencer '" + imeNadimak + "' vec postoji.");
-                return;
+        try
+        {
+            if (odabrani == null)
+            {
+                Influencer noviInfluencer = new Influencer(imeNadimak, brojPratitelja, engagementRate, zemlja, grad, jezikSadrzaja, profilnaSlika);
+                if (influencerRepozitorij.isDuplicate(Influencer::getImeNadimak, noviInfluencer))
+                {
+                    AlertUtil.showWarning("Provjera", "Influencer '" + imeNadimak + "' vec postoji.");
+                    return;
+                }
+                noviInfluencer.setPlatforme(odabranePlatforme);
+                noviInfluencer.setNise(odabraneNise);
+                noviInfluencer.setTipoviSadrzaja(odabraniTipovi);
+                influencerRepozitorij.create(noviInfluencer);
+                AppLogger.info("Kreiran influencer: " + imeNadimak);
             }
-            noviInfluencer.setPlatforme(odabranePlatforme);
-            noviInfluencer.setNise(odabraneNise);
-            noviInfluencer.setTipoviSadrzaja(odabraniTipovi);
-            influencerRepozitorij.create(noviInfluencer);
-        } else {
-            odabrani.setImeNadimak(imeNadimak);
-            odabrani.setBrojPratitelja(brojPratitelja);
-            odabrani.setEngagementRate(engagementRate);
-            odabrani.setZemlja(zemlja);
-            odabrani.setGrad(grad);
-            odabrani.setJezikSadrzaja(jezikSadrzaja);
-            odabrani.setProfilnaSlika(profilnaSlika);
-            odabrani.setPlatforme(odabranePlatforme);
-            odabrani.setNise(odabraneNise);
-            odabrani.setTipoviSadrzaja(odabraniTipovi);
-            influencerRepozitorij.update(odabrani);
+            else
+            {
+                odabrani.setImeNadimak(imeNadimak);
+                odabrani.setBrojPratitelja(brojPratitelja);
+                odabrani.setEngagementRate(engagementRate);
+                odabrani.setZemlja(zemlja);
+                odabrani.setGrad(grad);
+                odabrani.setJezikSadrzaja(jezikSadrzaja);
+                odabrani.setProfilnaSlika(profilnaSlika);
+                odabrani.setPlatforme(odabranePlatforme);
+                odabrani.setNise(odabraneNise);
+                odabrani.setTipoviSadrzaja(odabraniTipovi);
+                influencerRepozitorij.update(odabrani);
+                AppLogger.info("Azuriran influencer: " + imeNadimak);
+            }
+        }
+        catch (RepoException e)
+        {
+            AppLogger.greska("Greska pri spremanju influencera: " + imeNadimak, e);
+            AlertUtil.showError("Greska", "Influencera nije moguce spremiti.");
+            return;
         }
 
         tablica.getSelectionModel().clearSelection();
@@ -301,12 +383,16 @@ public class InfluencerController implements Initializable {
     }
 
     @FXML
-    private void handleDetalji() {
+    private void handleDetalji()
+    {
         Influencer odabraniZaDetalje = tablica.getSelectionModel().getSelectedItem();
-        if (odabraniZaDetalje == null) {
+        if (odabraniZaDetalje == null)
+        {
             AlertUtil.showWarning("Detalji", "Prvo odaberite influencera iz tablice.");
             return;
         }
+
+        AppLogger.info("Pregled detalja influencera: " + odabraniZaDetalje.getImeNadimak());
 
         Stage stage = new Stage();
         stage.initModality(Modality.WINDOW_MODAL);
@@ -319,23 +405,37 @@ public class InfluencerController implements Initializable {
     }
 
     @FXML
-    private void handleNova() {
+    private void handleNova()
+    {
         tablica.getSelectionModel().clearSelection();
     }
 
     @FXML
-    private void handleBrisi() {
-        if (odabrani == null) {
+    private void handleBrisi()
+    {
+        if (odabrani == null)
+        {
             AlertUtil.showWarning("Brisanje", "Prvo odaberite influencera iz tablice.");
             return;
         }
-        influencerRepozitorij.delete(odabrani.getId());
+        try
+        {
+            influencerRepozitorij.delete(odabrani.getId());
+            AppLogger.info("Obrisan influencer: " + odabrani.getImeNadimak());
+        }
+        catch (RepoException e)
+        {
+            AppLogger.greska("Greska pri brisanju influencera: " + odabrani.getImeNadimak(), e);
+            AlertUtil.showError("Greska", "Influencera nije moguce obrisati.");
+            return;
+        }
         tablica.getSelectionModel().clearSelection();
         osvjezi();
     }
 
     @FXML
-    private void handleOsvjezi() {
+    private void handleOsvjezi()
+    {
         osvjezi();
     }
 }

@@ -18,14 +18,17 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class InfluencerRepozitorij implements Repozitorij<Influencer> {
+public class InfluencerRepozitorij implements Repozitorij<Influencer>
+{
 
     private static final InfluencerRepozitorij INSTANCA = new InfluencerRepozitorij();
 
-    private InfluencerRepozitorij() {
+    private InfluencerRepozitorij()
+    {
     }
 
-    public static InfluencerRepozitorij getInstance() {
+    public static InfluencerRepozitorij getInstance()
+    {
         return INSTANCA;
     }
 
@@ -81,18 +84,24 @@ public class InfluencerRepozitorij implements Repozitorij<Influencer> {
             "DELETE FROM InfluencerTipSadrzaja WHERE IDInfluencer = ?";
 
     @Override
-    public List<Influencer> getAll() {
+    public List<Influencer> getAll()
+    {
         List<Influencer> influenceri = new ArrayList<>();
         try (PreparedStatement ps = BazaPodataka.getConnection().prepareStatement(SELECT_ALL);
-             ResultSet rs = ps.executeQuery()) {
-            while (rs.next()) {
+             ResultSet rs = ps.executeQuery())
+        {
+            while (rs.next())
+            {
                 influenceri.add(mapRow(rs));
             }
-        } catch (SQLException e) {
+        }
+        catch (SQLException e)
+        {
             throw new RepoException("Greska pri dohvatu influencera.", e);
         }
 
-        for (Influencer influencer : influenceri) {
+        for (Influencer influencer : influenceri)
+        {
             influencer.setPlatforme(dohvatiPlatforme(influencer.getId()));
             influencer.setNise(dohvatiNise(influencer.getId()));
             influencer.setTipoviSadrzaja(dohvatiTipoveSadrzaja(influencer.getId()));
@@ -101,20 +110,27 @@ public class InfluencerRepozitorij implements Repozitorij<Influencer> {
     }
 
     @Override
-    public Optional<Influencer> getById(int id) {
+    public Optional<Influencer> getById(int id)
+    {
         Influencer influencer = null;
-        try (PreparedStatement ps = BazaPodataka.getConnection().prepareStatement(SELECT_BY_ID)) {
+        try (PreparedStatement ps = BazaPodataka.getConnection().prepareStatement(SELECT_BY_ID))
+        {
             ps.setInt(1, id);
-            try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) {
+            try (ResultSet rs = ps.executeQuery())
+            {
+                if (rs.next())
+                {
                     influencer = mapRow(rs);
                 }
             }
-        } catch (SQLException e) {
+        }
+        catch (SQLException e)
+        {
             throw new RepoException("Greska pri dohvatu influencera id=" + id, e);
         }
 
-        if (influencer != null) {
+        if (influencer != null)
+        {
             influencer.setPlatforme(dohvatiPlatforme(influencer.getId()));
             influencer.setNise(dohvatiNise(influencer.getId()));
             influencer.setTipoviSadrzaja(dohvatiTipoveSadrzaja(influencer.getId()));
@@ -123,18 +139,24 @@ public class InfluencerRepozitorij implements Repozitorij<Influencer> {
     }
 
     @Override
-    public void create(Influencer influencer) {
+    public void create(Influencer influencer)
+    {
         try (PreparedStatement ps = BazaPodataka.getConnection()
-                .prepareStatement(INSERT, Statement.RETURN_GENERATED_KEYS)) {
+                .prepareStatement(INSERT, Statement.RETURN_GENERATED_KEYS))
+        {
             postaviParametre(ps, influencer);
             ps.executeUpdate();
 
-            try (ResultSet kljucevi = ps.getGeneratedKeys()) {
-                if (kljucevi.next()) {
+            try (ResultSet kljucevi = ps.getGeneratedKeys())
+            {
+                if (kljucevi.next())
+                {
                     influencer.setId(kljucevi.getInt(1));
                 }
             }
-        } catch (SQLException e) {
+        }
+        catch (SQLException e)
+        {
             throw new RepoException("Greska pri spremanju influencera.", e);
         }
 
@@ -144,12 +166,16 @@ public class InfluencerRepozitorij implements Repozitorij<Influencer> {
     }
 
     @Override
-    public void update(Influencer influencer) {
-        try (PreparedStatement ps = BazaPodataka.getConnection().prepareStatement(UPDATE)) {
+    public void update(Influencer influencer)
+    {
+        try (PreparedStatement ps = BazaPodataka.getConnection().prepareStatement(UPDATE))
+        {
             postaviParametre(ps, influencer);
             ps.setInt(8, influencer.getId());
             ps.executeUpdate();
-        } catch (SQLException e) {
+        }
+        catch (SQLException e)
+        {
             throw new RepoException("Greska pri azuriranju influencera.", e);
         }
 
@@ -162,30 +188,39 @@ public class InfluencerRepozitorij implements Repozitorij<Influencer> {
     }
 
     @Override
-    public void delete(int id) {
-        try (PreparedStatement ps = BazaPodataka.getConnection().prepareStatement(DELETE)) {
+    public void delete(int id)
+    {
+        try (PreparedStatement ps = BazaPodataka.getConnection().prepareStatement(DELETE))
+        {
             ps.setInt(1, id);
             ps.executeUpdate();
-        } catch (SQLException e) {
+        }
+        catch (SQLException e)
+        {
             throw new RepoException("Greska pri brisanju influencera id=" + id, e);
         }
     }
 
-    private void postaviParametre(PreparedStatement ps, Influencer influencer) throws SQLException {
+    private void postaviParametre(PreparedStatement ps, Influencer influencer) throws SQLException
+    {
         ps.setString(1, influencer.getImeNadimak());
         ps.setInt(2, influencer.getBrojPratitelja());
         ps.setDouble(3, influencer.getEngagementRate());
         ps.setString(4, influencer.getZemlja());
-        if (influencer.getGrad() != null) {
+        if (influencer.getGrad() != null)
+        {
             ps.setInt(5, influencer.getGrad().getId());
-        } else {
+        }
+        else
+        {
             ps.setNull(5, Types.INTEGER);
         }
         ps.setString(6, influencer.getJezikSadrzaja());
         ps.setString(7, influencer.getProfilnaSlika());
     }
 
-    private Influencer mapRow(ResultSet rs) throws SQLException {
+    private Influencer mapRow(ResultSet rs) throws SQLException
+    {
         int idGrad = rs.getInt("GradID");
         Grad grad = rs.wasNull() ? null : new Grad(idGrad, rs.getString("NazivGrad"));
 
@@ -201,119 +236,167 @@ public class InfluencerRepozitorij implements Repozitorij<Influencer> {
         );
     }
 
-    private List<Platforma> dohvatiPlatforme(int idInfluencer) {
+    private List<Platforma> dohvatiPlatforme(int idInfluencer)
+    {
         List<Platforma> platforme = new ArrayList<>();
-        try (PreparedStatement ps = BazaPodataka.getConnection().prepareStatement(SELECT_PLATFORME)) {
+        try (PreparedStatement ps = BazaPodataka.getConnection().prepareStatement(SELECT_PLATFORME))
+        {
             ps.setInt(1, idInfluencer);
-            try (ResultSet rs = ps.executeQuery()) {
-                while (rs.next()) {
+            try (ResultSet rs = ps.executeQuery())
+            {
+                while (rs.next())
+                {
                     platforme.add(new Platforma(rs.getInt("IDPlatforma"), rs.getString("Naziv")));
                 }
             }
-        } catch (SQLException e) {
+        }
+        catch (SQLException e)
+        {
             throw new RepoException("Greska pri dohvatu platformi influencera.", e);
         }
         return platforme;
     }
 
-    private void spremiPlatforme(Influencer influencer) {
-        if (influencer.getPlatforme() == null || influencer.getPlatforme().isEmpty()) {
+    private void spremiPlatforme(Influencer influencer)
+    {
+        if (influencer.getPlatforme() == null || influencer.getPlatforme().isEmpty())
+        {
             return;
         }
-        try (PreparedStatement ps = BazaPodataka.getConnection().prepareStatement(INSERT_PLATFORMA_VEZA)) {
-            for (Platforma platforma : influencer.getPlatforme()) {
+        try (PreparedStatement ps = BazaPodataka.getConnection().prepareStatement(INSERT_PLATFORMA_VEZA))
+        {
+            for (Platforma platforma : influencer.getPlatforme())
+            {
                 ps.setInt(1, influencer.getId());
                 ps.setInt(2, platforma.getId());
                 ps.executeUpdate();
             }
-        } catch (SQLException e) {
+        }
+        catch (SQLException e)
+        {
             throw new RepoException("Greska pri spremanju veza influencer-platforma.", e);
         }
     }
 
-    private void obrisiPlatformeVeze(int idInfluencer) {
-        try (PreparedStatement ps = BazaPodataka.getConnection().prepareStatement(DELETE_PLATFORMA_VEZE)) {
+    private void obrisiPlatformeVeze(int idInfluencer)
+    {
+        try (PreparedStatement ps = BazaPodataka.getConnection().prepareStatement(DELETE_PLATFORMA_VEZE))
+        {
             ps.setInt(1, idInfluencer);
             ps.executeUpdate();
-        } catch (SQLException e) {
+        }
+        catch (SQLException e)
+        {
             throw new RepoException("Greska pri brisanju veza influencer-platforma.", e);
         }
     }
 
-    private List<Nisa> dohvatiNise(int idInfluencer) {
+    private List<Nisa> dohvatiNise(int idInfluencer)
+    {
         List<Nisa> nise = new ArrayList<>();
-        try (PreparedStatement ps = BazaPodataka.getConnection().prepareStatement(SELECT_NISE)) {
+        try (PreparedStatement ps = BazaPodataka.getConnection().prepareStatement(SELECT_NISE))
+        {
             ps.setInt(1, idInfluencer);
-            try (ResultSet rs = ps.executeQuery()) {
-                while (rs.next()) {
+            try (ResultSet rs = ps.executeQuery())
+            {
+                while (rs.next())
+                {
                     nise.add(new Nisa(rs.getInt("IDNisa"), rs.getString("Naziv")));
                 }
             }
-        } catch (SQLException e) {
+        }
+        catch (SQLException e)
+        {
             throw new RepoException("Greska pri dohvatu nisa influencera.", e);
         }
         return nise;
     }
 
-    private void spremiNise(Influencer influencer) {
-        if (influencer.getNise() == null || influencer.getNise().isEmpty()) {
+    private void spremiNise(Influencer influencer)
+    {
+        if (influencer.getNise() == null || influencer.getNise().isEmpty())
+        {
             return;
         }
-        try (PreparedStatement ps = BazaPodataka.getConnection().prepareStatement(INSERT_NISA_VEZA)) {
-            for (Nisa nisa : influencer.getNise()) {
+        try (PreparedStatement ps = BazaPodataka.getConnection().prepareStatement(INSERT_NISA_VEZA))
+        {
+            for (Nisa nisa : influencer.getNise())
+            {
                 ps.setInt(1, influencer.getId());
                 ps.setInt(2, nisa.getId());
                 ps.executeUpdate();
             }
-        } catch (SQLException e) {
+        }
+        catch (SQLException e)
+        {
             throw new RepoException("Greska pri spremanju veza influencer-nisa.", e);
         }
     }
 
-    private void obrisiNiseVeze(int idInfluencer) {
-        try (PreparedStatement ps = BazaPodataka.getConnection().prepareStatement(DELETE_NISA_VEZE)) {
+    private void obrisiNiseVeze(int idInfluencer)
+    {
+        try (PreparedStatement ps = BazaPodataka.getConnection().prepareStatement(DELETE_NISA_VEZE))
+        {
             ps.setInt(1, idInfluencer);
             ps.executeUpdate();
-        } catch (SQLException e) {
+        }
+        catch (SQLException e)
+        {
             throw new RepoException("Greska pri brisanju veza influencer-nisa.", e);
         }
     }
 
-    private List<TipSadrzaja> dohvatiTipoveSadrzaja(int idInfluencer) {
+    private List<TipSadrzaja> dohvatiTipoveSadrzaja(int idInfluencer)
+    {
         List<TipSadrzaja> tipovi = new ArrayList<>();
-        try (PreparedStatement ps = BazaPodataka.getConnection().prepareStatement(SELECT_TIPOVI_SADRZAJA)) {
+        try (PreparedStatement ps = BazaPodataka.getConnection().prepareStatement(SELECT_TIPOVI_SADRZAJA))
+        {
             ps.setInt(1, idInfluencer);
-            try (ResultSet rs = ps.executeQuery()) {
-                while (rs.next()) {
+            try (ResultSet rs = ps.executeQuery())
+            {
+                while (rs.next())
+                {
                     tipovi.add(new TipSadrzaja(rs.getInt("IDTipSadrzaja"), rs.getString("Naziv")));
                 }
             }
-        } catch (SQLException e) {
+        }
+        catch (SQLException e)
+        {
             throw new RepoException("Greska pri dohvatu tipova sadrzaja influencera.", e);
         }
         return tipovi;
     }
 
-    private void spremiTipoveSadrzaja(Influencer influencer) {
-        if (influencer.getTipoviSadrzaja() == null || influencer.getTipoviSadrzaja().isEmpty()) {
+    private void spremiTipoveSadrzaja(Influencer influencer)
+    {
+        if (influencer.getTipoviSadrzaja() == null || influencer.getTipoviSadrzaja().isEmpty())
+        {
             return;
         }
-        try (PreparedStatement ps = BazaPodataka.getConnection().prepareStatement(INSERT_TIP_SADRZAJA_VEZA)) {
-            for (TipSadrzaja tip : influencer.getTipoviSadrzaja()) {
+        try (PreparedStatement ps = BazaPodataka.getConnection().prepareStatement(INSERT_TIP_SADRZAJA_VEZA))
+        {
+            for (TipSadrzaja tip : influencer.getTipoviSadrzaja())
+            {
                 ps.setInt(1, influencer.getId());
                 ps.setInt(2, tip.getId());
                 ps.executeUpdate();
             }
-        } catch (SQLException e) {
+        }
+        catch (SQLException e)
+        {
             throw new RepoException("Greska pri spremanju veza influencer-tip sadrzaja.", e);
         }
     }
 
-    private void obrisiTipoveSadrzajaVeze(int idInfluencer) {
-        try (PreparedStatement ps = BazaPodataka.getConnection().prepareStatement(DELETE_TIPOVI_SADRZAJA_VEZE)) {
+    private void obrisiTipoveSadrzajaVeze(int idInfluencer)
+    {
+        try (PreparedStatement ps = BazaPodataka.getConnection().prepareStatement(DELETE_TIPOVI_SADRZAJA_VEZE))
+        {
             ps.setInt(1, idInfluencer);
             ps.executeUpdate();
-        } catch (SQLException e) {
+        }
+        catch (SQLException e)
+        {
             throw new RepoException("Greska pri brisanju veza influencer-tip sadrzaja.", e);
         }
     }

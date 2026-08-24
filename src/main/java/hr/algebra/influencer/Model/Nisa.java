@@ -1,41 +1,50 @@
 package hr.algebra.influencer.Model;
 
-public class Nisa extends Entitet implements Comparable<Nisa> {
+public class Nisa extends Entitet implements Comparable<Nisa>
+{
 
     private String naziv;
 
-    public Nisa() {
+    public Nisa()
+    {
     }
 
-    public Nisa(String naziv) {
+    public Nisa(String naziv)
+    {
         this.naziv = naziv;
     }
 
-    public Nisa(int id, String naziv) {
+    public Nisa(int id, String naziv)
+    {
         super(id);
         this.naziv = naziv;
     }
 
-    public String getNaziv() {
+    public String getNaziv()
+    {
         return naziv;
     }
 
-    public void setNaziv(String naziv) {
+    public void setNaziv(String naziv)
+    {
         this.naziv = naziv;
     }
 
     @Override
-    public String opisi() {
+    public String opisi()
+    {
         return "Niša: " + naziv;
     }
 
     @Override
-    public int compareTo(Nisa other) {
+    public int compareTo(Nisa other)
+    {
         return naziv.compareToIgnoreCase(other.naziv);
     }
 
     @Override
-    public String toString() {
+    public String toString()
+    {
         return naziv;
     }
 }

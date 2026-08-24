@@ -3,11 +3,13 @@ package hr.algebra.influencer.Controller;
 import hr.algebra.influencer.DataAccessLayer.Implementation.BrandRepozitorij;
 import hr.algebra.influencer.DataAccessLayer.Implementation.BrandSuradnjaRepozitorij;
 import hr.algebra.influencer.DataAccessLayer.Implementation.InfluencerRepozitorij;
+import hr.algebra.influencer.Exception.RepoException;
 import hr.algebra.influencer.Model.Brand;
 import hr.algebra.influencer.Model.BrandSuradnja;
 import hr.algebra.influencer.Model.Enum.StatusSuradnje;
 import hr.algebra.influencer.Model.Influencer;
 import hr.algebra.influencer.Utilization.AlertUtil;
+import hr.algebra.influencer.Utilization.AppLogger;
 import hr.algebra.influencer.Utilization.Session;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -31,7 +33,8 @@ import java.util.List;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 
-public class BrandSuradnjaController implements Initializable {
+public class BrandSuradnjaController implements Initializable
+{
 
     @FXML
     private TableView<BrandSuradnja> tablica;
@@ -80,7 +83,8 @@ public class BrandSuradnjaController implements Initializable {
     private BrandSuradnja odabrana;
 
     @Override
-    public void initialize(URL location, ResourceBundle resources) {
+    public void initialize(URL location, ResourceBundle resources)
+    {
         idColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
         nazivKampanjeColumn.setCellValueFactory(new PropertyValueFactory<>("nazivKampanje"));
         brandColumn.setCellValueFactory(new PropertyValueFactory<>("brand"));
@@ -101,7 +105,8 @@ public class BrandSuradnjaController implements Initializable {
         pretragaField.textProperty().addListener((obs, staro, novo) -> filtriraj(novo));
         tablica.getSelectionModel().selectedItemProperty().addListener((obs, staro, novo) -> odaberi(novo));
 
-        if (!Session.smijeDodatiSuradnju()) {
+        if (!Session.smijeDodatiSuradnju())
+        {
             nazivKampanjeField.setDisable(true);
             godinaField.setDisable(true);
             brandComboBox.setDisable(true);
@@ -117,17 +122,23 @@ public class BrandSuradnjaController implements Initializable {
         osvjezi();
     }
 
-    private void omoguciPrevlacenje() {
-        dostupniListView.setCellFactory(lv -> {
-            ListCell<Influencer> cell = new ListCell<>() {
+    private void omoguciPrevlacenje()
+    {
+        dostupniListView.setCellFactory(lv ->
+        {
+            ListCell<Influencer> cell = new ListCell<>()
+            {
                 @Override
-                protected void updateItem(Influencer influencer, boolean empty) {
+                protected void updateItem(Influencer influencer, boolean empty)
+                {
                     super.updateItem(influencer, empty);
                     setText(empty || influencer == null ? null : influencer.getImeNadimak());
                 }
             };
-            cell.setOnDragDetected(event -> {
-                if (cell.getItem() == null) {
+            cell.setOnDragDetected(event ->
+            {
+                if (cell.getItem() == null)
+                {
                     return;
                 }
                 Dragboard db = cell.startDragAndDrop(TransferMode.MOVE);
@@ -139,22 +150,27 @@ public class BrandSuradnjaController implements Initializable {
             return cell;
         });
 
-        timListView.setOnDragOver(event -> {
-            if (event.getGestureSource() != timListView && event.getDragboard().hasString()) {
+        timListView.setOnDragOver(event ->
+        {
+            if (event.getGestureSource() != timListView && event.getDragboard().hasString())
+            {
                 event.acceptTransferModes(TransferMode.MOVE);
             }
             event.consume();
         });
 
-        timListView.setOnDragDropped(event -> {
+        timListView.setOnDragDropped(event ->
+        {
             Dragboard db = event.getDragboard();
             boolean uspjesno = false;
-            if (db.hasString()) {
+            if (db.hasString())
+            {
                 int idInfluencer = Integer.parseInt(db.getString());
                 uspjesno = dostupniInfluenceri.stream()
                         .filter(i -> i.getId() == idInfluencer)
                         .findFirst()
-                        .map(influencer -> {
+                        .map(influencer ->
+                        {
                             timInfluenceri.add(influencer);
                             dostupniInfluenceri.remove(influencer);
                             return true;
@@ -166,15 +182,18 @@ public class BrandSuradnjaController implements Initializable {
         });
     }
 
-    private void osvjezi() {
+    private void osvjezi()
+    {
         sveSuradnje.setAll(brandSuradnjaRepozitorij.getAll().stream()
                 .sorted()
                 .collect(Collectors.toList()));
         filtriraj(pretragaField.getText());
     }
 
-    private void filtriraj(String tekst) {
-        if (tekst == null || tekst.isBlank()) {
+    private void filtriraj(String tekst)
+    {
+        if (tekst == null || tekst.isBlank())
+        {
             tablica.setItems(sveSuradnje);
             return;
         }
@@ -185,7 +204,8 @@ public class BrandSuradnjaController implements Initializable {
         tablica.setItems(rezultat);
     }
 
-    private void odaberi(BrandSuradnja suradnja) {
+    private void odaberi(BrandSuradnja suradnja)
+    {
         odabrana = suradnja;
 
         nazivKampanjeField.setText(suradnja == null ? "" : suradnja.getNazivKampanje());
@@ -204,50 +224,72 @@ public class BrandSuradnjaController implements Initializable {
     }
 
     @FXML
-    private void handleSpremi() {
+    private void handleSpremi()
+    {
         String nazivKampanje = nazivKampanjeField.getText().trim();
-        if (nazivKampanje.isEmpty()) {
+        if (nazivKampanje.isEmpty())
+        {
             AlertUtil.showWarning("Provjera", "Naziv kampanje je obavezan.");
             return;
         }
 
         Brand brand = brandComboBox.getValue();
-        if (brand == null) {
+        if (brand == null)
+        {
             AlertUtil.showWarning("Provjera", "Odaberite brand.");
             return;
         }
 
         StatusSuradnje status = statusComboBox.getValue();
-        if (status == null) {
+        if (status == null)
+        {
             AlertUtil.showWarning("Provjera", "Odaberite status.");
             return;
         }
 
         int godina;
-        try {
+        try
+        {
             godina = Integer.parseInt(godinaField.getText().trim());
-        } catch (NumberFormatException e) {
+        }
+        catch (NumberFormatException e)
+        {
             AlertUtil.showWarning("Provjera", "Godina mora biti cijeli broj (npr. 2026).");
             return;
         }
 
         List<Influencer> tim = List.copyOf(timInfluenceri);
 
-        if (odabrana == null) {
-            BrandSuradnja novaSuradnja = new BrandSuradnja(nazivKampanje, brand, godina, status);
-            if (brandSuradnjaRepozitorij.isDuplicate(BrandSuradnja::getNazivKampanje, novaSuradnja)) {
-                AlertUtil.showWarning("Provjera", "Kampanja '" + nazivKampanje + "' vec postoji.");
-                return;
+        try
+        {
+            if (odabrana == null)
+            {
+                BrandSuradnja novaSuradnja = new BrandSuradnja(nazivKampanje, brand, godina, status);
+                if (brandSuradnjaRepozitorij.isDuplicate(BrandSuradnja::getNazivKampanje, novaSuradnja))
+                {
+                    AlertUtil.showWarning("Provjera", "Kampanja '" + nazivKampanje + "' vec postoji.");
+                    return;
+                }
+                novaSuradnja.setTim(tim);
+                brandSuradnjaRepozitorij.create(novaSuradnja);
+                AppLogger.info("Kreirana brand suradnja: " + nazivKampanje);
             }
-            novaSuradnja.setTim(tim);
-            brandSuradnjaRepozitorij.create(novaSuradnja);
-        } else {
-            odabrana.setNazivKampanje(nazivKampanje);
-            odabrana.setBrand(brand);
-            odabrana.setGodina(godina);
-            odabrana.setStatus(status);
-            odabrana.setTim(tim);
-            brandSuradnjaRepozitorij.update(odabrana);
+            else
+            {
+                odabrana.setNazivKampanje(nazivKampanje);
+                odabrana.setBrand(brand);
+                odabrana.setGodina(godina);
+                odabrana.setStatus(status);
+                odabrana.setTim(tim);
+                brandSuradnjaRepozitorij.update(odabrana);
+                AppLogger.info("Azurirana brand suradnja: " + nazivKampanje);
+            }
+        }
+        catch (RepoException e)
+        {
+            AppLogger.greska("Greska pri spremanju brand suradnje: " + nazivKampanje, e);
+            AlertUtil.showError("Greska", "Suradnju nije moguce spremiti.");
+            return;
         }
 
         tablica.getSelectionModel().clearSelection();
@@ -255,9 +297,11 @@ public class BrandSuradnjaController implements Initializable {
     }
 
     @FXML
-    private void handleUkloniIzTima() {
+    private void handleUkloniIzTima()
+    {
         Influencer odabraniZaUklanjanje = timListView.getSelectionModel().getSelectedItem();
-        if (odabraniZaUklanjanje == null) {
+        if (odabraniZaUklanjanje == null)
+        {
             AlertUtil.showWarning("Tim", "Prvo odaberite influencera iz tima.");
             return;
         }
@@ -266,23 +310,37 @@ public class BrandSuradnjaController implements Initializable {
     }
 
     @FXML
-    private void handleNova() {
+    private void handleNova()
+    {
         tablica.getSelectionModel().clearSelection();
     }
 
     @FXML
-    private void handleBrisi() {
-        if (odabrana == null) {
+    private void handleBrisi()
+    {
+        if (odabrana == null)
+        {
             AlertUtil.showWarning("Brisanje", "Prvo odaberite kampanju iz tablice.");
             return;
         }
-        brandSuradnjaRepozitorij.delete(odabrana.getId());
+        try
+        {
+            brandSuradnjaRepozitorij.delete(odabrana.getId());
+            AppLogger.info("Obrisana brand suradnja: " + odabrana.getNazivKampanje());
+        }
+        catch (RepoException e)
+        {
+            AppLogger.greska("Greska pri brisanju brand suradnje: " + odabrana.getNazivKampanje(), e);
+            AlertUtil.showError("Greska", "Suradnju nije moguce obrisati.");
+            return;
+        }
         tablica.getSelectionModel().clearSelection();
         osvjezi();
     }
 
     @FXML
-    private void handleOsvjezi() {
+    private void handleOsvjezi()
+    {
         osvjezi();
     }
 }

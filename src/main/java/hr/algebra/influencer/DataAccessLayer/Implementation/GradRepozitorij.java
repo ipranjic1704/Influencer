@@ -13,14 +13,17 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class GradRepozitorij implements Repozitorij<Grad> {
+public class GradRepozitorij implements Repozitorij<Grad>
+{
 
     private static final GradRepozitorij INSTANCA = new GradRepozitorij();
 
-    private GradRepozitorij() {
+    private GradRepozitorij()
+    {
     }
 
-    public static GradRepozitorij getInstance() {
+    public static GradRepozitorij getInstance()
+    {
         return INSTANCA;
     }
 
@@ -40,73 +43,99 @@ public class GradRepozitorij implements Repozitorij<Grad> {
             "DELETE FROM Grad WHERE IDGrad = ?";
 
     @Override
-    public List<Grad> getAll() {
+    public List<Grad> getAll()
+    {
         List<Grad> gradovi = new ArrayList<>();
         try (PreparedStatement ps = BazaPodataka.getConnection().prepareStatement(SELECT_ALL);
-             ResultSet rs = ps.executeQuery()) {
-            while (rs.next()) {
+             ResultSet rs = ps.executeQuery())
+        {
+            while (rs.next())
+            {
                 gradovi.add(mapRow(rs));
             }
-        } catch (SQLException e) {
+        }
+        catch (SQLException e)
+        {
             throw new RepoException("Greska pri dohvatu gradova.", e);
         }
         return gradovi;
     }
 
     @Override
-    public Optional<Grad> getById(int id) {
-        try (PreparedStatement ps = BazaPodataka.getConnection().prepareStatement(SELECT_BY_ID)) {
+    public Optional<Grad> getById(int id)
+    {
+        try (PreparedStatement ps = BazaPodataka.getConnection().prepareStatement(SELECT_BY_ID))
+        {
             ps.setInt(1, id);
-            try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) {
+            try (ResultSet rs = ps.executeQuery())
+            {
+                if (rs.next())
+                {
                     return Optional.of(mapRow(rs));
                 }
             }
-        } catch (SQLException e) {
+        }
+        catch (SQLException e)
+        {
             throw new RepoException("Greska pri dohvatu grada id=" + id, e);
         }
         return Optional.empty();
     }
 
     @Override
-    public void create(Grad grad) {
+    public void create(Grad grad)
+    {
         try (PreparedStatement ps = BazaPodataka.getConnection()
-                .prepareStatement(INSERT, Statement.RETURN_GENERATED_KEYS)) {
+                .prepareStatement(INSERT, Statement.RETURN_GENERATED_KEYS))
+        {
             ps.setString(1, grad.getNaziv());
             ps.executeUpdate();
 
-            try (ResultSet kljucevi = ps.getGeneratedKeys()) {
-                if (kljucevi.next()) {
+            try (ResultSet kljucevi = ps.getGeneratedKeys())
+            {
+                if (kljucevi.next())
+                {
                     grad.setId(kljucevi.getInt(1));
                 }
             }
-        } catch (SQLException e) {
+        }
+        catch (SQLException e)
+        {
             throw new RepoException("Greska pri spremanju grada.", e);
         }
     }
 
     @Override
-    public void update(Grad grad) {
-        try (PreparedStatement ps = BazaPodataka.getConnection().prepareStatement(UPDATE)) {
+    public void update(Grad grad)
+    {
+        try (PreparedStatement ps = BazaPodataka.getConnection().prepareStatement(UPDATE))
+        {
             ps.setString(1, grad.getNaziv());
             ps.setInt(2, grad.getId());
             ps.executeUpdate();
-        } catch (SQLException e) {
+        }
+        catch (SQLException e)
+        {
             throw new RepoException("Greska pri azuriranju grada.", e);
         }
     }
 
     @Override
-    public void delete(int id) {
-        try (PreparedStatement ps = BazaPodataka.getConnection().prepareStatement(DELETE)) {
+    public void delete(int id)
+    {
+        try (PreparedStatement ps = BazaPodataka.getConnection().prepareStatement(DELETE))
+        {
             ps.setInt(1, id);
             ps.executeUpdate();
-        } catch (SQLException e) {
+        }
+        catch (SQLException e)
+        {
             throw new RepoException("Greska pri brisanju grada id=" + id, e);
         }
     }
 
-    private Grad mapRow(ResultSet rs) throws SQLException {
+    private Grad mapRow(ResultSet rs) throws SQLException
+    {
         return new Grad(rs.getInt("IDGrad"), rs.getString("Naziv"));
     }
 }

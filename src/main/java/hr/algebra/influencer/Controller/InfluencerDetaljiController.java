@@ -10,7 +10,8 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
 
-public class InfluencerDetaljiController {
+public class InfluencerDetaljiController
+{
 
     @FXML
     private Label naslovLabel;
@@ -33,7 +34,8 @@ public class InfluencerDetaljiController {
     @FXML
     private ListView<Platforma> platformeList;
 
-    public void setInfluencer(Influencer influencer) {
+    public void setInfluencer(Influencer influencer)
+    {
         naslovLabel.setText("Detalji - " + influencer.getImeNadimak());
         imeNadimakLabel.setText(influencer.getImeNadimak());
         zemljaLabel.setText(prazno(influencer.getZemlja()));
@@ -46,12 +48,15 @@ public class InfluencerDetaljiController {
         ucitajSliku(influencer.getProfilnaSlika());
     }
 
-    private String prazno(String tekst) {
+    private String prazno(String tekst)
+    {
         return (tekst == null || tekst.isBlank()) ? "-" : tekst;
     }
 
-    private void ucitajSliku(String url) {
-        if (url == null || url.isBlank()) {
+    private void ucitajSliku(String url)
+    {
+        if (url == null || url.isBlank())
+        {
             slikaImageView.setVisible(false);
             nemaSlikeLabel.setVisible(true);
             return;
@@ -62,8 +67,10 @@ public class InfluencerDetaljiController {
         slikaImageView.setVisible(true);
         nemaSlikeLabel.setVisible(false);
 
-        slika.errorProperty().addListener((obs, staro, greska) -> {
-            if (greska) {
+        slika.errorProperty().addListener((obs, staro, greska) ->
+        {
+            if (greska)
+            {
                 slikaImageView.setVisible(false);
                 nemaSlikeLabel.setVisible(true);
             }
@@ -71,7 +78,8 @@ public class InfluencerDetaljiController {
     }
 
     @FXML
-    private void handleZatvori() {
+    private void handleZatvori()
+    {
         Stage stage = (Stage) naslovLabel.getScene().getWindow();
         stage.close();
     }
