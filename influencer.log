@@ -38,3 +38,7 @@ kol 25, 2026 12:05:27 AM hr.algebra.influencer.Utilization.AppLogger upozorenje
 WARNING: [nepoznat] Neuspjela prijava, korisnicko ime: admin
 kol 25, 2026 12:05:31 AM hr.algebra.influencer.Utilization.AppLogger upozorenje
 WARNING: [nepoznat] Neuspjela prijava, korisnicko ime: admin
+kol 27, 2026 11:05:36 PM hr.algebra.influencer.Utilization.AppLogger info
+INFO: [admin] Prijava uspjesna.
+kol 27, 2026 11:05:39 PM hr.algebra.influencer.Utilization.AppLogger info
+INFO: [admin] Otvoren ekran: Influenceri.

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<konfiguracija>
+    <baza>
+        <url>jdbc:h2:./InfluencerDB</url>
+        <korisnickoIme>sa</korisnickoIme>
+        <lozinka></lozinka>
+    </baza>
+    <ekran>
+        <sirina>1280</sirina>
+        <visina>800</visina>
+    </ekran>
+</konfiguracija>

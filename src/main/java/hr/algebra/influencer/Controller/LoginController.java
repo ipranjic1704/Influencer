@@ -6,6 +6,7 @@ import hr.algebra.influencer.Exception.AppException;
 import hr.algebra.influencer.Model.Korisnik;
 import hr.algebra.influencer.Utilization.AlertUtil;
 import hr.algebra.influencer.Utilization.AppLogger;
+import hr.algebra.influencer.Utilization.ConfigUtil;
 import hr.algebra.influencer.Utilization.SceneUtil;
 import hr.algebra.influencer.Utilization.Session;
 import javafx.fxml.FXML;
@@ -36,6 +37,8 @@ public class LoginController
             AppLogger.info("Prijava uspjesna.");
             Stage stage = (Stage) korisnickoImeField.getScene().getWindow();
             SceneUtil.loadScene(App.class.getResource("fxml/main.fxml"), stage, "Influencer");
+            stage.setWidth(ConfigUtil.getSirinaEkrana());
+            stage.setHeight(ConfigUtil.getVisinaEkrana());
         }
         catch (AppException e)
         {

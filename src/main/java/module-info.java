@@ -4,6 +4,7 @@ module hr.algebra.influencer
     requires javafx.fxml;
     requires java.sql;
     requires java.net.http;
+    requires java.xml;
     requires com.h2database;
     requires com.fasterxml.jackson.databind;
 

@@ -1,6 +1,7 @@
 package hr.algebra.influencer;
 
 import hr.algebra.influencer.Exception.RepoException;
+import hr.algebra.influencer.Utilization.ConfigUtil;
 
 import java.nio.charset.StandardCharsets;
 import java.sql.Connection;
@@ -11,9 +12,9 @@ import java.sql.Statement;
 public class BazaPodataka
 {
 
-    private static final String URL = "jdbc:h2:./InfluencerDB";
-    private static final String USER = "sa";
-    private static final String PASS = "";
+    private static final String URL = ConfigUtil.getDbUrl();
+    private static final String USER = ConfigUtil.getDbKorisnik();
+    private static final String PASS = ConfigUtil.getDbLozinka();
 
     private static final Connection veza;
 
