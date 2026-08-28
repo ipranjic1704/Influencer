@@ -2,8 +2,19 @@ package hr.algebra.influencer.Utilization;
 
 import hr.algebra.influencer.Exception.RepoException;
 import hr.algebra.influencer.Model.Korisnik;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+import java.io.File;
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.logging.ConsoleHandler;
 import java.util.logging.FileHandler;
 import java.util.logging.Level;
@@ -14,6 +25,7 @@ public final class AppLogger
 {
 
     private static final Logger LOGGER = Logger.getLogger("hr.algebra.influencer");
+    private static final File LOG_XML = new File("influencer-log.xml");
 
     static
     {
@@ -43,21 +55,74 @@ public final class AppLogger
     public static void info(String poruka)
     {
         LOGGER.info(korisnikPrefiks() + poruka);
+        zapisiXML("INFO", poruka);
     }
 
     public static void upozorenje(String poruka)
     {
         LOGGER.warning(korisnikPrefiks() + poruka);
+        zapisiXML("UPOZORENJE", poruka);
     }
 
     public static void greska(String poruka, Throwable uzrok)
     {
         LOGGER.log(Level.SEVERE, korisnikPrefiks() + poruka, uzrok);
+        zapisiXML("GRESKA", uzrok == null ? poruka : poruka + " (" + uzrok.getMessage() + ")");
     }
 
     private static String korisnikPrefiks()
     {
         Korisnik korisnik = Session.getTrenutniKorisnik();
         return "[" + (korisnik == null ? "nepoznat" : korisnik.getKorisnickoIme()) + "] ";
+    }
+
+    private static synchronized void zapisiXML(String razina, String poruka)
+    {
+        try
+        {
+            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder builder = factory.newDocumentBuilder();
+            Document document;
+
+            if (LOG_XML.exists())
+            {
+                document = builder.parse(LOG_XML);
+            }
+            else
+            {
+                document = builder.newDocument();
+                document.appendChild(document.createElement("zapisnik"));
+            }
+
+            Element korijen = document.getDocumentElement();
+            Element zapis = document.createElement("zapis");
+
+            Element vrijeme = document.createElement("vrijeme");
+            vrijeme.setTextContent(LocalDateTime.now().toString());
+            zapis.appendChild(vrijeme);
+
+            Element razinaElement = document.createElement("razina");
+            razinaElement.setTextContent(razina);
+            zapis.appendChild(razinaElement);
+
+            Korisnik korisnik = Session.getTrenutniKorisnik();
+            Element korisnikElement = document.createElement("korisnik");
+            korisnikElement.setTextContent(korisnik == null ? "nepoznat" : korisnik.getKorisnickoIme());
+            zapis.appendChild(korisnikElement);
+
+            Element porukaElement = document.createElement("poruka");
+            porukaElement.setTextContent(poruka);
+            zapis.appendChild(porukaElement);
+
+            korijen.appendChild(zapis);
+
+            Transformer transformer = TransformerFactory.newInstance().newTransformer();
+            transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+            transformer.transform(new DOMSource(document), new StreamResult(LOG_XML));
+        }
+        catch (Exception e)
+        {
+            throw new RepoException(e);
+        }
     }
 }

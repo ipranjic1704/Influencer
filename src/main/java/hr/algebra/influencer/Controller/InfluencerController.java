@@ -39,6 +39,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 public class InfluencerController implements Initializable
@@ -258,9 +259,17 @@ public class InfluencerController implements Initializable
         gradComboBox.setValue(influencer == null ? null : influencer.getGrad());
         jezikSadrzajaField.setText(influencer == null ? "" : influencer.getJezikSadrzaja());
 
+        Consumer<CheckBox> odznaci = checkBox -> checkBox.setSelected(false);
+        platformaCheckboxovi.values().forEach(odznaci);
+        nisaCheckboxovi.values().forEach(odznaci);
+        tipSadrzajaCheckboxovi.values().forEach(odznaci);
+
+        /*
         platformaCheckboxovi.values().forEach(checkBox -> checkBox.setSelected(false));
         nisaCheckboxovi.values().forEach(checkBox -> checkBox.setSelected(false));
         tipSadrzajaCheckboxovi.values().forEach(checkBox -> checkBox.setSelected(false));
+        */
+
         if (influencer != null)
         {
             for (Platforma platforma : influencer.getPlatforme())

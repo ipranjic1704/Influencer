@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<zapisnik>
+                
+    
+    
+    <zapis>
+                                
+        
+        
+        <vrijeme>2026-08-28T23:08:39.693902</vrijeme>
+                                
+        
+        
+        <razina>INFO</razina>
+                                
+        
+        
+        <korisnik>admin</korisnik>
+                                
+        
+        
+        <poruka>Prijava uspjesna.</poruka>
+                            
+    
+    
+    </zapis>
+            
+    
+    
+    <zapis>
+                        
+        
+        <vrijeme>2026-08-28T23:09:39.531093900</vrijeme>
+                        
+        
+        <razina>INFO</razina>
+                        
+        
+        <korisnik>admin</korisnik>
+                        
+        
+        <poruka>Otvoren ekran: Influenceri.</poruka>
+                    
+    
+    </zapis>
+        
+    
+    <zapis>
+                
+        <vrijeme>2026-08-28T23:09:46.590370400</vrijeme>
+                
+        <razina>INFO</razina>
+                
+        <korisnik>admin</korisnik>
+                
+        <poruka>Uvoz influencera s YouTubea zavrsen, uvezeno: 4</poruka>
+            
+    </zapis>
+    
+    <zapis>
+        <vrijeme>2026-08-28T23:09:48.557417600</vrijeme>
+        <razina>INFO</razina>
+        <korisnik>admin</korisnik>
+        <poruka>Otvoren ekran: Influenceri.</poruka>
+    </zapis>
+</zapisnik>
