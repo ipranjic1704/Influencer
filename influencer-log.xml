@@ -1,13 +1,356 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <zapisnik>
+                                            
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    <zapis>
+                                                                                        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <vrijeme>2026-08-28T23:08:39.693902</vrijeme>
+                                                                                        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <razina>INFO</razina>
+                                                                                        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <korisnik>admin</korisnik>
+                                                                                        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <poruka>Prijava uspjesna.</poruka>
+                                                                                    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    </zapis>
+                                        
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    <zapis>
+                                                                                
+        
+        
+        
+        
+        
+        
+        
+        
+        <vrijeme>2026-08-28T23:09:39.531093900</vrijeme>
+                                                                                
+        
+        
+        
+        
+        
+        
+        
+        
+        <razina>INFO</razina>
+                                                                                
+        
+        
+        
+        
+        
+        
+        
+        
+        <korisnik>admin</korisnik>
+                                                                                
+        
+        
+        
+        
+        
+        
+        
+        
+        <poruka>Otvoren ekran: Influenceri.</poruka>
+                                                                            
+    
+    
+    
+    
+    
+    
+    
+    
+    </zapis>
+                                    
+    
+    
+    
+    
+    
+    
+    
+    
+    <zapis>
+                                                                        
+        
+        
+        
+        
+        
+        
+        
+        <vrijeme>2026-08-28T23:09:46.590370400</vrijeme>
+                                                                        
+        
+        
+        
+        
+        
+        
+        
+        <razina>INFO</razina>
+                                                                        
+        
+        
+        
+        
+        
+        
+        
+        <korisnik>admin</korisnik>
+                                                                        
+        
+        
+        
+        
+        
+        
+        
+        <poruka>Uvoz influencera s YouTubea zavrsen, uvezeno: 4</poruka>
+                                                                    
+    
+    
+    
+    
+    
+    
+    
+    </zapis>
+                                
+    
+    
+    
+    
+    
+    
+    
+    <zapis>
+                                                                
+        
+        
+        
+        
+        
+        
+        <vrijeme>2026-08-28T23:09:48.557417600</vrijeme>
+                                                                
+        
+        
+        
+        
+        
+        
+        <razina>INFO</razina>
+                                                                
+        
+        
+        
+        
+        
+        
+        <korisnik>admin</korisnik>
+                                                                
+        
+        
+        
+        
+        
+        
+        <poruka>Otvoren ekran: Influenceri.</poruka>
+                                                            
+    
+    
+    
+    
+    
+    
+    </zapis>
+                            
+    
+    
+    
+    
+    
+    
+    <zapis>
+                                                        
+        
+        
+        
+        
+        
+        <vrijeme>2026-08-28T23:43:29.220633700</vrijeme>
+                                                        
+        
+        
+        
+        
+        
+        <razina>INFO</razina>
+                                                        
+        
+        
+        
+        
+        
+        <korisnik>admin</korisnik>
+                                                        
+        
+        
+        
+        
+        
+        <poruka>Prijava uspjesna.</poruka>
+                                                    
+    
+    
+    
+    
+    
+    </zapis>
+                        
+    
+    
+    
+    
+    
+    <zapis>
+                                                
+        
+        
+        
+        
+        <vrijeme>2026-08-28T23:43:32.019740400</vrijeme>
+                                                
+        
+        
+        
+        
+        <razina>INFO</razina>
+                                                
+        
+        
+        
+        
+        <korisnik>admin</korisnik>
+                                                
+        
+        
+        
+        
+        <poruka>Otvoren ekran: Influenceri.</poruka>
+                                            
+    
+    
+    
+    
+    </zapis>
+                    
+    
+    
+    
+    
+    <zapis>
+                                        
+        
+        
+        
+        <vrijeme>2026-08-28T23:43:53.444980400</vrijeme>
+                                        
+        
+        
+        
+        <razina>INFO</razina>
+                                        
+        
+        
+        
+        <korisnik>admin</korisnik>
+                                        
+        
+        
+        
+        <poruka>Prijava uspjesna.</poruka>
+                                    
+    
+    
+    
+    </zapis>
                 
+    
     
     
     <zapis>
                                 
         
         
-        <vrijeme>2026-08-28T23:08:39.693902</vrijeme>
+        <vrijeme>2026-08-28T23:43:56.883700900</vrijeme>
                                 
         
         
@@ -19,7 +362,7 @@
                                 
         
         
-        <poruka>Prijava uspjesna.</poruka>
+        <poruka>Otvoren ekran: Influenceri.</poruka>
                             
     
     
@@ -30,7 +373,7 @@
     <zapis>
                         
         
-        <vrijeme>2026-08-28T23:09:39.531093900</vrijeme>
+        <vrijeme>2026-08-28T23:44:03.888697500</vrijeme>
                         
         
         <razina>INFO</razina>
@@ -39,7 +382,7 @@
         <korisnik>admin</korisnik>
                         
         
-        <poruka>Otvoren ekran: Influenceri.</poruka>
+        <poruka>Obrisan influencer: Señorita Influencer - Topic</poruka>
                     
     
     </zapis>
@@ -47,18 +390,18 @@
     
     <zapis>
                 
-        <vrijeme>2026-08-28T23:09:46.590370400</vrijeme>
+        <vrijeme>2026-08-28T23:51:09.178154500</vrijeme>
                 
         <razina>INFO</razina>
                 
         <korisnik>admin</korisnik>
                 
-        <poruka>Uvoz influencera s YouTubea zavrsen, uvezeno: 4</poruka>
+        <poruka>Prijava uspjesna.</poruka>
             
     </zapis>
     
     <zapis>
-        <vrijeme>2026-08-28T23:09:48.557417600</vrijeme>
+        <vrijeme>2026-08-28T23:51:11.584648300</vrijeme>
         <razina>INFO</razina>
         <korisnik>admin</korisnik>
         <poruka>Otvoren ekran: Influenceri.</poruka>

@@ -62,6 +62,8 @@
                 </columns>
             </TableView>
 
+            <Label fx:id="statistikaLabel" style="-fx-text-fill: #666666; -fx-font-size: 11px;"/>
+
             <Separator/>
 
             <Label text="Podaci o influenceru" style="-fx-font-weight: bold;"/>

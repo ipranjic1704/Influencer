@@ -25,6 +25,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
@@ -35,6 +36,7 @@ import javafx.stage.Stage;
 
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -47,6 +49,8 @@ public class InfluencerController implements Initializable
 
     @FXML
     private TableView<Influencer> tablica;
+    @FXML
+    private Label statistikaLabel;
     @FXML
     private TableColumn<Influencer, Integer> idColumn;
     @FXML
@@ -219,6 +223,49 @@ public class InfluencerController implements Initializable
                 .filter(i -> minPratitelja == null || i.getBrojPratitelja() >= minPratitelja)
                 .collect(Collectors.toCollection(FXCollections::observableArrayList));
         tablica.setItems(rezultat);
+        prikaziStatistiku(rezultat);
+    }
+
+    private void prikaziStatistiku(List<Influencer> influenceri)
+    {
+        if (influenceri.isEmpty())
+        {
+            statistikaLabel.setText("Nema rezultata.");
+            return;
+        }
+
+        long brojRazlicitihZemalja = influenceri.stream()
+                .map(Influencer::getZemlja)
+                .distinct()
+                .count();
+
+        int maxPratitelja = influenceri.stream()
+                .mapToInt(Influencer::getBrojPratitelja)
+                .max()
+                .orElse(0);
+
+        int minPratitelja = influenceri.stream()
+                .mapToInt(Influencer::getBrojPratitelja)
+                .min()
+                .orElse(0);
+
+        boolean imaMegaInfluencera = influenceri.stream()
+                .anyMatch(i -> i.getBrojPratitelja() >= 1_000_000);
+
+        boolean sviImajuIspravanEngagement = influenceri.stream()
+                .noneMatch(i -> i.getEngagementRate() < 0);
+
+        String drugiPoPratiteljima = influenceri.stream()
+                .sorted(Comparator.comparingInt(Influencer::getBrojPratitelja).reversed())
+                .skip(1)
+                .findFirst()
+                .map(Influencer::getImeNadimak)
+                .orElse("-");
+
+        statistikaLabel.setText(String.format(
+                "Prikazano: %d · Zemalja: %d · Pratitelji: %d-%d · Mega influencer (≥1M): %s · Engagement u redu: %s · 2. po pratiteljima: %s",
+                influenceri.size(), brojRazlicitihZemalja, minPratitelja, maxPratitelja,
+                imaMegaInfluencera ? "da" : "ne", sviImajuIspravanEngagement ? "da" : "ne", drugiPoPratiteljima));
     }
 
     private Integer parsirajMinPratitelja()
@@ -445,6 +492,7 @@ public class InfluencerController implements Initializable
     @FXML
     private void handleOsvjezi()
     {
+        handleOcistiFiltere();
         osvjezi();
     }
 }
