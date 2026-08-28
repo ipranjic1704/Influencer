@@ -18,6 +18,7 @@ public final class ConfigUtil
     private static final String DB_LOZINKA;
     private static final int SIRINA_EKRANA;
     private static final int VISINA_EKRANA;
+    private static final String YOUTUBE_API_KLJUC;
 
     static
     {
@@ -36,6 +37,7 @@ public final class ConfigUtil
         DB_LOZINKA = handler.dbLozinka;
         SIRINA_EKRANA = Integer.parseInt(handler.sirinaEkrana);
         VISINA_EKRANA = Integer.parseInt(handler.visinaEkrana);
+        YOUTUBE_API_KLJUC = handler.youtubeApiKljuc;
     }
 
     private ConfigUtil()
@@ -67,6 +69,11 @@ public final class ConfigUtil
         return VISINA_EKRANA;
     }
 
+    public static String getYoutubeApiKljuc()
+    {
+        return YOUTUBE_API_KLJUC;
+    }
+
     private static class Handler extends DefaultHandler
     {
 
@@ -77,6 +84,7 @@ public final class ConfigUtil
         private String dbLozinka = "";
         private String sirinaEkrana = "1280";
         private String visinaEkrana = "800";
+        private String youtubeApiKljuc = "";
 
         @Override
         public void startElement(String uri, String localName, String qName, Attributes attributes)
@@ -101,6 +109,7 @@ public final class ConfigUtil
                 case "lozinka" -> dbLozinka = vrijednost;
                 case "sirina" -> sirinaEkrana = vrijednost;
                 case "visina" -> visinaEkrana = vrijednost;
+                case "apiKey" -> youtubeApiKljuc = vrijednost;
                 default ->
                 {
                 }

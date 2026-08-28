@@ -55,13 +55,32 @@ public class BazaPodataka
 
     private static void initSchema(Connection conn) throws Exception
     {
-        String ddl = new String(
-                BazaPodataka.class.getResourceAsStream("/hr/algebra/influencer/sql/init_ddl.sql").readAllBytes(),
+        izvrsiSkriptu(conn, "/hr/algebra/influencer/sql/init_ddl.sql");
+        System.out.println("[db] Shema inicijalizirana");
+    }
+
+    public static void obrisiSveIzBaze()
+    {
+        try
+        {
+            izvrsiSkriptu(veza, "/hr/algebra/influencer/sql/delete_all.sql");
+            System.out.println("[db] Svi podaci obrisani");
+        }
+        catch (Exception e)
+        {
+            throw new RepoException("Greska pri brisanju svih podataka iz baze.", e);
+        }
+    }
+
+    private static void izvrsiSkriptu(Connection conn, String putanja) throws Exception
+    {
+        String sadrzaj = new String(
+                BazaPodataka.class.getResourceAsStream(putanja).readAllBytes(),
                 StandardCharsets.UTF_8
         );
         try (Statement stmt = conn.createStatement())
         {
-            for (String sql : ddl.split(";"))
+            for (String sql : sadrzaj.split(";"))
             {
                 String trimmed = sql.trim();
                 if (!trimmed.isEmpty())
@@ -70,7 +89,6 @@ public class BazaPodataka
                 }
             }
         }
-        System.out.println("[db] Shema inicijalizirana");
     }
 
     public static Connection getConnection()

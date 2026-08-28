@@ -22,7 +22,10 @@
                     <Menu fx:id="adminAlatiMenu" text="Admin alati">
                         <items>
                             <MenuItem fx:id="uveziGradoveItem" text="Uvezi gradove" onAction="#handleUveziGradove"/>
+                            <MenuItem fx:id="uveziYoutubeItem" text="Uvezi influencere s YouTubea" onAction="#handleUveziInfluencereYoutube"/>
                             <MenuItem fx:id="obrisiSveItem" text="Obriši sve influencere" onAction="#handleObrisiSve"/>
+                            <MenuItem fx:id="obrisiSveIzBazeItem" text="Obriši sve iz baze" onAction="#handleObrisiSveIzBaze"/>
+                            <MenuItem fx:id="izvezitXmlItem" text="Izvezi influencere u XML" onAction="#handleIzvezitXml"/>
                         </items>
                     </Menu>
                 </menus>

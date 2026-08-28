@@ -9,4 +9,7 @@
         <sirina>1280</sirina>
         <visina>800</visina>
     </ekran>
+    <youtube>
+        <apiKey>AIzaSyBDLu7YbUskc3KyEi1YwqxIT0iTYyYON0w</apiKey>
+    </youtube>
 </konfiguracija>

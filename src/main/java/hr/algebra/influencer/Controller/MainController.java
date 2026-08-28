@@ -1,10 +1,12 @@
 package hr.algebra.influencer.Controller;
 
 import hr.algebra.influencer.App;
+import hr.algebra.influencer.BazaPodataka;
 import hr.algebra.influencer.DataAccessLayer.Implementation.InfluencerRepozitorij;
 import hr.algebra.influencer.Exception.RepoException;
 import hr.algebra.influencer.Model.Influencer;
 import hr.algebra.influencer.Service.UvozGradovaService;
+import hr.algebra.influencer.Service.UvozInfluenceraYoutubeService;
 import hr.algebra.influencer.Utilization.AlertUtil;
 import hr.algebra.influencer.Utilization.AppLogger;
 import hr.algebra.influencer.Utilization.SceneUtil;
@@ -16,8 +18,10 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
+import java.io.File;
 import java.util.List;
 import java.util.Optional;
 
@@ -31,7 +35,13 @@ public class MainController
     @FXML
     private MenuItem uveziGradoveItem;
     @FXML
+    private MenuItem uveziYoutubeItem;
+    @FXML
     private MenuItem obrisiSveItem;
+    @FXML
+    private MenuItem obrisiSveIzBazeItem;
+    @FXML
+    private MenuItem izvezitXmlItem;
     @FXML
     private Button influenceriButton;
     @FXML
@@ -50,6 +60,7 @@ public class MainController
     private final InfluencerRepozitorij influencerRepozitorij = InfluencerRepozitorij.getInstance();
 
     private final UvozGradovaService uvozGradovaService = new UvozGradovaService();
+    private final UvozInfluenceraYoutubeService uvozInfluenceraYoutubeService = new UvozInfluenceraYoutubeService();
 
     @FXML
     private void initialize()
@@ -170,6 +181,43 @@ public class MainController
     }
 
     @FXML
+    private void handleUveziInfluencereYoutube()
+    {
+        if (uvozInfluenceraYoutubeService.isRunning())
+        {
+            return;
+        }
+
+        uveziYoutubeItem.setDisable(true);
+
+        Alert napredak = new Alert(Alert.AlertType.INFORMATION);
+        napredak.setTitle("Uvoz influencera s YouTubea");
+        napredak.setHeaderText(null);
+        napredak.contentTextProperty().bind(uvozInfluenceraYoutubeService.messageProperty());
+        napredak.show();
+
+        uvozInfluenceraYoutubeService.setOnSucceeded(e ->
+        {
+            napredak.contentTextProperty().unbind();
+            napredak.close();
+            uveziYoutubeItem.setDisable(false);
+            AppLogger.info("Uvoz influencera s YouTubea zavrsen, uvezeno: " + uvozInfluenceraYoutubeService.getValue());
+            AlertUtil.showInfo("Uvoz s YouTubea", "Uvezeno novih influencera: " + uvozInfluenceraYoutubeService.getValue());
+        });
+        uvozInfluenceraYoutubeService.setOnFailed(e ->
+        {
+            napredak.contentTextProperty().unbind();
+            napredak.close();
+            uveziYoutubeItem.setDisable(false);
+            Throwable greska = uvozInfluenceraYoutubeService.getException();
+            AppLogger.greska("Uvoz influencera s YouTubea neuspjesan", greska);
+            AlertUtil.showError("Uvoz s YouTubea", greska == null ? "Nepoznata greska." : greska.getMessage());
+        });
+
+        uvozInfluenceraYoutubeService.restart();
+    }
+
+    @FXML
     private void handleObrisiSve()
     {
         List<Influencer> sviInfluenceri = influencerRepozitorij.getAll();
@@ -206,6 +254,85 @@ public class MainController
         AppLogger.info("Obrisani svi influenceri, ukupno: " + sviInfluenceri.size());
         AlertUtil.showInfo("Obriši sve", "Obrisano influencera: " + sviInfluenceri.size());
     }
+
+    @FXML
+    private void handleObrisiSveIzBaze()
+    {
+        Alert potvrda = new Alert(Alert.AlertType.CONFIRMATION);
+        potvrda.setTitle("Obriši sve iz baze");
+        potvrda.setHeaderText("Ovo će trajno obrisati SVE podatke iz baze: influencere, platforme, " +
+                "niše, tipove sadržaja, brendove, brand suradnje i gradove.");
+        potvrda.setContentText("Korisnički računi ostaju netaknuti. Radnja se ne može poništiti. Nastaviti?");
+        Optional<ButtonType> odgovor = potvrda.showAndWait();
+        if (odgovor.isEmpty() || odgovor.get() != ButtonType.OK)
+        {
+            return;
+        }
+
+        try
+        {
+            BazaPodataka.obrisiSveIzBaze();
+        }
+        catch (RepoException e)
+        {
+            AppLogger.greska("Greska pri brisanju svih podataka iz baze", e);
+            AlertUtil.showError("Greska", "Nije moguce obrisati sve podatke iz baze.");
+            return;
+        }
+        AppLogger.info("Obrisani svi podaci iz baze (osim korisnickih racuna).");
+        AlertUtil.showInfo("Obriši sve iz baze", "Svi podaci su obrisani.");
+    }
+
+    @FXML
+    private void handleIzvezitXml()
+    {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Spremi XML izvoz influencera");
+        fileChooser.setInitialFileName("influenceri-izvoz.xml");
+        fileChooser.getExtensionFilters().add(
+                new FileChooser.ExtensionFilter("XML datoteka (*.xml)", "*.xml"));
+
+        Stage stage = (Stage) korisnikLabel.getScene().getWindow();
+        File odabranaDatoteka = fileChooser.showSaveDialog(stage);
+        if (odabranaDatoteka == null)
+        {
+            return;
+        }
+
+        try
+        {
+            int brojInfluencera = influencerRepozitorij.exportToXml(odabranaDatoteka.toPath());
+            AppLogger.info("XML izvoz influencera zavrsen, izvezeno: " + brojInfluencera);
+            AlertUtil.showInfo("XML izvoz",
+                    "Izvezeno influencera: " + brojInfluencera + "\nDatoteka: " + odabranaDatoteka.getAbsolutePath());
+        }
+        catch (RepoException e)
+        {
+            AppLogger.greska("Greska pri XML izvozu influencera", e);
+            AlertUtil.showError("XML izvoz", "Nije moguce izvesti influencere u XML.");
+        }
+    }
+
+    /*
+    @FXML
+    private void handleIzveziXml()
+    {
+        Path putanja = Path.of("influenceri-izvoz.xml");
+
+        try
+        {
+            int brojInfluencera = influencerRepozitorij.exportToXml(putanja);
+            AppLogger.info("XML izvoz influencera zavrsen, izvezeno: " + brojInfluencera);
+            AlertUtil.showInfo("XML izvoz",
+                    "Izvezeno influencera: " + brojInfluencera + "\nDatoteka: " + putanja.toAbsolutePath());
+        }
+        catch (RepoException e)
+        {
+            AppLogger.greska("Greska pri XML izvozu influencera", e);
+            AlertUtil.showError("XML izvoz", "Nije moguce izvesti influencere u XML.");
+        }
+    }
+    */
 
     @FXML
     private void handleOdjava()

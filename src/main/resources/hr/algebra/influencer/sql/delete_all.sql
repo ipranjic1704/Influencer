@@ -1,0 +1,11 @@
+DELETE FROM BrandSuradnjaInfluencer;
+DELETE FROM InfluencerPlatforma;
+DELETE FROM InfluencerNisa;
+DELETE FROM InfluencerTipSadrzaja;
+DELETE FROM BrandSuradnja;
+DELETE FROM Influencer;
+DELETE FROM Brand;
+DELETE FROM Platforma;
+DELETE FROM Nisa;
+DELETE FROM TipSadrzaja;
+DELETE FROM Grad;
