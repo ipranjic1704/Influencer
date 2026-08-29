@@ -515,7 +515,8 @@ public class InfluencerController implements Initializable
     private void handleOdaberiSliku()
     {
         FileChooser fileChooser = new FileChooser();
-        fileChooser.setTitle("Odaberi sliku influencera");
+        fileChooser.setTitle("Odaberi sliku influencera iz assets direktorija");
+        fileChooser.setInitialDirectory(AssetUtil.getAssetsDir().toFile());
         fileChooser.getExtensionFilters().add(
                 new FileChooser.ExtensionFilter("Slike", "*.png", "*.jpg", "*.jpeg", "*.gif"));
 
@@ -526,8 +527,7 @@ public class InfluencerController implements Initializable
             return;
         }
 
-        String putanja = AssetUtil.spremiSliku(odabranaDatoteka);
-        profilnaSlikaField.setText(putanja);
+        profilnaSlikaField.setText(odabranaDatoteka.toURI().toString());
     }
 
     @FXML

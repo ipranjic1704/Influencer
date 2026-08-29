@@ -92,7 +92,7 @@
 
                 <Label text="Profilna slika:" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
                 <HBox spacing="8.0" GridPane.rowIndex="3" GridPane.columnIndex="1">
-                    <TextField fx:id="profilnaSlikaField" promptText="URL slike ili odaberi datoteku" HBox.hgrow="ALWAYS" maxWidth="Infinity"/>
+                    <TextField fx:id="profilnaSlikaField" promptText="nema slike - klikni Odaberi..." editable="false" HBox.hgrow="ALWAYS" maxWidth="Infinity"/>
                     <Button text="Odaberi..." onAction="#handleOdaberiSliku"/>
                 </HBox>
             </GridPane>

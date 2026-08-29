@@ -2,42 +2,34 @@ package hr.algebra.influencer.Utilization;
 
 import hr.algebra.influencer.Exception.RepoException;
 
-import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.StandardCopyOption;
-import java.util.UUID;
 
 public final class AssetUtil
 {
 
-    private static final Path ASSETS_DIR = Path.of("assets");
+    private static final Path ASSETS_DIR = Path.of("assets").toAbsolutePath().normalize();
+
+    // private static final String ASSETS_PUTANJA = "H:/Programiranje/Java/Influencer/assets";
+    // private static final Path ASSETS_DIR = Path.of(ASSETS_PUTANJA);
 
     private AssetUtil()
     {
     }
 
-    public static String spremiSliku(File izvor)
+    public static Path getAssetsDir()
     {
         try
         {
             Files.createDirectories(ASSETS_DIR);
-
-            String naziv = izvor.getName();
-            int tockaIndex = naziv.lastIndexOf('.');
-            String ekstenzija = tockaIndex == -1 ? "" : naziv.substring(tockaIndex);
-            Path odrediste = ASSETS_DIR.resolve(UUID.randomUUID() + ekstenzija);
-
-            Files.copy(izvor.toPath(), odrediste, StandardCopyOption.REPLACE_EXISTING);
-
-            return odrediste.toUri().toString();
         }
         catch (IOException e)
         {
-            throw new RepoException("Greska pri spremanju slike.", e);
+            throw new RepoException("Greska pri kreiranju assets direktorija.", e);
         }
+        return ASSETS_DIR;
     }
 
     public static void obrisiSliku(String putanja)
@@ -49,7 +41,12 @@ public final class AssetUtil
 
         try
         {
-            Files.deleteIfExists(Path.of(URI.create(putanja)));
+            Path datoteka = Path.of(URI.create(putanja)).toAbsolutePath().normalize();
+            if (!datoteka.startsWith(ASSETS_DIR))
+            {
+                return;
+            }
+            Files.deleteIfExists(datoteka);
         }
         catch (Exception e)
         {

@@ -111,9 +111,8 @@ public final class JsonParserUtil
                     int brojPretplatnika = statistics.path("subscriberCount").asInt(0);
                     String zemlja = snippet.path("country").asText("");
                     String jezik = snippet.path("defaultLanguage").asText("");
-                    String slika = snippet.path("thumbnails").path("default").path("url").asText("");
 
-                    influenceri.add(new Influencer(naziv, brojPretplatnika, 0.0, zemlja, null, jezik, slika));
+                    influenceri.add(new Influencer(naziv, brojPretplatnika, 0.0, zemlja, null, jezik, ""));
                 }
             }
             return influenceri;
