@@ -1,3 +1,4 @@
+DELETE FROM Korisnik;
 DELETE FROM BrandSuradnjaInfluencer;
 DELETE FROM InfluencerPlatforma;
 DELETE FROM InfluencerNisa;
