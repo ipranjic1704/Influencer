@@ -208,3 +208,121 @@ kol 28, 2026 11:51:09 PM hr.algebra.influencer.Utilization.AppLogger info
 INFO: [admin] Prijava uspjesna.
 kol 28, 2026 11:51:11 PM hr.algebra.influencer.Utilization.AppLogger info
 INFO: [admin] Otvoren ekran: Influenceri.
+kol 29, 2026 12:02:26 AM hr.algebra.influencer.Utilization.AppLogger info
+INFO: [admin] Prijava uspjesna.
+kol 29, 2026 12:02:28 AM hr.algebra.influencer.Utilization.AppLogger info
+INFO: [admin] Otvoren ekran: Influenceri.
+kol 29, 2026 12:36:58 AM hr.algebra.influencer.Utilization.AppLogger info
+INFO: [admin] Prijava uspjesna.
+kol 29, 2026 12:37:06 AM hr.algebra.influencer.Utilization.AppLogger info
+INFO: [admin] JAXB XML izvoz influencera zavrsen, izvezeno: 16
+kol 29, 2026 12:37:21 AM hr.algebra.influencer.Utilization.AppLogger info
+INFO: [admin] Odjava.
+kol 29, 2026 1:37:53 AM hr.algebra.influencer.Utilization.AppLogger info
+INFO: [admin] Prijava uspjesna.
+kol 29, 2026 1:37:56 AM hr.algebra.influencer.Utilization.AppLogger info
+INFO: [admin] Otvoren ekran: Influenceri.
+kol 29, 2026 1:38:02 AM hr.algebra.influencer.Utilization.AppLogger info
+INFO: [admin] Uvoz influencera s YouTubea zavrsen, uvezeno: 3
+kol 29, 2026 1:38:04 AM hr.algebra.influencer.Utilization.AppLogger info
+INFO: [admin] Otvoren ekran: Influenceri.
+kol 29, 2026 1:38:29 AM hr.algebra.influencer.Utilization.AppLogger info
+INFO: [admin] Pregled detalja influencera: Señorita Influencer
+kol 29, 2026 1:38:37 AM hr.algebra.influencer.Utilization.AppLogger info
+INFO: [admin] Pregled detalja influencera: Igor Belan
+kol 29, 2026 1:38:43 AM hr.algebra.influencer.Utilization.AppLogger info
+INFO: [admin] Otvoren ekran: Gradovi.
+kol 29, 2026 1:38:50 AM hr.algebra.influencer.Utilization.AppLogger info
+INFO: [admin] Uvoz gradova zavrsen, uvezeno: 138
+kol 29, 2026 1:38:51 AM hr.algebra.influencer.Utilization.AppLogger info
+INFO: [admin] Otvoren ekran: Gradovi.
+kol 29, 2026 1:39:03 AM hr.algebra.influencer.Utilization.AppLogger info
+INFO: [admin] Otvoren ekran: Brand suradnje.
+kol 29, 2026 1:39:10 AM hr.algebra.influencer.Utilization.AppLogger info
+INFO: [admin] Otvoren ekran: Niše.
+kol 29, 2026 1:39:13 AM hr.algebra.influencer.Utilization.AppLogger info
+INFO: [admin] Otvoren ekran: Influenceri.
+kol 29, 2026 1:39:55 AM hr.algebra.influencer.Utilization.AppLogger info
+INFO: [admin] Otvoren ekran: Brand suradnje.
+kol 29, 2026 1:40:15 AM hr.algebra.influencer.Utilization.AppLogger info
+INFO: [admin] Kreirana brand suradnja: Test
+kol 29, 2026 1:40:33 AM hr.algebra.influencer.Utilization.AppLogger info
+INFO: [admin] Obrisana brand suradnja: Test
+kol 29, 2026 3:12:22 AM hr.algebra.influencer.Utilization.AppLogger info
+INFO: [admin] Prijava uspjesna.
+kol 29, 2026 3:12:24 AM hr.algebra.influencer.Utilization.AppLogger info
+INFO: [admin] Otvoren ekran: Influenceri.
+kol 29, 2026 3:12:26 AM hr.algebra.influencer.Utilization.AppLogger info
+INFO: [admin] Pregled detalja influencera: Hamza Ahmed | Influencer School
+kol 29, 2026 3:13:02 AM hr.algebra.influencer.Utilization.AppLogger info
+INFO: [admin] Prijava uspjesna.
+kol 29, 2026 3:13:10 AM hr.algebra.influencer.Utilization.AppLogger info
+INFO: [admin] Obrisani svi influenceri, ukupno: 19
+kol 29, 2026 3:13:14 AM hr.algebra.influencer.Utilization.AppLogger info
+INFO: [admin] Uvoz gradova zavrsen, uvezeno: 0
+kol 29, 2026 3:13:16 AM hr.algebra.influencer.Utilization.AppLogger info
+INFO: [admin] Uvoz influencera s YouTubea zavrsen, uvezeno: 10
+kol 29, 2026 3:13:17 AM hr.algebra.influencer.Utilization.AppLogger info
+INFO: [admin] Otvoren ekran: Influenceri.
+kol 29, 2026 3:13:42 AM hr.algebra.influencer.Utilization.AppLogger info
+INFO: [admin] Pregled detalja influencera: Influencers MX
+kol 29, 2026 3:19:31 AM hr.algebra.influencer.Utilization.AppLogger info
+INFO: [admin] Prijava uspjesna.
+kol 29, 2026 3:19:36 AM hr.algebra.influencer.Utilization.AppLogger info
+INFO: [admin] Otvoren ekran: Influenceri.
+kol 29, 2026 3:19:40 AM hr.algebra.influencer.Utilization.AppLogger info
+INFO: [admin] Obrisani svi influenceri, ukupno: 13
+kol 29, 2026 3:19:43 AM hr.algebra.influencer.Utilization.AppLogger info
+INFO: [admin] Uvoz influencera s YouTubea zavrsen, uvezeno: 20
+kol 29, 2026 3:19:45 AM hr.algebra.influencer.Utilization.AppLogger info
+INFO: [admin] Otvoren ekran: Influenceri.
+kol 29, 2026 3:20:06 AM hr.algebra.influencer.Utilization.AppLogger info
+INFO: [admin] Otvoren ekran: Influenceri.
+kol 29, 2026 3:20:43 AM hr.algebra.influencer.Utilization.AppLogger info
+INFO: [admin] Azuriran influencer: Freedom Influencer
+kol 29, 2026 3:20:47 AM hr.algebra.influencer.Utilization.AppLogger info
+INFO: [admin] Pregled detalja influencera: Freedom Influencer
+kol 29, 2026 3:21:41 AM hr.algebra.influencer.Utilization.AppLogger info
+INFO: [admin] Pregled detalja influencera: Freedom Influencer
+kol 29, 2026 3:21:55 AM hr.algebra.influencer.Utilization.AppLogger info
+INFO: [admin] Pregled detalja influencera: Freedom Influencer
+kol 29, 2026 3:22:08 AM hr.algebra.influencer.Utilization.AppLogger info
+INFO: [admin] Azuriran influencer: Freedom Influencer
+kol 29, 2026 3:49:05 AM hr.algebra.influencer.Utilization.AppLogger info
+INFO: [admin] Prijava uspjesna.
+kol 29, 2026 3:49:09 AM hr.algebra.influencer.Utilization.AppLogger info
+INFO: [admin] Otvoren ekran: Influenceri.
+kol 29, 2026 3:49:12 AM hr.algebra.influencer.Utilization.AppLogger info
+INFO: [admin] Pregled detalja influencera: Igor Belan
+kol 29, 2026 3:49:19 AM hr.algebra.influencer.Utilization.AppLogger info
+INFO: [admin] Obrisan influencer: Freedom Influencer
+kol 29, 2026 3:49:25 AM hr.algebra.influencer.Utilization.AppLogger info
+INFO: [admin] Uvoz influencera s YouTubea zavrsen, uvezeno: 7
+kol 29, 2026 3:49:26 AM hr.algebra.influencer.Utilization.AppLogger info
+INFO: [admin] Otvoren ekran: Influenceri.
+kol 29, 2026 3:49:39 AM hr.algebra.influencer.Utilization.AppLogger info
+INFO: [admin] Azuriran influencer: INFLUENCER NEWS
+kol 29, 2026 3:49:43 AM hr.algebra.influencer.Utilization.AppLogger info
+INFO: [admin] Pregled detalja influencera: INFLUENCER NEWS
+kol 29, 2026 3:49:47 AM hr.algebra.influencer.Utilization.AppLogger info
+INFO: [admin] Obrisan influencer: INFLUENCER NEWS
+kol 29, 2026 4:13:50 AM hr.algebra.influencer.Utilization.AppLogger info
+INFO: [admin] Prijava uspjesna.
+kol 29, 2026 4:13:56 AM hr.algebra.influencer.Utilization.AppLogger info
+INFO: [admin] Obrisani svi podaci iz baze (osim korisnickih racuna).
+kol 29, 2026 4:13:59 AM hr.algebra.influencer.Utilization.AppLogger info
+INFO: [admin] Dummy podaci uneseni (gradovi, brandovi, influenceri, brand suradnje).
+kol 29, 2026 4:14:01 AM hr.algebra.influencer.Utilization.AppLogger info
+INFO: [admin] Otvoren ekran: Influenceri.
+kol 29, 2026 4:14:27 AM hr.algebra.influencer.Utilization.AppLogger info
+INFO: [admin] Dummy podaci uneseni (gradovi, brandovi, influenceri, brand suradnje).
+kol 29, 2026 4:14:29 AM hr.algebra.influencer.Utilization.AppLogger info
+INFO: [admin] Otvoren ekran: Influenceri.
+kol 29, 2026 4:14:33 AM hr.algebra.influencer.Utilization.AppLogger info
+INFO: [admin] Obrisani svi podaci iz baze (osim korisnickih racuna).
+kol 29, 2026 4:14:35 AM hr.algebra.influencer.Utilization.AppLogger info
+INFO: [admin] Dummy podaci uneseni (gradovi, brandovi, influenceri, brand suradnje).
+kol 29, 2026 4:14:38 AM hr.algebra.influencer.Utilization.AppLogger info
+INFO: [admin] Otvoren ekran: Influenceri.
+kol 29, 2026 4:17:11 AM hr.algebra.influencer.Utilization.AppLogger info
+INFO: [admin] Prijava uspjesna.

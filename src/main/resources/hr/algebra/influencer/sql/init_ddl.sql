@@ -107,9 +107,10 @@ INSERT INTO Grad (Naziv) SELECT 'Split'  WHERE NOT EXISTS (SELECT 1 FROM Grad WH
 INSERT INTO Grad (Naziv) SELECT 'Rijeka' WHERE NOT EXISTS (SELECT 1 FROM Grad WHERE Naziv = 'Rijeka');
 
 -- Tri stvarna hrvatska influencera kao default podaci. Broj pratitelja/engagement su
--- priblizne, ilustrativne vrijednosti za demo bazu - nisu uzivo ocitani sa stvarnih profila.
+-- priblizne, ilustrativne vrijednosti za demo bazu (Igor Belan je stvaran broj pretplatnika
+-- s njegovog YouTube kanala, ostalo je ilustrativno, nije uzivo ocitano sa stvarnih profila).
 INSERT INTO Influencer (ImeNadimak, BrojPratitelja, EngagementRate, Zemlja, GradID, JezikSadrzaja, ProfilnaSlika)
-SELECT 'Igor Belan', 3500000, 4.2, 'Hrvatska', (SELECT IDGrad FROM Grad WHERE Naziv = 'Zagreb'), 'Hrvatski', ''
+SELECT 'Igor Belan', 109000, 4.2, 'Hrvatska', (SELECT IDGrad FROM Grad WHERE Naziv = 'Zagreb'), 'Hrvatski', ''
 WHERE NOT EXISTS (SELECT 1 FROM Influencer WHERE ImeNadimak = 'Igor Belan');
 
 INSERT INTO Influencer (ImeNadimak, BrojPratitelja, EngagementRate, Zemlja, GradID, JezikSadrzaja, ProfilnaSlika)
@@ -143,7 +144,7 @@ AND NOT EXISTS (SELECT 1 FROM InfluencerPlatforma ip WHERE ip.IDInfluencer = i.I
 
 INSERT INTO InfluencerNisa (IDInfluencer, IDNisa)
 SELECT i.IDInfluencer, n.IDNisa FROM Influencer i, Nisa n
-WHERE i.ImeNadimak = 'Igor Belan' AND n.Naziv = 'Lifestyle'
+WHERE i.ImeNadimak = 'Igor Belan' AND n.Naziv = 'Gaming'
 AND NOT EXISTS (SELECT 1 FROM InfluencerNisa ini WHERE ini.IDInfluencer = i.IDInfluencer AND ini.IDNisa = n.IDNisa);
 
 INSERT INTO InfluencerNisa (IDInfluencer, IDNisa)
@@ -170,3 +171,13 @@ INSERT INTO InfluencerTipSadrzaja (IDInfluencer, IDTipSadrzaja)
 SELECT i.IDInfluencer, t.IDTipSadrzaja FROM Influencer i, TipSadrzaja t
 WHERE i.ImeNadimak = 'Antonija Blaće' AND t.Naziv = 'Recenzije'
 AND NOT EXISTS (SELECT 1 FROM InfluencerTipSadrzaja iti WHERE iti.IDInfluencer = i.IDInfluencer AND iti.IDTipSadrzaja = t.IDTipSadrzaja);
+
+-- Primjer brand suradnje kao default podatak, da ekran ne bude prazan pri prvom pokretanju.
+INSERT INTO BrandSuradnja (NazivKampanje, BrandID, Godina, Status)
+SELECT 'Dummy suradnja', (SELECT IDBrand FROM Brand WHERE Naziv = 'Nike'), 2026, 'PLANIRANA'
+WHERE NOT EXISTS (SELECT 1 FROM BrandSuradnja WHERE NazivKampanje = 'Dummy suradnja');
+
+INSERT INTO BrandSuradnjaInfluencer (IDBrandSuradnja, IDInfluencer)
+SELECT bs.IDBrandSuradnja, i.IDInfluencer FROM BrandSuradnja bs, Influencer i
+WHERE bs.NazivKampanje = 'Dummy suradnja' AND i.ImeNadimak = 'Igor Belan'
+AND NOT EXISTS (SELECT 1 FROM BrandSuradnjaInfluencer bsi WHERE bsi.IDBrandSuradnja = bs.IDBrandSuradnja AND bsi.IDInfluencer = i.IDInfluencer);
