@@ -19,13 +19,18 @@
         <VBox>
             <MenuBar>
                 <menus>
-                    <Menu fx:id="adminAlatiMenu" text="Admin alati">
+                    <Menu fx:id="upravljanjeBazomMenu" text="Upravljanje bazom">
                         <items>
                             <MenuItem fx:id="uveziGradoveItem" text="Uvezi gradove" onAction="#handleUveziGradove"/>
                             <MenuItem fx:id="uveziYoutubeItem" text="Uvezi influencere s YouTubea" onAction="#handleUveziInfluencereYoutube"/>
                             <MenuItem fx:id="obrisiSveItem" text="Obriši sve influencere" onAction="#handleObrisiSve"/>
                             <MenuItem fx:id="obrisiSveIzBazeItem" text="Obriši sve iz baze" onAction="#handleObrisiSveIzBaze"/>
-                            <MenuItem fx:id="izvezitXmlJaxbItem" text="Izvezi influencere u XML (JAXB)" onAction="#handleIzvezitXmlJaxb"/>
+                            <MenuItem fx:id="ispuniDummyPodatkeItem" text="Ispuni dummy podatke" onAction="#handleIspuniDummyPodatke"/>
+                        </items>
+                    </Menu>
+                    <Menu fx:id="xmlMenu" text="XML">
+                        <items>
+                            <MenuItem fx:id="izvezitXmlJaxbItem" text="Izvezi influencere u XML" onAction="#handleIzvezitXmlJaxb"/>
                             <MenuItem fx:id="backupBazeItem" text="Backup baze (XML)" onAction="#handleBackupBaze"/>
                         </items>
                     </Menu>

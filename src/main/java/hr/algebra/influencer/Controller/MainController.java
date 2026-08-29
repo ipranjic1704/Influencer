@@ -10,6 +10,7 @@ import hr.algebra.influencer.Service.UvozInfluenceraYoutubeService;
 import hr.algebra.influencer.Utilization.AlertUtil;
 import hr.algebra.influencer.Utilization.AppLogger;
 import hr.algebra.influencer.Utilization.BackupUtil;
+import hr.algebra.influencer.Utilization.DummyPodaciUtil;
 import hr.algebra.influencer.Utilization.SceneUtil;
 import hr.algebra.influencer.Utilization.Session;
 import javafx.fxml.FXML;
@@ -32,7 +33,9 @@ public class MainController
     @FXML
     private Label korisnikLabel;
     @FXML
-    private Menu adminAlatiMenu;
+    private Menu upravljanjeBazomMenu;
+    @FXML
+    private Menu xmlMenu;
     @FXML
     private MenuItem uveziGradoveItem;
     @FXML
@@ -45,6 +48,8 @@ public class MainController
     private MenuItem izvezitXmlJaxbItem;
     @FXML
     private MenuItem backupBazeItem;
+    @FXML
+    private MenuItem ispuniDummyPodatkeItem;
     @FXML
     private Button influenceriButton;
     @FXML
@@ -72,7 +77,8 @@ public class MainController
 
         if (!Session.isAdmin())
         {
-            adminAlatiMenu.setDisable(true);
+            upravljanjeBazomMenu.setDisable(true);
+            xmlMenu.setDisable(true);
         }
     }
 
@@ -343,6 +349,22 @@ public class MainController
         {
             AppLogger.greska("Greska pri izradi backupa baze", e);
             AlertUtil.showError("Backup baze", "Nije moguce izraditi backup baze.");
+        }
+    }
+
+    @FXML
+    private void handleIspuniDummyPodatke()
+    {
+        try
+        {
+            DummyPodaciUtil.ispuniDummyPodatke();
+            AppLogger.info("Dummy podaci uneseni (gradovi, brandovi, influenceri, brand suradnje).");
+            AlertUtil.showInfo("Ispuni dummy podatke", "Dummy podaci su uspjesno dodani u bazu.");
+        }
+        catch (RepoException e)
+        {
+            AppLogger.greska("Greska pri unosu dummy podataka", e);
+            AlertUtil.showError("Ispuni dummy podatke", "Nije moguce dodati dummy podatke.");
         }
     }
 
