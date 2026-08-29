@@ -45,33 +45,4 @@ public final class HttpUtil
             throw new RuntimeException("Greska pri komunikaciji s API-jem.", e);
         }
     }
-
-    public static String postJson(String url, String tijelo)
-    {
-        try
-        {
-            HttpRequest zahtjev = HttpRequest.newBuilder()
-                    .uri(URI.create(url))
-                    .timeout(Duration.ofSeconds(20))
-                    .header("Content-Type", "application/json")
-                    .header("Accept", "application/json")
-                    .POST(HttpRequest.BodyPublishers.ofString(tijelo))
-                    .build();
-
-            HttpResponse<String> odgovor = KLIJENT.send(zahtjev, HttpResponse.BodyHandlers.ofString());
-            if (odgovor.statusCode() < 200 || odgovor.statusCode() >= 300)
-            {
-                throw new RuntimeException("API zahtjev nije uspio. HTTP status: " + odgovor.statusCode());
-            }
-            return odgovor.body();
-        }
-        catch (RuntimeException e)
-        {
-            throw e;
-        }
-        catch (Exception e)
-        {
-            throw new RuntimeException("Greska pri komunikaciji s API-jem.", e);
-        }
-    }
 }
