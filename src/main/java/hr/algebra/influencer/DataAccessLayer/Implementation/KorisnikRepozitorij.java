@@ -29,6 +29,26 @@ public class KorisnikRepozitorij implements Repozitorij<Korisnik>
         return INSTANCA;
     }
 
+    // Lazy verzija (umjesto Eager gore):
+    // private static volatile KorisnikRepozitorij instanca;
+    //
+    // public static KorisnikRepozitorij getInstance()
+    // {
+    //     KorisnikRepozitorij rezultat = instanca;
+    //     if (rezultat == null)
+    //     {
+    //         synchronized (KorisnikRepozitorij.class)
+    //         {
+    //             rezultat = instanca;
+    //             if (rezultat == null)
+    //             {
+    //                 instanca = rezultat = new KorisnikRepozitorij();
+    //             }
+    //         }
+    //     }
+    //     return rezultat;
+    // }
+
     private static final String SELECT_ALL =
             "SELECT IDKorisnik, UserName, Lozinka, Uloga, InfluencerID FROM Korisnik";
 
@@ -116,7 +136,7 @@ public class KorisnikRepozitorij implements Repozitorij<Korisnik>
             ps.setString(1, korisnik.getKorisnickoIme());
             ps.setString(2, korisnik.getLozinka());
             ps.setString(3, korisnik.getUloga().name());
-            postaviInfluencerId(ps, 4, korisnik.getInfluencerId());
+            ps.setObject(4, korisnik.getInfluencerId(), Types.INTEGER);
             ps.executeUpdate();
 
             try (ResultSet kljucevi = ps.getGeneratedKeys())
@@ -141,7 +161,7 @@ public class KorisnikRepozitorij implements Repozitorij<Korisnik>
             ps.setString(1, korisnik.getKorisnickoIme());
             ps.setString(2, korisnik.getLozinka());
             ps.setString(3, korisnik.getUloga().name());
-            postaviInfluencerId(ps, 4, korisnik.getInfluencerId());
+            ps.setObject(4, korisnik.getInfluencerId(), Types.INTEGER);
             ps.setInt(5, korisnik.getId());
             ps.executeUpdate();
         }
@@ -168,25 +188,13 @@ public class KorisnikRepozitorij implements Repozitorij<Korisnik>
     private Korisnik mapRow(ResultSet rs) throws SQLException
     {
         Uloga uloga = Uloga.valueOf(rs.getString("Uloga"));
-        int influencerId = rs.getInt("InfluencerID");
+        Integer influencerId = rs.getObject("InfluencerID", Integer.class);
         return new Korisnik(
                 rs.getInt("IDKorisnik"),
                 rs.getString("UserName"),
                 rs.getString("Lozinka"),
                 uloga,
-                rs.wasNull() ? null : influencerId
+                influencerId
         );
-    }
-
-    private void postaviInfluencerId(PreparedStatement ps, int index, Integer influencerId) throws SQLException
-    {
-        if (influencerId == null)
-        {
-            ps.setNull(index, Types.INTEGER);
-        }
-        else
-        {
-            ps.setInt(index, influencerId);
-        }
     }
 }

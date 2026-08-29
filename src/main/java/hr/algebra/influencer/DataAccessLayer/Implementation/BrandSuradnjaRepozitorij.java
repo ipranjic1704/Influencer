@@ -31,6 +31,26 @@ public class BrandSuradnjaRepozitorij implements Repozitorij<BrandSuradnja>
         return INSTANCA;
     }
 
+    // Lazy verzija (umjesto Eager gore):
+    // private static volatile BrandSuradnjaRepozitorij instanca;
+    //
+    // public static BrandSuradnjaRepozitorij getInstance()
+    // {
+    //     BrandSuradnjaRepozitorij rezultat = instanca;
+    //     if (rezultat == null)
+    //     {
+    //         synchronized (BrandSuradnjaRepozitorij.class)
+    //         {
+    //             rezultat = instanca;
+    //             if (rezultat == null)
+    //             {
+    //                 instanca = rezultat = new BrandSuradnjaRepozitorij();
+    //             }
+    //         }
+    //     }
+    //     return rezultat;
+    // }
+
     private static final String SELECT_ALL =
             "SELECT bs.IDBrandSuradnja, bs.NazivKampanje, bs.BrandID, b.Naziv AS NazivBrand, bs.Godina, bs.Status " +
             "FROM BrandSuradnja bs JOIN Brand b ON bs.BrandID = b.IDBrand";
@@ -198,8 +218,8 @@ public class BrandSuradnjaRepozitorij implements Repozitorij<BrandSuradnja>
             {
                 while (rs.next())
                 {
-                    int idGrad = rs.getInt("GradID");
-                    Grad grad = rs.wasNull() ? null : new Grad(idGrad, rs.getString("NazivGrad"));
+                    Integer idGrad = rs.getObject("GradID", Integer.class);
+                    Grad grad = idGrad == null ? null : new Grad(idGrad, rs.getString("NazivGrad"));
 
                     tim.add(new Influencer(
                             rs.getInt("IDInfluencer"),

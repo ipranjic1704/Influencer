@@ -39,6 +39,26 @@ public class InfluencerRepozitorij implements Repozitorij<Influencer>
         return INSTANCA;
     }
 
+    // Lazy verzija (umjesto Eager gore):
+    // private static volatile InfluencerRepozitorij instanca;
+    //
+    // public static InfluencerRepozitorij getInstance()
+    // {
+    //     InfluencerRepozitorij rezultat = instanca;
+    //     if (rezultat == null)
+    //     {
+    //         synchronized (InfluencerRepozitorij.class)
+    //         {
+    //             rezultat = instanca;
+    //             if (rezultat == null)
+    //             {
+    //                 instanca = rezultat = new InfluencerRepozitorij();
+    //             }
+    //         }
+    //     }
+    //     return rezultat;
+    // }
+
     private static final String SELECT_ALL =
             "SELECT i.IDInfluencer, i.ImeNadimak, i.BrojPratitelja, i.EngagementRate, i.Zemlja, " +
             "i.GradID, g.Naziv AS NazivGrad, i.JezikSadrzaja, i.ProfilnaSlika " +
@@ -214,22 +234,15 @@ public class InfluencerRepozitorij implements Repozitorij<Influencer>
         ps.setInt(2, influencer.getBrojPratitelja());
         ps.setDouble(3, influencer.getEngagementRate());
         ps.setString(4, influencer.getZemlja());
-        if (influencer.getGrad() != null)
-        {
-            ps.setInt(5, influencer.getGrad().getId());
-        }
-        else
-        {
-            ps.setNull(5, Types.INTEGER);
-        }
+        ps.setObject(5, influencer.getGrad() != null ? influencer.getGrad().getId() : null, Types.INTEGER);
         ps.setString(6, influencer.getJezikSadrzaja());
         ps.setString(7, influencer.getProfilnaSlika());
     }
 
     private Influencer mapRow(ResultSet rs) throws SQLException
     {
-        int idGrad = rs.getInt("GradID");
-        Grad grad = rs.wasNull() ? null : new Grad(idGrad, rs.getString("NazivGrad"));
+        Integer idGrad = rs.getObject("GradID", Integer.class);
+        Grad grad = idGrad == null ? null : new Grad(idGrad, rs.getString("NazivGrad"));
 
         return new Influencer(
                 rs.getInt("IDInfluencer"),
