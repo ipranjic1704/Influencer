@@ -18,7 +18,7 @@ public class UvozInfluenceraYoutubeTask extends Task<Integer>
 {
 
     private static final String SEARCH_URL =
-            "https://www.googleapis.com/youtube/v3/search?part=snippet&type=channel&maxResults=10&q=influencer";
+            "https://www.googleapis.com/youtube/v3/search?part=snippet&type=channel&maxResults=20&q=influencer";
     private static final String CHANNELS_URL =
             "https://www.googleapis.com/youtube/v3/channels?part=snippet,statistics&id=";
 
