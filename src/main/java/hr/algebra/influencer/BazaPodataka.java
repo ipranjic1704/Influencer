@@ -4,6 +4,7 @@ import hr.algebra.influencer.Exception.RepoException;
 import hr.algebra.influencer.Utilization.ConfigUtil;
 
 import java.nio.charset.StandardCharsets;
+import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -28,7 +29,7 @@ public class BazaPodataka
         {
             veza = DriverManager.getConnection(URL, USER, PASS);
             initSchema(veza);
-            kreirajAdminAkoNePostoji(veza);
+            pozoviKreirajAdminaProceduru(veza);
             System.out.println("[db] veza stvorena");
         }
         catch (Exception e)
@@ -60,7 +61,7 @@ public class BazaPodataka
         System.out.println("[db] Shema inicijalizirana");
     }
 
-    private static void kreirajAdminAkoNePostoji(Connection conn) throws SQLException
+    public static void kreirajAdminAkoNePostoji(Connection conn) throws SQLException
     {
         String sql = "INSERT INTO Korisnik (UserName, Lozinka, Uloga) " +
                 "SELECT 'admin', 'admin', 'ADMIN' " +
@@ -69,7 +70,15 @@ public class BazaPodataka
         {
             stmt.execute(sql);
         }
-        System.out.println("[db] Admin korisnik provjeren/kreiran");
+    }
+
+    private static void pozoviKreirajAdminaProceduru(Connection conn) throws SQLException
+    {
+        try (CallableStatement cs = conn.prepareCall("{call KREIRAJ_ADMINA()}"))
+        {
+            cs.execute();
+        }
+        System.out.println("[db] Admin korisnik provjeren/kreiran (procedura)");
     }
 
     public static void obrisiSveIzBaze()

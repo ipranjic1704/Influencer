@@ -70,11 +70,11 @@ public final class DummyPodaciUtil
         InfluencerRepozitorij influencerRepozitorij = InfluencerRepozitorij.getInstance();
 
         String[][] podaci = {
-                {"Igor Belan", "3500000", "4.2", "Zagreb"},
-                {"Marijana Batinić", "250000", "5.8", "Split"},
-                {"Antonija Blaće", "180000", "3.9", "Rijeka"},
-                {"Petra Kovač", "95000", "6.1", "Osijek"},
-                {"Filip Horvat", "420000", "3.3", "Zadar"}
+                {"Igor Belan", "109000", "4.2", "Zagreb", "Gaming"},
+                {"Marijana Batinić", "250000", "5.8", "Split", "Fitness"},
+                {"Antonija Blaće", "180000", "3.9", "Rijeka", "Lifestyle"},
+                {"Petra Kovač", "95000", "6.1", "Osijek", "Tech"},
+                {"Filip Horvat", "420000", "3.3", "Zadar", "Beauty"}
         };
 
         for (int i = 0; i < podaci.length; i++)
@@ -83,6 +83,7 @@ public final class DummyPodaciUtil
             int brojPratitelja = Integer.parseInt(podaci[i][1]);
             double engagementRate = Double.parseDouble(podaci[i][2]);
             String gradNaziv = podaci[i][3];
+            String nisaNaziv = podaci[i][4];
 
             Influencer influencer = new Influencer(imeNadimak, brojPratitelja, engagementRate, "Hrvatska",
                     pronadiPoNazivu(gradovi, Grad::getNaziv, gradNaziv), "Hrvatski", "");
@@ -93,7 +94,7 @@ public final class DummyPodaciUtil
             }
 
             influencer.setPlatforme(List.of(platforme.get(i % platforme.size())));
-            influencer.setNise(List.of(nise.get(i % nise.size())));
+            influencer.setNise(List.of(pronadiPoNazivu(nise, Nisa::getNaziv, nisaNaziv)));
             influencer.setTipoviSadrzaja(List.of(tipovi.get(i % tipovi.size())));
             influencerRepozitorij.create(influencer);
         }
