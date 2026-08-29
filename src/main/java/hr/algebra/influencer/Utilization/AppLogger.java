@@ -4,6 +4,8 @@ import hr.algebra.influencer.Exception.RepoException;
 import hr.algebra.influencer.Model.Korisnik;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -87,6 +89,7 @@ public final class AppLogger
             if (LOG_XML.exists())
             {
                 document = builder.parse(LOG_XML);
+                ukloniPrazneTekstualneCvorove(document);
             }
             else
             {
@@ -123,6 +126,23 @@ public final class AppLogger
         catch (Exception e)
         {
             throw new RepoException(e);
+        }
+    }
+
+    private static void ukloniPrazneTekstualneCvorove(Node cvor)
+    {
+        NodeList djeca = cvor.getChildNodes();
+        for (int i = djeca.getLength() - 1; i >= 0; i--)
+        {
+            Node dijete = djeca.item(i);
+            if (dijete.getNodeType() == Node.TEXT_NODE && dijete.getTextContent().isBlank())
+            {
+                cvor.removeChild(dijete);
+            }
+            else if (dijete.getNodeType() == Node.ELEMENT_NODE)
+            {
+                ukloniPrazneTekstualneCvorove(dijete);
+            }
         }
     }
 }
