@@ -14,12 +14,16 @@ public final class SceneUtil
     {
     }
 
+    private static final String STYLESHEET = SceneUtil.class.getResource("/hr/algebra/influencer/css/app.css").toExternalForm();
+
     public static void loadScene(URL fxmlUrl, Stage stage, String title)
     {
         try
         {
             FXMLLoader loader = new FXMLLoader(fxmlUrl);
-            stage.setScene(new Scene(loader.load()));
+            Scene scene = new Scene(loader.load());
+            scene.getStylesheets().add(STYLESHEET);
+            stage.setScene(scene);
             stage.setTitle(title);
         }
         catch (IOException e)
@@ -33,7 +37,9 @@ public final class SceneUtil
         try
         {
             FXMLLoader loader = new FXMLLoader(fxmlUrl);
-            stage.setScene(new Scene(loader.load()));
+            Scene scene = new Scene(loader.load());
+            scene.getStylesheets().add(STYLESHEET);
+            stage.setScene(scene);
             stage.setTitle(title);
             return loader;
         }
