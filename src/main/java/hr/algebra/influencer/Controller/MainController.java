@@ -9,6 +9,7 @@ import hr.algebra.influencer.Service.UvozGradovaService;
 import hr.algebra.influencer.Service.UvozInfluenceraYoutubeService;
 import hr.algebra.influencer.Utilization.AlertUtil;
 import hr.algebra.influencer.Utilization.AppLogger;
+import hr.algebra.influencer.Utilization.BackupUtil;
 import hr.algebra.influencer.Utilization.SceneUtil;
 import hr.algebra.influencer.Utilization.Session;
 import javafx.fxml.FXML;
@@ -41,7 +42,9 @@ public class MainController
     @FXML
     private MenuItem obrisiSveIzBazeItem;
     @FXML
-    private MenuItem izvezitXmlItem;
+    private MenuItem izvezitXmlJaxbItem;
+    @FXML
+    private MenuItem backupBazeItem;
     @FXML
     private Button influenceriButton;
     @FXML
@@ -284,11 +287,11 @@ public class MainController
     }
 
     @FXML
-    private void handleIzvezitXml()
+    private void handleIzvezitXmlJaxb()
     {
         FileChooser fileChooser = new FileChooser();
-        fileChooser.setTitle("Spremi XML izvoz influencera");
-        fileChooser.setInitialFileName("influenceri-izvoz.xml");
+        fileChooser.setTitle("Spremi JAXB XML izvoz influencera");
+        fileChooser.setInitialFileName("influenceri-izvoz-jaxb.xml");
         fileChooser.getExtensionFilters().add(
                 new FileChooser.ExtensionFilter("XML datoteka (*.xml)", "*.xml"));
 
@@ -301,38 +304,47 @@ public class MainController
 
         try
         {
-            int brojInfluencera = influencerRepozitorij.exportToXml(odabranaDatoteka.toPath());
-            AppLogger.info("XML izvoz influencera zavrsen, izvezeno: " + brojInfluencera);
-            AlertUtil.showInfo("XML izvoz",
+            int brojInfluencera = influencerRepozitorij.exportToXmlJaxb(odabranaDatoteka.toPath());
+            AppLogger.info("JAXB XML izvoz influencera zavrsen, izvezeno: " + brojInfluencera);
+            AlertUtil.showInfo("JAXB XML izvoz",
                     "Izvezeno influencera: " + brojInfluencera + "\nDatoteka: " + odabranaDatoteka.getAbsolutePath());
         }
         catch (RepoException e)
         {
-            AppLogger.greska("Greska pri XML izvozu influencera", e);
-            AlertUtil.showError("XML izvoz", "Nije moguce izvesti influencere u XML.");
+            AppLogger.greska("Greska pri JAXB XML izvozu influencera", e);
+            AlertUtil.showError("JAXB XML izvoz", "Nije moguce izvesti influencere u XML putem JAXB-a.");
         }
     }
 
-    /*
     @FXML
-    private void handleIzveziXml()
+    private void handleBackupBaze()
     {
-        Path putanja = Path.of("influenceri-izvoz.xml");
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Spremi backup baze");
+        fileChooser.setInitialFileName("backup-baze.xml");
+        fileChooser.getExtensionFilters().add(
+                new FileChooser.ExtensionFilter("XML datoteka (*.xml)", "*.xml"));
+
+        Stage stage = (Stage) korisnikLabel.getScene().getWindow();
+        File odabranaDatoteka = fileChooser.showSaveDialog(stage);
+        if (odabranaDatoteka == null)
+        {
+            return;
+        }
 
         try
         {
-            int brojInfluencera = influencerRepozitorij.exportToXml(putanja);
-            AppLogger.info("XML izvoz influencera zavrsen, izvezeno: " + brojInfluencera);
-            AlertUtil.showInfo("XML izvoz",
-                    "Izvezeno influencera: " + brojInfluencera + "\nDatoteka: " + putanja.toAbsolutePath());
+            int brojZapisa = BackupUtil.kreirajBackup(odabranaDatoteka.toPath());
+            AppLogger.info("Backup baze zavrsen, ukupno zapisa: " + brojZapisa);
+            AlertUtil.showInfo("Backup baze",
+                    "Ukupno zapisa u backupu: " + brojZapisa + "\nDatoteka: " + odabranaDatoteka.getAbsolutePath());
         }
         catch (RepoException e)
         {
-            AppLogger.greska("Greska pri XML izvozu influencera", e);
-            AlertUtil.showError("XML izvoz", "Nije moguce izvesti influencere u XML.");
+            AppLogger.greska("Greska pri izradi backupa baze", e);
+            AlertUtil.showError("Backup baze", "Nije moguce izraditi backup baze.");
         }
     }
-    */
 
     @FXML
     private void handleOdjava()

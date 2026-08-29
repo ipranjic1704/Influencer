@@ -8,9 +8,11 @@ import hr.algebra.influencer.Model.Influencer;
 import hr.algebra.influencer.Model.Nisa;
 import hr.algebra.influencer.Model.Platforma;
 import hr.algebra.influencer.Model.TipSadrzaja;
+import hr.algebra.influencer.Xml.InfluenceriXml;
+import hr.algebra.influencer.Xml.InfluencerXml;
+import jakarta.xml.bind.JAXBContext;
+import jakarta.xml.bind.Marshaller;
 
-import java.io.OutputStream;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.sql.PreparedStatement;
@@ -22,9 +24,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import javax.xml.stream.XMLOutputFactory;
-import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamWriter;
 
 public class InfluencerRepozitorij implements Repozitorij<Influencer>
 {
@@ -409,7 +408,7 @@ public class InfluencerRepozitorij implements Repozitorij<Influencer>
         }
     }
 
-    public int exportToXml(Path putanja)
+    public int exportToXmlJaxb(Path putanja)
     {
         List<Influencer> influenceri = getAll();
 
@@ -421,63 +420,20 @@ public class InfluencerRepozitorij implements Repozitorij<Influencer>
                 Files.createDirectories(roditelj);
             }
 
-            XMLOutputFactory factory = XMLOutputFactory.newFactory();
+            List<InfluencerXml> influenceriXml = influenceri.stream()
+                    .map(InfluencerXml::new)
+                    .collect(Collectors.toList());
 
-            try (OutputStream out = Files.newOutputStream(putanja))
-            {
-                XMLStreamWriter writer = factory.createXMLStreamWriter(out, StandardCharsets.UTF_8.name());
-
-                writer.writeStartDocument(StandardCharsets.UTF_8.name(), "1.0");
-                writer.writeCharacters("\n");
-                writer.writeStartElement("influenceri");
-                writer.writeCharacters("\n");
-
-                for (Influencer influencer : influenceri)
-                {
-                    writer.writeCharacters("    ");
-                    writer.writeStartElement("influencer");
-                    writer.writeCharacters("\n");
-
-                    writeXmlElement(writer, "imeNadimak", influencer.getImeNadimak());
-                    writeXmlElement(writer, "brojPratitelja", String.valueOf(influencer.getBrojPratitelja()));
-                    writeXmlElement(writer, "engagementRate", String.valueOf(influencer.getEngagementRate()));
-                    writeXmlElement(writer, "zemlja", influencer.getZemlja());
-                    writeXmlElement(writer, "grad", influencer.getGrad() == null ? "" : influencer.getGrad().getNaziv());
-                    writeXmlElement(writer, "jezikSadrzaja", influencer.getJezikSadrzaja());
-                    writeXmlElement(writer, "profilnaSlika", influencer.getProfilnaSlika());
-                    writeXmlElement(writer, "platforme", influencer.getPlatforme().stream()
-                            .map(Platforma::getNaziv).collect(Collectors.joining(", ")));
-                    writeXmlElement(writer, "nise", influencer.getNise().stream()
-                            .map(Nisa::getNaziv).collect(Collectors.joining(", ")));
-                    writeXmlElement(writer, "tipoviSadrzaja", influencer.getTipoviSadrzaja().stream()
-                            .map(TipSadrzaja::getNaziv).collect(Collectors.joining(", ")));
-
-                    writer.writeCharacters("    ");
-                    writer.writeEndElement();
-                    writer.writeCharacters("\n");
-                }
-
-                writer.writeEndElement();
-                writer.writeCharacters("\n");
-                writer.writeEndDocument();
-                writer.flush();
-                writer.close();
-            }
+            JAXBContext context = JAXBContext.newInstance(InfluenceriXml.class);
+            Marshaller marshaller = context.createMarshaller();
+            marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+            marshaller.marshal(new InfluenceriXml(influenceriXml), putanja.toFile());
 
             return influenceri.size();
         }
         catch (Exception e)
         {
-            throw new RepoException("Greska pri XML izvozu influencera.", e);
+            throw new RepoException("Greska pri JAXB XML izvozu influencera.", e);
         }
-    }
-
-    private static void writeXmlElement(XMLStreamWriter writer, String elementName, String value) throws XMLStreamException
-    {
-        writer.writeCharacters("        ");
-        writer.writeStartElement(elementName);
-        writer.writeCharacters(value == null ? "" : value);
-        writer.writeEndElement();
-        writer.writeCharacters("\n");
     }
 }
