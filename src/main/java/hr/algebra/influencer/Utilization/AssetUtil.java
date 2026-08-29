@@ -41,12 +41,7 @@ public final class AssetUtil
 
         try
         {
-            Path datoteka = Path.of(URI.create(putanja)).toAbsolutePath().normalize();
-            if (!datoteka.startsWith(ASSETS_DIR))
-            {
-                return;
-            }
-            Files.deleteIfExists(datoteka);
+            Files.deleteIfExists(Path.of(URI.create(putanja)));
         }
         catch (Exception e)
         {
