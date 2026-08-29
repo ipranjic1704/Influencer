@@ -27,6 +27,26 @@ public class NisaRepozitorij implements Repozitorij<Nisa>
         return INSTANCA;
     }
 
+    // Lazy verzija (umjesto Eager gore):
+    // private static volatile NisaRepozitorij instanca;
+    //
+    // public static NisaRepozitorij getInstance()
+    // {
+    //     NisaRepozitorij rezultat = instanca;
+    //     if (rezultat == null)
+    //     {
+    //         synchronized (NisaRepozitorij.class)
+    //         {
+    //             rezultat = instanca;
+    //             if (rezultat == null)
+    //             {
+    //                 instanca = rezultat = new NisaRepozitorij();
+    //             }
+    //         }
+    //     }
+    //     return rezultat;
+    // }
+
     private static final String SELECT_ALL =
             "SELECT IDNisa, Naziv FROM Nisa";
 

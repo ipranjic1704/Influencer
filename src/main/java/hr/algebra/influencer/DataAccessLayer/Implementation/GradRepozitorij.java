@@ -27,6 +27,26 @@ public class GradRepozitorij implements Repozitorij<Grad>
         return INSTANCA;
     }
 
+    // Lazy verzija (umjesto Eager gore):
+    // private static volatile GradRepozitorij instanca;
+    //
+    // public static GradRepozitorij getInstance()
+    // {
+    //     GradRepozitorij rezultat = instanca;
+    //     if (rezultat == null)
+    //     {
+    //         synchronized (GradRepozitorij.class)
+    //         {
+    //             rezultat = instanca;
+    //             if (rezultat == null)
+    //             {
+    //                 instanca = rezultat = new GradRepozitorij();
+    //             }
+    //         }
+    //     }
+    //     return rezultat;
+    // }
+
     private static final String SELECT_ALL =
             "SELECT IDGrad, Naziv FROM Grad";
 

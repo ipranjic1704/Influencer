@@ -27,6 +27,26 @@ public class BrandRepozitorij implements Repozitorij<Brand>
         return INSTANCA;
     }
 
+    // Lazy verzija (umjesto Eager gore):
+    // private static volatile BrandRepozitorij instanca;
+    //
+    // public static BrandRepozitorij getInstance()
+    // {
+    //     BrandRepozitorij rezultat = instanca;
+    //     if (rezultat == null)
+    //     {
+    //         synchronized (BrandRepozitorij.class)
+    //         {
+    //             rezultat = instanca;
+    //             if (rezultat == null)
+    //             {
+    //                 instanca = rezultat = new BrandRepozitorij();
+    //             }
+    //         }
+    //     }
+    //     return rezultat;
+    // }
+
     private static final String SELECT_ALL =
             "SELECT IDBrand, Naziv FROM Brand";
 

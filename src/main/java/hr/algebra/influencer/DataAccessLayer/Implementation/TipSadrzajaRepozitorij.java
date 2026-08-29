@@ -27,6 +27,26 @@ public class TipSadrzajaRepozitorij implements Repozitorij<TipSadrzaja>
         return INSTANCA;
     }
 
+    // Lazy verzija (umjesto Eager gore):
+    // private static volatile TipSadrzajaRepozitorij instanca;
+    //
+    // public static TipSadrzajaRepozitorij getInstance()
+    // {
+    //     TipSadrzajaRepozitorij rezultat = instanca;
+    //     if (rezultat == null)
+    //     {
+    //         synchronized (TipSadrzajaRepozitorij.class)
+    //         {
+    //             rezultat = instanca;
+    //             if (rezultat == null)
+    //             {
+    //                 instanca = rezultat = new TipSadrzajaRepozitorij();
+    //             }
+    //         }
+    //     }
+    //     return rezultat;
+    // }
+
     private static final String SELECT_ALL =
             "SELECT IDTipSadrzaja, Naziv FROM TipSadrzaja";
 

@@ -27,6 +27,26 @@ public class PlatformaRepozitorij implements Repozitorij<Platforma>
         return INSTANCA;
     }
 
+    // Lazy verzija (umjesto Eager gore):
+    // private static volatile PlatformaRepozitorij instanca;
+    //
+    // public static PlatformaRepozitorij getInstance()
+    // {
+    //     PlatformaRepozitorij rezultat = instanca;
+    //     if (rezultat == null)
+    //     {
+    //         synchronized (PlatformaRepozitorij.class)
+    //         {
+    //             rezultat = instanca;
+    //             if (rezultat == null)
+    //             {
+    //                 instanca = rezultat = new PlatformaRepozitorij();
+    //             }
+    //         }
+    //     }
+    //     return rezultat;
+    // }
+
     private static final String SELECT_ALL =
             "SELECT IDPlatforma, Naziv FROM Platforma";
 
