@@ -270,8 +270,8 @@ public class MainController
         Alert potvrda = new Alert(Alert.AlertType.CONFIRMATION);
         potvrda.setTitle("Obriši sve iz baze");
         potvrda.setHeaderText("Ovo će trajno obrisati SVE podatke iz baze: influencere, platforme, " +
-                "niše, tipove sadržaja, brendove, brand suradnje i gradove.");
-        potvrda.setContentText("Korisnički računi ostaju netaknuti. Radnja se ne može poništiti. Nastaviti?");
+                "niše, tipove sadržaja, brendove, brand suradnje, gradove i sve korisničke račune.");
+        potvrda.setContentText("Admin račun se odmah automatski ponovno kreira. Radnja se ne može poništiti. Nastaviti?");
         Optional<ButtonType> odgovor = potvrda.showAndWait();
         if (odgovor.isEmpty() || odgovor.get() != ButtonType.OK)
         {
@@ -288,7 +288,7 @@ public class MainController
             AlertUtil.showError("Greska", "Nije moguce obrisati sve podatke iz baze.");
             return;
         }
-        AppLogger.info("Obrisani svi podaci iz baze (osim korisnickih racuna).");
+        AppLogger.info("Obrisani svi podaci iz baze, uklj. korisnicke racune (admin ponovno kreiran).");
         AlertUtil.showInfo("Obriši sve iz baze", "Svi podaci su obrisani.");
     }
 

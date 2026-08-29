@@ -38,10 +38,6 @@ public class BazaPodataka
         }
     }
 
-    public static void pokreni()
-    {
-    }
-
     public static void zatvori()
     {
         try
@@ -61,6 +57,9 @@ public class BazaPodataka
         System.out.println("[db] Shema inicijalizirana");
     }
 
+    // Mora biti public - H2 ovu metodu poziva refleksijom preko CREATE ALIAS KREIRAJ_ADMINA u init_ddl.sql.
+    // Connection parametar H2 automatski puni trenutnom vezom, pa ga se u SQL pozivu (KREIRAJ_ADMINA()) i ne vidi.
+    // WHERE NOT EXISTS cini metodu idempotentnom - siguno ju je pozvati bilo kad, nikad ne duplira admina.
     public static void kreirajAdminAkoNePostoji(Connection conn) throws SQLException
     {
         String sql = "INSERT INTO Korisnik (UserName, Lozinka, Uloga) " +
@@ -72,6 +71,8 @@ public class BazaPodataka
         }
     }
 
+    // CallableStatement + prepareCall poziva pravu proceduru koja zivi u bazi (KREIRAJ_ADMINA), za razliku
+    // od PreparedStatement koji samo salje SQL upit - ovdje baza sama izvrsi Java metodu registriranu preko ALIAS-a.
     private static void pozoviKreirajAdminaProceduru(Connection conn) throws SQLException
     {
         try (CallableStatement cs = conn.prepareCall("{call KREIRAJ_ADMINA()}"))
@@ -86,6 +87,7 @@ public class BazaPodataka
         try
         {
             izvrsiSkriptu(veza, "/hr/algebra/influencer/sql/delete_all.sql");
+            pozoviKreirajAdminaProceduru(veza);
             System.out.println("[db] Svi podaci obrisani");
         }
         catch (Exception e)
