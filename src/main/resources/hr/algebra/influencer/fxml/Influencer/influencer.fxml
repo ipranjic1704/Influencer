@@ -91,7 +91,10 @@
                 <TextField fx:id="jezikSadrzajaField" promptText="npr. Hrvatski" GridPane.rowIndex="2" GridPane.columnIndex="3"/>
 
                 <Label text="Profilna slika:" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
-                <TextField fx:id="profilnaSlikaField" promptText="URL slike" GridPane.rowIndex="3" GridPane.columnIndex="1"/>
+                <HBox spacing="8.0" GridPane.rowIndex="3" GridPane.columnIndex="1">
+                    <TextField fx:id="profilnaSlikaField" promptText="URL slike ili odaberi datoteku" HBox.hgrow="ALWAYS" maxWidth="Infinity"/>
+                    <Button text="Odaberi..." onAction="#handleOdaberiSliku"/>
+                </HBox>
             </GridPane>
 
             <Separator/>

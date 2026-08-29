@@ -14,6 +14,7 @@ import hr.algebra.influencer.Model.Platforma;
 import hr.algebra.influencer.Model.TipSadrzaja;
 import hr.algebra.influencer.Utilization.AlertUtil;
 import hr.algebra.influencer.Utilization.AppLogger;
+import hr.algebra.influencer.Utilization.AssetUtil;
 import hr.algebra.influencer.Utilization.SceneUtil;
 import hr.algebra.influencer.Utilization.Session;
 import javafx.beans.property.SimpleStringProperty;
@@ -31,9 +32,11 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.FlowPane;
+import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
+import java.io.File;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -255,17 +258,28 @@ public class InfluencerController implements Initializable
         boolean sviImajuIspravanEngagement = influenceri.stream()
                 .noneMatch(i -> i.getEngagementRate() < 0);
 
-        String drugiPoPratiteljima = influenceri.stream()
+//        String drugiPoPratiteljima = influenceri.stream()
+//                .sorted(Comparator.comparingInt(Influencer::getBrojPratitelja).reversed())
+//                .skip(1)
+//                .findFirst()
+//                .map(Influencer::getImeNadimak)
+//                .orElse("-");
+
+
+        String preporuceni = influenceri.stream()
                 .sorted(Comparator.comparingInt(Influencer::getBrojPratitelja).reversed())
-                .skip(1)
-                .findFirst()
+                .skip(3)
+                .sorted(Comparator.comparingDouble(Influencer::getEngagementRate).reversed())
+                .limit(3)
                 .map(Influencer::getImeNadimak)
-                .orElse("-");
+                .collect(Collectors.joining(", "));
+
 
         statistikaLabel.setText(String.format(
-                "Prikazano: %d · Zemalja: %d · Pratitelji: %d-%d · Mega influencer (≥1M): %s · Engagement u redu: %s · 2. po pratiteljima: %s",
+                "Prikazano: %d · Zemalja: %d · Pratitelji: %d-%d · Mega influencer (≥1M): %s · Engagement u redu: %s · Preporučeno (van TOP 3, najbolji engagement): %s",
                 influenceri.size(), brojRazlicitihZemalja, minPratitelja, maxPratitelja,
-                imaMegaInfluencera ? "da" : "ne", sviImajuIspravanEngagement ? "da" : "ne", drugiPoPratiteljima));
+                imaMegaInfluencera ? "da" : "ne", sviImajuIspravanEngagement ? "da" : "ne",
+                preporuceni.isBlank() ? "-" : preporuceni));
     }
 
     private Integer parsirajMinPratitelja()
@@ -413,6 +427,8 @@ public class InfluencerController implements Initializable
             }
             else
             {
+                String staraSlika = odabrani.getProfilnaSlika();
+
                 odabrani.setImeNadimak(imeNadimak);
                 odabrani.setBrojPratitelja(brojPratitelja);
                 odabrani.setEngagementRate(engagementRate);
@@ -425,6 +441,11 @@ public class InfluencerController implements Initializable
                 odabrani.setTipoviSadrzaja(odabraniTipovi);
                 influencerRepozitorij.update(odabrani);
                 AppLogger.info("Azuriran influencer: " + imeNadimak);
+
+                if (!profilnaSlika.equals(staraSlika))
+                {
+                    AssetUtil.obrisiSliku(staraSlika);
+                }
             }
         }
         catch (RepoException e)
@@ -478,6 +499,7 @@ public class InfluencerController implements Initializable
         {
             influencerRepozitorij.delete(odabrani.getId());
             AppLogger.info("Obrisan influencer: " + odabrani.getImeNadimak());
+            AssetUtil.obrisiSliku(odabrani.getProfilnaSlika());
         }
         catch (RepoException e)
         {
@@ -487,6 +509,25 @@ public class InfluencerController implements Initializable
         }
         tablica.getSelectionModel().clearSelection();
         osvjezi();
+    }
+
+    @FXML
+    private void handleOdaberiSliku()
+    {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Odaberi sliku influencera");
+        fileChooser.getExtensionFilters().add(
+                new FileChooser.ExtensionFilter("Slike", "*.png", "*.jpg", "*.jpeg", "*.gif"));
+
+        Stage stage = (Stage) profilnaSlikaField.getScene().getWindow();
+        File odabranaDatoteka = fileChooser.showOpenDialog(stage);
+        if (odabranaDatoteka == null)
+        {
+            return;
+        }
+
+        String putanja = AssetUtil.spremiSliku(odabranaDatoteka);
+        profilnaSlikaField.setText(putanja);
     }
 
     @FXML
