@@ -136,6 +136,8 @@ public class KorisnikRepozitorij implements Repozitorij<Korisnik>
             ps.setString(1, korisnik.getKorisnickoIme());
             ps.setString(2, korisnik.getLozinka());
             ps.setString(3, korisnik.getUloga().name());
+            // getInfluencerId() vraca Integer (moze biti null za ADMIN/BREND korisnike bez povezanog
+            // influencer-profila) - setObject to izravno proslijedi kao SQL NULL, bez if/else grananja.
             ps.setObject(4, korisnik.getInfluencerId(), Types.INTEGER);
             ps.executeUpdate();
 
@@ -188,6 +190,7 @@ public class KorisnikRepozitorij implements Repozitorij<Korisnik>
     private Korisnik mapRow(ResultSet rs) throws SQLException
     {
         Uloga uloga = Uloga.valueOf(rs.getString("Uloga"));
+        // getObject(..., Integer.class) vraca null ako InfluencerID nije postavljen u bazi
         Integer influencerId = rs.getObject("InfluencerID", Integer.class);
         return new Korisnik(
                 rs.getInt("IDKorisnik"),

@@ -29,6 +29,10 @@ public final class BackupUtil
     {
     }
 
+    // Povuce sve podatke iz svih 8 repozitorija, pretvori ih u XML DTO klase (Xml paket) i spoji u jedan
+    // BazaBackupXml koji JAXB Marshaller serijalizira u jednu XML datoteku - kompletan backup cijele baze.
+    // SifrarnikXml (id+naziv) se ponovno koristi za 5 razlicitih jednostavnih sifrarnika (platforme, nise,
+    // tipovi sadrzaja, gradovi, brandovi) umjesto 5 gotovo identicnih klasa - DRY princip.
     public static int kreirajBackup(Path putanja)
     {
         try

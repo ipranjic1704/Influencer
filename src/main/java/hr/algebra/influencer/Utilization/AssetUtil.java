@@ -32,6 +32,11 @@ public final class AssetUtil
         return ASSETS_DIR;
     }
 
+    // Poziva se pri brisanju influencera i pri promjeni slike (stara se obrise). putanja dolazi iz
+    // Influencer.getProfilnaSlika() - moze biti prazan string (influencer bez slike), zato provjera "file:"
+    // prefiksa: samo pravi file:// URI (iz FileChoosera, uvijek unutar assets/) prolazi dalje na brisanje.
+    // Nema provjere da je datoteka stvarno unutar assets/ (path traversal rizik prihvacen - FileChooser je
+    // zakljucan na assets/ pa putanja izvana ne moze doci drugacije nego kroz odabir postojece datoteke).
     public static void obrisiSliku(String putanja)
     {
         if (putanja == null || !putanja.startsWith("file:"))

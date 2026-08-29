@@ -234,6 +234,8 @@ public class InfluencerRepozitorij implements Repozitorij<Influencer>
         ps.setInt(2, influencer.getBrojPratitelja());
         ps.setDouble(3, influencer.getEngagementRate());
         ps.setString(4, influencer.getZemlja());
+        // setObject prima null bez posebnog if/else grananja - ako je grad null, u GradID stupac
+        // (nullable FK) upise se SQL NULL; Types.INTEGER kaze bazi koji SQL tip NULL predstavlja.
         ps.setObject(5, influencer.getGrad() != null ? influencer.getGrad().getId() : null, Types.INTEGER);
         ps.setString(6, influencer.getJezikSadrzaja());
         ps.setString(7, influencer.getProfilnaSlika());
@@ -241,6 +243,8 @@ public class InfluencerRepozitorij implements Repozitorij<Influencer>
 
     private Influencer mapRow(ResultSet rs) throws SQLException
     {
+        // getObject(..., Integer.class) vraca pravi Java null ako je GradID u bazi NULL (influencer bez grada),
+        // umjesto getInt() koji bi vratio 0 i zahtijevao dodatni rs.wasNull() poziv da se to razlikuje od pravog 0.
         Integer idGrad = rs.getObject("GradID", Integer.class);
         Grad grad = idGrad == null ? null : new Grad(idGrad, rs.getString("NazivGrad"));
 
@@ -421,6 +425,9 @@ public class InfluencerRepozitorij implements Repozitorij<Influencer>
         }
     }
 
+    // JAXB (Jakarta XML Binding): umjesto rucnog pisanja <tag> po <tag> (kao SAX/DOM), model klase se
+    // pretvore u XML preko anotacija (@XmlRootElement, @XmlElement na InfluencerXml/InfluenceriXml) -
+    // Marshaller sam ocita te anotacije refleksijom i serijalizira objekte u XML.
     public int exportToXmlJaxb(Path putanja)
     {
         List<Influencer> influenceri = getAll();
@@ -433,6 +440,8 @@ public class InfluencerRepozitorij implements Repozitorij<Influencer>
                 Files.createDirectories(roditelj);
             }
 
+            // Influencer se ne moze anotirati direktno (Influencer -> BrandSuradnja -> tim -> Influencer bi
+            // izazvao beskonacnu petlju pri serijalizaciji) - zato se prvo pretvori u ravni InfluencerXml DTO.
             List<InfluencerXml> influenceriXml = influenceri.stream()
                     .map(InfluencerXml::new)
                     .collect(Collectors.toList());

@@ -122,6 +122,7 @@ public class BrandSuradnjaController implements Initializable
         osvjezi();
     }
 
+    // Drag&drop izmedu dvije ListView: dostupniListView (svi influenceri) -> timListView (tim suradnje).
     private void omoguciPrevlacenje()
     {
         dostupniListView.setCellFactory(lv ->
@@ -135,6 +136,8 @@ public class BrandSuradnjaController implements Initializable
                     setText(empty || influencer == null ? null : influencer.getImeNadimak());
                 }
             };
+            // IZVOR prevlacenja: kad korisnik pocne vuci celiju, u Dragboard (JavaFX "clipboard" za drag&drop)
+            // se stavi ID influencera kao string - to je jedini podatak koji se prenosi do odredista.
             cell.setOnDragDetected(event ->
             {
                 if (cell.getItem() == null)
@@ -150,6 +153,8 @@ public class BrandSuradnjaController implements Initializable
             return cell;
         });
 
+        // ODREDISTE, korak 1: setOnDragOver mora eksplicitno "prihvatiti" prevlacenje (acceptTransferModes)
+        // da bi timListView uopce mogao biti meta ispustanja - bez ovoga setOnDragDropped se nikad ne pozove.
         timListView.setOnDragOver(event ->
         {
             if (event.getGestureSource() != timListView && event.getDragboard().hasString())
@@ -159,6 +164,9 @@ public class BrandSuradnjaController implements Initializable
             event.consume();
         });
 
+        // ODREDISTE, korak 2: kad korisnik pusti misa, procita se ID iz Dragboarda, pronade odgovarajuci
+        // Influencer objekt (Dragboard nosi samo ID string, ne cijeli objekt) i premjesti se iz jedne
+        // ObservableList u drugu - JavaFX automatski osvjezi oba ListView jer su na njih vezani (bind).
         timListView.setOnDragDropped(event ->
         {
             Dragboard db = event.getDragboard();

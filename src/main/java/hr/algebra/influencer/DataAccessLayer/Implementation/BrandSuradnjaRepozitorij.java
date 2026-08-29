@@ -218,6 +218,7 @@ public class BrandSuradnjaRepozitorij implements Repozitorij<BrandSuradnja>
             {
                 while (rs.next())
                 {
+                    // getObject(..., Integer.class) vraca null ako je GradID NULL, bez rs.wasNull() poziva
                     Integer idGrad = rs.getObject("GradID", Integer.class);
                     Grad grad = idGrad == null ? null : new Grad(idGrad, rs.getString("NazivGrad"));
 
