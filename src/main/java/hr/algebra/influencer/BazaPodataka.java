@@ -28,6 +28,7 @@ public class BazaPodataka
         {
             veza = DriverManager.getConnection(URL, USER, PASS);
             initSchema(veza);
+            kreirajAdminAkoNePostoji(veza);
             System.out.println("[db] veza stvorena");
         }
         catch (Exception e)
@@ -57,6 +58,18 @@ public class BazaPodataka
     {
         izvrsiSkriptu(conn, "/hr/algebra/influencer/sql/init_ddl.sql");
         System.out.println("[db] Shema inicijalizirana");
+    }
+
+    private static void kreirajAdminAkoNePostoji(Connection conn) throws SQLException
+    {
+        String sql = "INSERT INTO Korisnik (UserName, Lozinka, Uloga) " +
+                "SELECT 'admin', 'admin', 'ADMIN' " +
+                "WHERE NOT EXISTS (SELECT 1 FROM Korisnik WHERE UserName = 'admin')";
+        try (Statement stmt = conn.createStatement())
+        {
+            stmt.execute(sql);
+        }
+        System.out.println("[db] Admin korisnik provjeren/kreiran");
     }
 
     public static void obrisiSveIzBaze()

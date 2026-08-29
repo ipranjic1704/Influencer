@@ -77,7 +77,6 @@ CREATE TABLE IF NOT EXISTS BrandSuradnjaInfluencer (
     PRIMARY KEY (IDBrandSuradnja, IDInfluencer)
 );
 
-INSERT INTO Korisnik (UserName, Lozinka, Uloga) SELECT 'admin', 'admin', 'ADMIN' WHERE NOT EXISTS (SELECT 1 FROM Korisnik WHERE UserName = 'admin');
 INSERT INTO Korisnik (UserName, Lozinka, Uloga) SELECT 'brend', 'brend', 'BREND' WHERE NOT EXISTS (SELECT 1 FROM Korisnik WHERE UserName = 'brend');
 INSERT INTO Korisnik (UserName, Lozinka, Uloga) SELECT 'influencer', 'influencer', 'INFLUENCER' WHERE NOT EXISTS (SELECT 1 FROM Korisnik WHERE UserName = 'influencer');
 
